@@ -18,10 +18,20 @@
                     <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
                     <input id="strUsername" class="form-control mb-2" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">                     
                 </div> 
-                <label for="strPassword" class="form-label d-flex align-items-start">Password</label> 
-                <input id="strPassword" class="form-control mb-2" type="password" placeholder="Password">
+
+                <div>
+                    <label for="strPassword" class="form-label d-flex align-items-start">Password</label> 
+                    <input id="strPassword" class="form-control mb-2" type="password" placeholder="Password">
+                </div>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
+                </div>
+            
+
                 <button  type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
-                <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
+                <button type="button" class="btn btn-link col-12 mt-2 " id="btnSwap">Don't have an account? Register here</button>
+
 
              </div>
 
@@ -30,10 +40,12 @@
             <div class="card-body">
                 <h2 class="text-center">TTU Group Survey Registration</h2>
                 <h5 class="text-center">Register below</h5>
-               
+                <div>
+                    <label for ="strFirstName" class="form-label d-flex align-items-start">First Name</label>
+                    <input id="strFirstName" class="form-control mb-2" type="text" placeholder="John" aria-label="input for user First Name">
+                </div>
                 <button  type="button" class="btn btn-primary col-12 mt-2" id="btnRegister">Register</button>
                 <button type="button" class="btn btn-link col-12 mt-0" id="btnBack">Already have an account? Login here</button>
-
              </div>
 
         </form>
