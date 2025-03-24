@@ -36,13 +36,24 @@
         <form class="card col-12 col-md-6 col-lg-4" id="frmRegister" style="display:none;">
             <div class="card-body">
                 <h2 class="text-center">TTU Group Survey Registration</h2>
-                <h5 class="text-center">Register below</h5>
-
-                <button type="button" class="btn btn-primary col-12 mt-2" id="btnRegister">Register</button>
-                <button type="button" class="btn btn-link col-12 mt-0" id="btnBack">Already have an account? Login
-                    here</button>
-
-            </div>
+                <h5 class="text-center mb-4">Register below</h5>
+                
+                <label for ="strFirstName" class="form-label d-flex align-items-start">First Name</label>
+                <input id="strFirstName" class="form-control mb-2" type="text" placeholder="John" aria-label="input for user First Name">
+                <label for="strMiddleName" class="form-label d-flex allign-items-start">MiddleName</label>
+                <input id="strMiddleName" class="form-control mb-2" type="text" placeholder="Optional" aria-label="input for user Middle Name">
+                <label for ="strLastName" class="form-label d-flex align-items-start">Last Name</label>
+                <input id="strLastName" class="form-control mb-2" type="text" placeholder="Doe" aria-label="input for user last name">
+                <label for="strEmail" class="form-label d-flex align-items-start">Email</label>
+                <input id="strEmail" class="form-control mb-2" type="email" placeholder="JohnDoe@tntceh.edu" aria-label="input for user Email address">
+                <label for="strNewPassword" class="form-label d-flex align-items-start">Password</label>
+                <input id="strNewPassword" class="form-control mb-2" type="password" placeholder="Password" aria-label="input for user password">
+                <label for="strConfirmPassword" class="form-label d-flex align-items-start">Confirm Password</label>
+                <input id="strConfirmPassword" class="form-control mb-2" type="password" placeholder="Connfirm Password" aria-label="input for user confirm passwrord">
+    
+                <button  type="button" class="btn btn-primary col-12 mt-2" id="btnRegister">Register</button>
+                <button type="button" class="btn btn-link col-12 mt-0" id="btnBack">Already have an account? Login here</button>
+             </div>
 
         </form>
     </div>
