@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/pulse/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
     <title>TTU Group Survey</title>
 </head>
 <body>
@@ -12,17 +14,42 @@
             <div class="card-body">
                 <h2 class="text-center">TTU Group Survey Login</h2>
                 <h5 class="text-center">Login below</h5>
-                <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
-                <input id="strUsername" class="form-control mb-2" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">  
+                <div>
+                    <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
+                    <input id="strUsername" class="form-control mb-2" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">                     
+                </div> 
                 <label for="strPassword" class="form-label d-flex align-items-start">Password</label> 
                 <input id="strPassword" class="form-control mb-2" type="password" placeholder="Password">
-                <button  type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button> 
+                <button  type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
+                <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
+
+             </div>
+
+        </form>
+        <form class ="card col-12 col-md-6 col-lg-4" id="frmRegister" style="display:none;">
+            <div class="card-body">
+                <h2 class="text-center">TTU Group Survey Registration</h2>
+                <h5 class="text-center">Register below</h5>
+               
+                <button  type="button" class="btn btn-primary col-12 mt-2" id="btnRegister">Register</button>
+                <button type="button" class="btn btn-link col-12 mt-0" id="btnBack">Already have an account? Login here</button>
+
              </div>
 
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('btnSwap').addEventListener('click',function(){
+            document.getElementById('frmLogin').style.display = 'none';
+            document.getElementById('frmRegister').style.display = 'block';
+        });
+        document.getElementById('btnBack').addEventListener('click',function(){
+            document.getElementById('frmLogin').style.display = 'block';
+            document.getElementById('frmRegister').style.display = 'none';
+        })
+    </script>
 
 
     
