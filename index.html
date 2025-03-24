@@ -3,18 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/minty/bootstrap.min.css" integrity="sha384-H4X+4tKc7b8s4GoMrylmy2ssQYpDHoqzPa9aKXbDwPoPUA3Ra8PA5dGzijN+ePnH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/pulse/bootstrap.min.css">
     <title>TTU Group Survey</title>
 </head>
 <body>
     <div class="bg-image d-flex align-items-center justify-content-center" style="background-image: url('Event_COE_Doner recognition and awards_04Nov2024_69481-Enhanced-NR.jpg'); background-size: cover; height:100vh;">
         <form class ="card col-12 col-md-6 col-lg-4" id="frmLogin">
             <div class="card-body">
-                <h1>Helloo cuz</h1>
-            </div>
+                <h2 class="text-center">TTU Group Survey Login</h2>
+                <h5 class="text-center">Login below</h5>
+                <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
+                <input id="strUsername" class="form-control mb-2" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">  
+                <label for="strPassword" class="form-label d-flex align-items-start">Password</label> 
+                <input id="strPassword" class="form-control mb-2" type="password" placeholder="Password">
+                <button  type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button> 
+             </div>
 
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     
 </body>
 </html>
