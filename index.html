@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/pulse/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-
     <title>TTU Group Survey</title>
 </head>
 
@@ -60,13 +59,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
-
-        if (sessionStorage.getItem('SessionID')) {
-            document.querySelector('#frmLogin').style.display = 'none'
-            document.querySelector('#divDashboard').style.display = 'block'
-        }
 
         document.getElementById('btnSwap').addEventListener('click', function () {
             document.getElementById('frmLogin').style.display = 'none';
@@ -77,9 +71,8 @@
             document.getElementById('frmRegister').style.display = 'none';
         })
     </script>
-
-
-
+    <script src="scripts/login.js"></script>
+    <script src="scripts/registration.js"></script>
 </body>
 
 </html>
