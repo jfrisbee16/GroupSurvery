@@ -17,43 +17,100 @@
             <div class="card-body">
                 <h2 class="text-center">TTU Group Survey Login</h2>
                 <h5 class="text-center">Login below</h5>
-                <div>
+
+                <!-- Email -->
+                <div class="mb-3">
                     <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
-                    <input id="strUsername" class="form-control mb-2" type="email" placeholder="JohnDoe@tntech.edu"
-                        aria-label="input for user Email">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strUsername" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">
+                    </div>
                 </div>
-                <label for="strPassword" class="form-label d-flex align-items-start">Password</label>
-                <input id="strPassword" class="form-control mb-2" type="password" placeholder="Password">
+                
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="strPassword" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input id="strPassword" class="form-control " type="password" placeholder="Password" aria-label="Password">
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
+                    </div>
+                </div>
+
                 <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
-                <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register
-                    here</button>
+                <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
 
             </div>
 
         </form>
         <!-- Registration -->
-        <form class="card col-12 col-md-6 col-lg-4 rounded" id="frmRegister" style="display:none;">
+        <form class="card col-12 col-md-6 col-lg-4 p-4 shadow" id="frmRegister" style="display:none;">
             <div class="card-body">
-                <h2 class="text-center">TTU Group Survey Registration</h2>
+                <h2 class="text-center mb-3">TTU Group Survey Registration</h2>
                 <h5 class="text-center mb-4">Register below</h5>
-                
-                <label for ="strFirstName" class="form-label d-flex align-items-start">First Name</label>
-                <input id="strFirstName" class="form-control mb-2" type="text" placeholder="John" aria-label="input for user First Name">
-                <label for="strMiddleName" class="form-label d-flex allign-items-start">MiddleName</label>
-                <input id="strMiddleName" class="form-control mb-2" type="text" placeholder="Optional" aria-label="input for user Middle Name">
-                <label for ="strLastName" class="form-label d-flex align-items-start">Last Name</label>
-                <input id="strLastName" class="form-control mb-2" type="text" placeholder="Doe" aria-label="input for user last name">
-                <label for="strEmail" class="form-label d-flex align-items-start">Email</label>
-                <input id="strEmail" class="form-control mb-2" type="email" placeholder="JohnDoe@tntceh.edu" aria-label="input for user Email address">
-                <label for="strNewPassword" class="form-label d-flex align-items-start">Password</label>
-                <input id="strNewPassword" class="form-control mb-2" type="password" placeholder="Password" aria-label="input for user password">
-                <label for="strConfirmPassword" class="form-label d-flex align-items-start">Confirm Password</label>
-                <input id="strConfirmPassword" class="form-control mb-2" type="password" placeholder="Connfirm Password" aria-label="input for user confirm passwrord">
-    
-                <button  type="button" class="btn btn-primary col-12 mt-2" id="btnRegister">Register</button>
-                <button type="button" class="btn btn-link col-12 mt-0" id="btnBack">Already have an account? Login here</button>
-             </div>
-
+        
+                <!-- First Name -->
+                <div class="mb-3">
+                    <label for="strFirstName" class="form-label">First Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strFirstName" class="form-control" type="text" placeholder="John" aria-label="First Name">
+                    </div>
+                </div>
+        
+                <!-- Middle Name -->
+                <div class="mb-3">
+                    <label for="strMiddleName" class="form-label">Middle Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strMiddleName" class="form-control" type="text" placeholder="Optional" aria-label="Middle Name">
+                    </div>
+                </div>
+        
+                <!-- Last Name -->
+                <div class="mb-3">
+                    <label for="strLastName" class="form-label">Last Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strLastName" class="form-control" type="text" placeholder="Doe" aria-label="Last Name">
+                    </div>
+                </div>
+        
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="strEmail" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                        <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
+                    </div>
+                </div>
+        
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="strNewPassword" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input id="strNewPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
+                    </div>
+                </div>
+        
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label for="strConfirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input id="strConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" aria-label="Confirm Password">
+                    </div>
+                </div>
+        
+                <!-- Register Button -->
+                <button type="button" class="btn btn-primary col-12 mt-3" id="btnRegister">Register</button>
+        
+                <!-- Back to Login Button -->
+                <button type="button" class="btn btn-link col-12 mt-2 text-center" id="btnBack">Already have an account? Login here</button>
+            </div>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

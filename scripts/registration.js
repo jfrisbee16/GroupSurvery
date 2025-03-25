@@ -15,6 +15,10 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
     
     let errors = "";
 
+    // Required Field Validation
+    if (!firstName) errors += "<p class='mb-1 mt-1'>First Name is required</p>";
+    if (!lastName) errors += "<p class='mb-1 mt-1'>Last Name is required</p>";    
+
     // Email Validation
     if (!regEmail.test(email)) {
         errors += "<p class='mb-1 mt-1'>Invalid email format</p>";
@@ -29,9 +33,7 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
         errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
     }
 
-    // Required Field Validation
-    if (!firstName) errors += "<p class='mb-1 mt-1'>First Name is required</p>";
-    if (!lastName) errors += "<p class='mb-1 mt-1'>Last Name is required</p>";
+
 
     if (errors) {
         Swal.fire({
