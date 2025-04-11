@@ -6,6 +6,7 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
     const regPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     const regPhone = /^[0-9]{10}$/;
     const regZip = /^[0-9]{5}$/;
+    const role = document.getElementById("strRole").value;
 
     let email = document.querySelector("#strEmail").value.trim();
     let password = document.querySelector("#strNewPassword").value.trim();
@@ -33,7 +34,30 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
         errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
     }
 
+    // else if(role === 'Student'){
+    //     Swal.fire({
+    //         icon: "Success",
+    //         title: "Registration Successful",
+    //         Text: "Sending student to the student dashboard"
+    //     }).then(()=>{
+    //         window.location.href = "student.html";
+    //     })
+    // }else if(role === 'Instructor'){
+    //     Swal.fire({
+    //         icon: "Success",
+    //         title: "Registration Successful",
+    //         Text: "Sending student to the student dashboard"
+    //     }).then(()=>{
+    //         window.location.href = "instructor.html";
+    //     })
 
+    // } else{
+    //     Swal.fire({
+    //         icon:"error",
+    //         title: "Registration Error",
+    //         text: "Please select a valid role"
+    //     })
+    // }
 
     if (errors) {
         Swal.fire({
@@ -41,11 +65,30 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
             html: errors,
             icon: "error"
         });
-    } else {
+
+    } else if(role === 'Student'){
+        Swal.fire({
+            icon: "success",
+            title: "Registration Successful",
+            text: "Sending student to the student dashboard"
+        }).then(()=>{
+            window.location.href = "student.html";
+        })
+    }else if(role === 'Instructor'){
+        Swal.fire({
+            icon: "success",
+            title: "Registration Successful",
+            text: "Sending student to the student dashboard"
+        }).then(()=>{
+            window.location.href = "instructor.html";
+        })
+
+    }else {
         Swal.fire({
             title: "Success!",
             text: "Registration successful",
             icon: "success"
         });
     }
+    
 });

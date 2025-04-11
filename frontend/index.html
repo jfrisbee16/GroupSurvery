@@ -37,11 +37,13 @@
                         <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
                     </div>
                 </div>
+                
 
                 <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
                 <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
 
             </div>
+           
 
         </form>
         <!-- Registration -->
@@ -85,6 +87,20 @@
                         <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
                     </div>
                 </div>
+                <!-- Role -->
+                 <div class="mb-3">
+                    <label for="strRole" class="form-label">Role</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <select id="strRole" class="form-select" aria-label="Input for role of user">
+                            <option selected disabled value="">Select Role</option>
+                            <option value="Student">Student</option>
+                            <option value="Faculty">Faculty</option>
+                        </select>
+                        
+                    </div>
+
+                 </div>
         
                 <!-- Password -->
                 <div class="mb-3">
