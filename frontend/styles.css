@@ -1,0 +1,33 @@
+/* Modal z-index stacking */
+.modal-backdrop {
+    z-index: 1040;
+}
+
+.modal {
+    z-index: 1050;
+}
+
+/* Create Survey Modal */
+#createSurveyModal {
+    z-index: 1060;
+}
+
+/* Add Field Modal */
+#addFieldModal {
+    z-index: 1070;
+}
+
+/* Add Group Modal */
+#addGroupModal {
+    z-index: 1080;
+}
+
+/* Survey Detail Modal */
+#surveyDetailModal {
+    z-index: 1090;
+}
+
+/* Group Responses Modal */
+#groupResponsesModal {
+    z-index: 1100;
+} 

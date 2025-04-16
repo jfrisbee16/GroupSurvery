@@ -211,7 +211,7 @@ function renderStudentDashboard(container) {
                         <div class="card-body">
                             <h5 class="card-title">Available Surveys</h5>
                             <p class="card-text">You have 3 surveys waiting for your response.</p>
-                            <a href="#" class="btn btn-primary">View Surveys</a>
+                            <button class="btn btn-primary" id="btnViewSurveys">View Surveys</button>
                         </div>
                     </div>
                 </div>
@@ -235,12 +235,451 @@ function renderStudentDashboard(container) {
                 </div>
             </div>
         </div>
+        
+        <!-- View Surveys Modal -->
+        <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewSurveysModalLabel">Available Surveys</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="surveysList" class="list-group">
+                            <!-- Surveys will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Survey Detail Modal -->
+        <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="surveyDetailContent">
+                            <!-- Survey details will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnEditSurvey">Edit</button>
+                        <button type="button" class="btn btn-danger" id="btnDeleteSurvey">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Group Responses Modal -->
+        <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="groupResponsesContent">
+                            <!-- Group responses will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manage Groups Modal -->
+        <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-end mb-3">
+                            <button type="button" class="btn btn-success" id="btnAddNewGroup">
+                                <i class="bi bi-plus-circle"></i> Add New Group
+                            </button>
+                        </div>
+                        <div id="groupsListContainer" class="list-group">
+                            <!-- Groups will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add custom CSS for modal z-index -->
+        <style>
+            .modal-backdrop {
+                z-index: 1050;
+            }
+            #createSurveyModal {
+                z-index: 1055 !important;
+            }
+            #createSurveyModal .modal-dialog {
+                z-index: 1056 !important;
+            }
+            #addFieldModal {
+                z-index: 1060 !important;
+            }
+            #addFieldModal .modal-dialog {
+                z-index: 1061 !important;
+            }
+            #addGroupModal {
+                z-index: 1060 !important;
+            }
+            #addGroupModal .modal-dialog {
+                z-index: 1061 !important;
+            }
+            #manageGroupsModal {
+                z-index: 1060 !important;
+            }
+            #manageGroupsModal .modal-dialog {
+                z-index: 1061 !important;
+            }
+            .blur-background {
+                filter: blur(5px);
+                -webkit-filter: blur(5px);
+            }
+        </style>
     `;
     
     // Add event listeners
     document.getElementById('btnLogout').addEventListener('click', () => {
         router.navigate('/');
     });
+    
+    // View Surveys Modal
+    const viewSurveysModal = new bootstrap.Modal(document.getElementById('viewSurveysModal'));
+    const surveyDetailModal = new bootstrap.Modal(document.getElementById('surveyDetailModal'));
+    const groupResponsesModal = new bootstrap.Modal(document.getElementById('groupResponsesModal'));
+    const manageGroupsModal = new bootstrap.Modal(document.getElementById('manageGroupsModal'));
+    
+    // Open View Surveys Modal
+    document.getElementById('btnViewSurveys').addEventListener('click', () => {
+        loadSurveys();
+        viewSurveysModal.show();
+    });
+    
+    // Function to load surveys from local storage
+    function loadSurveys() {
+        const surveysList = document.getElementById('surveysList');
+        surveysList.innerHTML = '';
+        
+        // Get surveys from local storage
+        const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+        
+        if (surveys.length === 0) {
+            surveysList.innerHTML = '<div class="alert alert-info">No surveys available.</div>';
+            return;
+        }
+        
+        // Create list items for each survey
+        surveys.forEach((survey, index) => {
+            const listItem = document.createElement('a');
+            listItem.href = '#';
+            listItem.className = 'list-group-item list-group-item-action';
+            listItem.innerHTML = `
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">${survey.title}</h5>
+                    <small>Created: ${new Date(survey.createdAt).toLocaleDateString()}</small>
+                </div>
+                <p class="mb-1">${survey.description || 'No description'}</p>
+                <small>${survey.groups ? survey.groups.length : 0} groups assigned</small>
+            `;
+            
+            // Add click event to view survey details
+            listItem.addEventListener('click', () => {
+                viewSurveysModal.hide();
+                showSurveyDetails(survey, index);
+            });
+            
+            surveysList.appendChild(listItem);
+        });
+    }
+    
+    // Function to show survey details
+    function showSurveyDetails(survey, index) {
+        const surveyDetailContent = document.getElementById('surveyDetailContent');
+        const surveyDetailModalLabel = document.getElementById('surveyDetailModalLabel');
+        
+        surveyDetailModalLabel.textContent = survey.title;
+        
+        // Create HTML for survey details
+        let html = `
+            <div class="mb-4">
+                <h6>Description</h6>
+                <p>${survey.description || 'No description'}</p>
+            </div>
+            
+            <div class="mb-4">
+                <h6>Survey Fields</h6>
+                <div class="list-group">
+        `;
+        
+        // Add fields
+        if (survey.fields && survey.fields.length > 0) {
+            survey.fields.forEach(field => {
+                html += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${field.label}</h6>
+                            <small>${field.required ? 'Required' : 'Optional'}</small>
+                        </div>
+                        <p class="mb-1">Type: ${field.type}</p>
+                    </div>
+                `;
+            });
+        } else {
+            html += '<div class="alert alert-info">No fields defined for this survey.</div>';
+        }
+        
+        html += `
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <h6>Assigned Groups</h6>
+                <div class="list-group" id="assignedGroupsList">
+        `;
+        
+        // Add assigned groups
+        if (survey.groups && survey.groups.length > 0) {
+            survey.groups.forEach(group => {
+                html += `
+                    <a href="#" class="list-group-item list-group-item-action group-item" data-group-id="${group.id}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${group.name}</h6>
+                            <small>${group.completedCount || 0}/${group.totalMembers || 0} completed</small>
+                        </div>
+                    </a>
+                `;
+            });
+        } else {
+            html += '<div class="alert alert-info">No groups assigned to this survey.</div>';
+        }
+        
+        html += `
+                </div>
+            </div>
+        `;
+        
+        surveyDetailContent.innerHTML = html;
+        
+        // Add event listeners for group items
+        document.querySelectorAll('.group-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const groupId = item.getAttribute('data-group-id');
+                showGroupResponses(survey, groupId);
+            });
+        });
+        
+        // Add event listeners for edit and delete buttons
+        document.getElementById('btnEditSurvey').addEventListener('click', () => {
+            editSurvey(survey, index);
+        });
+        
+        document.getElementById('btnDeleteSurvey').addEventListener('click', () => {
+            deleteSurvey(index);
+        });
+        
+        surveyDetailModal.show();
+    }
+    
+    // Function to show group responses
+    function showGroupResponses(survey, groupId) {
+        const groupResponsesContent = document.getElementById('groupResponsesContent');
+        const groupResponsesModalLabel = document.getElementById('groupResponsesModalLabel');
+        
+        // Find the group
+        const group = survey.groups.find(g => g.id === groupId);
+        if (!group) return;
+        
+        groupResponsesModalLabel.textContent = `${group.name} - Responses`;
+        
+        // Create HTML for group responses
+        let html = `
+            <div class="mb-3">
+                <h6>Group Information</h6>
+                <p>Total Members: ${group.totalMembers || 0}</p>
+                <p>Completed: ${group.completedCount || 0}</p>
+                <p>Completion Rate: ${group.totalMembers ? Math.round((group.completedCount || 0) / group.totalMembers * 100) : 0}%</p>
+            </div>
+            
+            <div class="mb-3">
+                <h6>Member Responses</h6>
+                <div class="list-group">
+        `;
+        
+        // Add member responses
+        if (group.members && group.members.length > 0) {
+            group.members.forEach(member => {
+                html += `
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${member.name}</h6>
+                            <small>${member.completed ? 'Completed' : 'Pending'}</small>
+                        </div>
+                        ${member.completed ? `<p class="mb-1">Completed on: ${new Date(member.completedAt).toLocaleDateString()}</p>` : ''}
+                    </div>
+                `;
+            });
+        } else {
+            html += '<div class="alert alert-info">No members in this group.</div>';
+        }
+        
+        html += `
+                </div>
+            </div>
+        `;
+        
+        groupResponsesContent.innerHTML = html;
+        
+        // Hide survey detail modal and show group responses modal
+        surveyDetailModal.hide();
+        groupResponsesModal.show();
+    }
+    
+    // Function to edit a survey
+    function editSurvey(survey, index) {
+        // Hide the survey detail modal
+        surveyDetailModal.hide();
+        
+        // Show the create survey modal with pre-filled data
+        const createSurveyModal = new bootstrap.Modal(document.getElementById('createSurveyModal'));
+        
+        // Set the form values
+        document.getElementById('surveyTitle').value = survey.title;
+        document.getElementById('surveyDescription').value = survey.description || '';
+        
+        // Clear existing fields
+        const surveyFields = document.getElementById('surveyFields');
+        surveyFields.innerHTML = '';
+        
+        // Add existing fields
+        if (survey.fields && survey.fields.length > 0) {
+            survey.fields.forEach(field => {
+                const fieldElement = createFieldElement(field);
+                surveyFields.appendChild(fieldElement);
+            });
+        }
+        
+        // Clear existing groups
+        const groupsList = document.getElementById('groupsList');
+        groupsList.innerHTML = '';
+        
+        // Add existing groups
+        if (survey.groups && survey.groups.length > 0) {
+            survey.groups.forEach(group => {
+                const groupElement = createGroupElement(group);
+                groupsList.appendChild(groupElement);
+            });
+        }
+        
+        // Update the save button to update instead of create
+        const saveButton = document.getElementById('btnSaveSurvey');
+        saveButton.textContent = 'Update Survey';
+        
+        // Store the index for updating
+        saveButton.setAttribute('data-survey-index', index);
+        
+        // Show the modal
+        createSurveyModal.show();
+    }
+    
+    // Function to delete a survey
+    function deleteSurvey(index) {
+        // Confirm deletion
+        if (confirm('Are you sure you want to delete this survey? This action cannot be undone.')) {
+            // Get surveys from local storage
+            const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+            
+            // Remove the survey
+            surveys.splice(index, 1);
+            
+            // Save back to local storage
+            localStorage.setItem('surveys', JSON.stringify(surveys));
+            
+            // Hide the modal
+            surveyDetailModal.hide();
+            
+            // Show success message
+            alert('Survey deleted successfully.');
+            
+            // Reload surveys
+            loadSurveys();
+        }
+    }
+    
+    // Helper function to create a field element
+    function createFieldElement(field) {
+        const fieldElement = document.createElement('div');
+        fieldElement.className = 'card mb-3';
+        fieldElement.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title">${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}</h6>
+                    <button type="button" class="btn btn-danger btn-sm delete-field">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="card-text">
+                    <p>Type: ${field.type}</p>
+                    ${field.options ? `<p>Options: ${field.options.join(', ')}</p>` : ''}
+                </div>
+            </div>
+        `;
+        
+        // Add delete event listener
+        fieldElement.querySelector('.delete-field').addEventListener('click', () => {
+            fieldElement.remove();
+        });
+        
+        return fieldElement;
+    }
+    
+    // Helper function to create a group element
+    function createGroupElement(group) {
+        const groupElement = document.createElement('div');
+        groupElement.className = 'card mb-3';
+        groupElement.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title">${group.name}</h6>
+                    <button type="button" class="btn btn-danger btn-sm delete-group">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="card-text">
+                    <p>Members: ${group.members.length}</p>
+                    <p>${group.members.map(m => m.name).join(', ')}</p>
+                </div>
+            </div>
+        `;
+        
+        // Add delete event listener
+        groupElement.querySelector('.delete-group').addEventListener('click', () => {
+            groupElement.remove();
+        });
+        
+        return groupElement;
+    }
 }
 
 function renderFacultyDashboard(container) {
@@ -295,8 +734,8 @@ function renderFacultyDashboard(container) {
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Active Surveys</h5>
-                            <p class="card-text">You have 2 active surveys.</p>
-                            <a href="#" class="btn btn-secondary">View Surveys</a>
+                            <p class="card-text">You have <span id="activeSurveyCount">0</span> active surveys.</p>
+                            <button class="btn btn-secondary" id="btnViewSurveys">View Surveys</button>
                         </div>
                     </div>
                 </div>
@@ -340,6 +779,16 @@ function renderFacultyDashboard(container) {
                                     <i class="bi bi-plus-circle"></i> Add Field
                                 </button>
                             </div>
+                            
+                            <div class="mb-3">
+                                <h5>Assign to Groups</h5>
+                                <div id="groupsList" class="mb-3">
+                                    <!-- Groups will be added here dynamically -->
+                                </div>
+                                <button type="button" class="btn btn-success" id="btnAddGroup">
+                                    <i class="bi bi-plus-circle"></i> Add Group
+                                </button>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -351,7 +800,7 @@ function renderFacultyDashboard(container) {
         </div>
         
         <!-- Add Field Modal -->
-        <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true" style="z-index: 1060;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -396,6 +845,156 @@ function renderFacultyDashboard(container) {
                 </div>
             </div>
         </div>
+        
+        <!-- Add Group Modal -->
+        <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true" style="z-index: 1060;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addGroupModalLabel">Add Group</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="groupForm">
+                            <div class="mb-3">
+                                <label for="groupName" class="form-label">Group Name</label>
+                                <input type="text" class="form-control" id="groupName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="groupMembers" class="form-label">Group Members (one per line)</label>
+                                <textarea class="form-control" id="groupMembers" rows="5" required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="btnSaveGroup">Add Group</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- View Surveys Modal -->
+        <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewSurveysModalLabel">Your Surveys</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="surveysList" class="list-group">
+                            <!-- Surveys will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Survey Detail Modal -->
+        <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="surveyDetailContent">
+                            <!-- Survey details will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="btnEditSurvey">Edit</button>
+                        <button type="button" class="btn btn-danger" id="btnDeleteSurvey">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Group Responses Modal -->
+        <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="groupResponsesContent">
+                            <!-- Group responses will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manage Groups Modal -->
+        <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-end mb-3">
+                            <button type="button" class="btn btn-success" id="btnAddNewGroup">
+                                <i class="bi bi-plus-circle"></i> Add New Group
+                            </button>
+                        </div>
+                        <div id="groupsListContainer" class="list-group">
+                            <!-- Groups will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add custom CSS for modal z-index -->
+        <style>
+            .modal-backdrop {
+                z-index: 1050;
+            }
+            #createSurveyModal {
+                z-index: 1055 !important;
+            }
+            #createSurveyModal .modal-dialog {
+                z-index: 1056 !important;
+            }
+            #addFieldModal {
+                z-index: 1060 !important;
+            }
+            #addFieldModal .modal-dialog {
+                z-index: 1061 !important;
+            }
+            #addGroupModal {
+                z-index: 1060 !important;
+            }
+            #addGroupModal .modal-dialog {
+                z-index: 1061 !important;
+            }
+            #manageGroupsModal {
+                z-index: 1060 !important;
+            }
+            #manageGroupsModal .modal-dialog {
+                z-index: 1061 !important;
+            }
+            .blur-background {
+                filter: blur(5px);
+                -webkit-filter: blur(5px);
+            }
+        </style>
     `;
     
     // Add event listeners
@@ -406,19 +1005,87 @@ function renderFacultyDashboard(container) {
     // Create Survey Modal
     const createSurveyModal = new bootstrap.Modal(document.getElementById('createSurveyModal'));
     const addFieldModal = new bootstrap.Modal(document.getElementById('addFieldModal'));
+    const addGroupModal = new bootstrap.Modal(document.getElementById('addGroupModal'));
+    const viewSurveysModal = new bootstrap.Modal(document.getElementById('viewSurveysModal'));
+    const surveyDetailModal = new bootstrap.Modal(document.getElementById('surveyDetailModal'));
+    const groupResponsesModal = new bootstrap.Modal(document.getElementById('groupResponsesModal'));
+    const manageGroupsModal = new bootstrap.Modal(document.getElementById('manageGroupsModal'));
+    
+    // Update active survey count
+    updateActiveSurveyCount();
     
     // Open Create Survey Modal
     document.getElementById('btnCreateSurvey').addEventListener('click', () => {
+        resetSurveyForm();
         createSurveyModal.show();
     });
     
     document.getElementById('btnCreateSurveyCard').addEventListener('click', () => {
+        resetSurveyForm();
         createSurveyModal.show();
+    });
+    
+    // View Surveys Button
+    document.getElementById('btnViewSurveys').addEventListener('click', () => {
+        loadSurveys();
+        viewSurveysModal.show();
+    });
+    
+    // Manage Groups Buttons
+    document.querySelector('a[href="#"][class="nav-link"]').addEventListener('click', (e) => {
+        if (e.target.textContent === 'Manage Groups') {
+            loadGroups();
+            manageGroupsModal.show();
+        }
+    });
+    
+    document.querySelector('a[href="#"][class="btn btn-info"]').addEventListener('click', () => {
+        loadGroups();
+        manageGroupsModal.show();
+    });
+    
+    // Add New Group Button in Manage Groups Modal
+    document.getElementById('btnAddNewGroup').addEventListener('click', () => {
+        // Add blur class to Manage Groups modal content
+        const manageGroupsContent = document.querySelector('#manageGroupsModal .modal-content');
+        manageGroupsContent.classList.add('blur-background');
+        addGroupModal.show();
+    });
+    
+    // When Add Group modal is closed, remove blur from Manage Groups modal
+    document.getElementById('addGroupModal').addEventListener('hidden.bs.modal', () => {
+        const manageGroupsContent = document.querySelector('#manageGroupsModal .modal-content');
+        manageGroupsContent.classList.remove('blur-background');
+        // Reload groups after adding a new one
+        loadGroups();
     });
     
     // Add Field Button
     document.getElementById('btnAddField').addEventListener('click', () => {
+        // Add blur class to Create Survey modal content
+        const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
+        createSurveyContent.classList.add('blur-background');
         addFieldModal.show();
+    });
+    
+    // When Add Field modal is closed, remove blur from Create Survey modal
+    document.getElementById('addFieldModal').addEventListener('hidden.bs.modal', () => {
+        const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
+        createSurveyContent.classList.remove('blur-background');
+    });
+    
+    // Add Group Button in Create Survey Modal
+    document.getElementById('btnAddGroup').addEventListener('click', () => {
+        // Add blur class to Create Survey modal content
+        const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
+        createSurveyContent.classList.add('blur-background');
+        addGroupModal.show();
+    });
+    
+    // When Add Group modal is closed, remove blur from Create Survey modal
+    document.getElementById('addGroupModal').addEventListener('hidden.bs.modal', () => {
+        const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
+        createSurveyContent.classList.remove('blur-background');
     });
     
     // Field Type Change
@@ -439,111 +1106,35 @@ function renderFacultyDashboard(container) {
         const fieldOptions = document.getElementById('fieldOptions').value;
         
         if (!fieldLabel) {
-            Swal.fire({
-                title: "Error",
-                text: "Field label is required",
-                icon: "error"
-            });
+            alert('Field label is required');
             return;
         }
         
         // Create field element
-        const fieldId = 'field_' + Date.now();
         const fieldElement = document.createElement('div');
         fieldElement.className = 'card mb-3';
-        fieldElement.id = fieldId;
-        
-        let fieldContent = '';
-        
-        // Generate field content based on type
-        switch (fieldType) {
-            case 'text':
-                fieldContent = `<input type="text" class="form-control" placeholder="${fieldLabel}" ${fieldRequired ? 'required' : ''}>`;
-                break;
-            case 'textarea':
-                fieldContent = `<textarea class="form-control" placeholder="${fieldLabel}" ${fieldRequired ? 'required' : ''}></textarea>`;
-                break;
-            case 'select':
-                fieldContent = `<select class="form-select" ${fieldRequired ? 'required' : ''}>
-                    <option value="" disabled selected>${fieldLabel}</option>`;
-                if (fieldOptions) {
-                    fieldOptions.split('\n').forEach(option => {
-                        if (option.trim()) {
-                            fieldContent += `<option value="${option.trim()}">${option.trim()}</option>`;
-                        }
-                    });
-                }
-                fieldContent += `</select>`;
-                break;
-            case 'multiselect':
-                fieldContent = `<select class="form-select" multiple ${fieldRequired ? 'required' : ''}>
-                    <option value="" disabled>${fieldLabel}</option>`;
-                if (fieldOptions) {
-                    fieldOptions.split('\n').forEach(option => {
-                        if (option.trim()) {
-                            fieldContent += `<option value="${option.trim()}">${option.trim()}</option>`;
-                        }
-                    });
-                }
-                fieldContent += `</select>`;
-                break;
-            case 'radio':
-                fieldContent = `<div class="mb-2">${fieldLabel} ${fieldRequired ? '<span class="text-danger">*</span>' : ''}</div>`;
-                if (fieldOptions) {
-                    fieldOptions.split('\n').forEach(option => {
-                        if (option.trim()) {
-                            fieldContent += `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="${fieldId}" value="${option.trim()}" ${fieldRequired ? 'required' : ''}>
-                                    <label class="form-check-label">${option.trim()}</label>
-                                </div>`;
-                        }
-                    });
-                }
-                break;
-            case 'checkbox':
-                fieldContent = `<div class="mb-2">${fieldLabel} ${fieldRequired ? '<span class="text-danger">*</span>' : ''}</div>`;
-                if (fieldOptions) {
-                    fieldOptions.split('\n').forEach(option => {
-                        if (option.trim()) {
-                            fieldContent += `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="${fieldId}" value="${option.trim()}" ${fieldRequired ? 'required' : ''}>
-                                    <label class="form-check-label">${option.trim()}</label>
-                                </div>`;
-                        }
-                    });
-                }
-                break;
-            case 'date':
-                fieldContent = `<input type="date" class="form-control" ${fieldRequired ? 'required' : ''}>`;
-                break;
-            case 'number':
-                fieldContent = `<input type="number" class="form-control" placeholder="${fieldLabel}" ${fieldRequired ? 'required' : ''}>`;
-                break;
-        }
-        
         fieldElement.innerHTML = `
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="card-title">${fieldLabel} ${fieldRequired ? '<span class="text-danger">*</span>' : ''}</h6>
-                    <button type="button" class="btn btn-danger btn-sm delete-field" data-field-id="${fieldId}">
+                    <button type="button" class="btn btn-danger btn-sm delete-field">
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
                 <div class="card-text">
-                    ${fieldContent}
+                    <p>Type: ${fieldType}</p>
+                    ${fieldOptions ? `<p>Options: ${fieldOptions.split('\n').join(', ')}</p>` : ''}
                 </div>
             </div>
         `;
         
+        // Add delete event listener
+        fieldElement.querySelector('.delete-field').addEventListener('click', () => {
+            fieldElement.remove();
+        });
+        
         // Add field to survey
         document.getElementById('surveyFields').appendChild(fieldElement);
-        
-        // Add delete event listener
-        document.querySelector(`[data-field-id="${fieldId}"]`).addEventListener('click', () => {
-            document.getElementById(fieldId).remove();
-        });
         
         // Reset form and close modal
         document.getElementById('fieldForm').reset();
@@ -551,17 +1142,158 @@ function renderFacultyDashboard(container) {
         addFieldModal.hide();
     });
     
+    // Save Group
+    document.getElementById('btnSaveGroup').addEventListener('click', () => {
+        const groupName = document.getElementById('groupName').value;
+        const groupMembersText = document.getElementById('groupMembers').value;
+        
+        if (!groupName || !groupMembersText) {
+            alert('Group name and members are required');
+            return;
+        }
+        
+        // Parse members
+        const members = groupMembersText.split('\n')
+            .map(member => member.trim())
+            .filter(member => member.length > 0);
+        
+        if (members.length === 0) {
+            alert('At least one group member is required');
+            return;
+        }
+        
+        // Create group object
+        const group = {
+            id: Date.now() + Math.random().toString(36).substr(2, 9),
+            name: groupName,
+            members: members.map(name => ({
+                name,
+                completed: false
+            })),
+            totalMembers: members.length,
+            completedCount: 0
+        };
+        
+        // Save to local storage
+        const groups = JSON.parse(localStorage.getItem('groups')) || [];
+        groups.push(group);
+        localStorage.setItem('groups', JSON.stringify(groups));
+        
+        // If we're in the Create Survey modal, add the group to the survey
+        if (document.getElementById('groupsList')) {
+            // Create group element
+            const groupElement = document.createElement('div');
+            groupElement.className = 'card mb-3';
+            groupElement.innerHTML = `
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="card-title">${groupName}</h6>
+                        <button type="button" class="btn btn-danger btn-sm delete-group">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="card-text">
+                        <p>Members: ${members.length}</p>
+                        <p>${members.join(', ')}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Add delete event listener
+            groupElement.querySelector('.delete-group').addEventListener('click', () => {
+                groupElement.remove();
+            });
+            
+            // Add group to survey
+            document.getElementById('groupsList').appendChild(groupElement);
+        }
+        
+        // Reset form and close modal
+        document.getElementById('groupForm').reset();
+        addGroupModal.hide();
+    });
+    
+    // Function to load groups from local storage
+    function loadGroups() {
+        const groupsListContainer = document.getElementById('groupsListContainer');
+        groupsListContainer.innerHTML = '';
+        
+        // Get groups from local storage
+        const groups = JSON.parse(localStorage.getItem('groups')) || [];
+        
+        if (groups.length === 0) {
+            groupsListContainer.innerHTML = '<div class="alert alert-info">No groups available. Click "Add New Group" to create one.</div>';
+            return;
+        }
+        
+        // Create list items for each group
+        groups.forEach((group, index) => {
+            const listItem = document.createElement('div');
+            listItem.className = 'list-group-item';
+            listItem.innerHTML = `
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">${group.name}</h5>
+                        <p class="mb-1">${group.members.length} members</p>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-primary me-2 edit-group" data-group-id="${group.id}">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger delete-group" data-group-id="${group.id}">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small>Members: ${group.members.map(m => m.name).join(', ')}</small>
+                </div>
+            `;
+            
+            // Add event listeners for edit and delete buttons
+            listItem.querySelector('.edit-group').addEventListener('click', () => {
+                editGroup(group, index);
+            });
+            
+            listItem.querySelector('.delete-group').addEventListener('click', () => {
+                deleteGroup(index);
+            });
+            
+            groupsListContainer.appendChild(listItem);
+        });
+    }
+    
+    // Function to edit a group
+    function editGroup(group, index) {
+        // TODO: Implement group editing functionality
+        alert('Group editing functionality will be implemented soon.');
+    }
+    
+    // Function to delete a group
+    function deleteGroup(index) {
+        // Confirm deletion
+        if (confirm('Are you sure you want to delete this group? This action cannot be undone.')) {
+            // Get groups from local storage
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            
+            // Remove the group
+            groups.splice(index, 1);
+            
+            // Save back to local storage
+            localStorage.setItem('groups', JSON.stringify(groups));
+            
+            // Reload groups
+            loadGroups();
+        }
+    }
+    
     // Save Survey
     document.getElementById('btnSaveSurvey').addEventListener('click', () => {
         const surveyTitle = document.getElementById('surveyTitle').value;
         const surveyDescription = document.getElementById('surveyDescription').value;
         
         if (!surveyTitle) {
-            Swal.fire({
-                title: "Error",
-                text: "Survey title is required",
-                icon: "error"
-            });
+            alert('Survey title is required');
             return;
         }
         
@@ -581,25 +1313,82 @@ function renderFacultyDashboard(container) {
             });
         });
         
-        // In a real application, you would save this to a database
-        console.log({
-            title: surveyTitle,
-            description: surveyDescription,
-            fields: fields
+        // Get all groups
+        const groups = [];
+        document.querySelectorAll('#groupsList .card').forEach(card => {
+            const groupName = card.querySelector('.card-title').textContent;
+            const membersText = card.querySelector('p:nth-child(2)').textContent;
+            const members = membersText.split(', ');
+            
+            groups.push({
+                id: Date.now() + Math.random().toString(36).substr(2, 9),
+                name: groupName,
+                members: members.map(name => ({
+                    name,
+                    completed: false
+                })),
+                totalMembers: members.length,
+                completedCount: 0
+            });
         });
         
+        // Create survey object
+        const survey = {
+            title: surveyTitle,
+            description: surveyDescription,
+            fields: fields,
+            groups: groups,
+            createdAt: new Date().toISOString()
+        };
+        
+        // Check if we're updating an existing survey
+        const saveButton = document.getElementById('btnSaveSurvey');
+        const surveyIndex = saveButton.getAttribute('data-survey-index');
+        
+        if (surveyIndex !== null) {
+            // Update existing survey
+            const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+            surveys[surveyIndex] = survey;
+            localStorage.setItem('surveys', JSON.stringify(surveys));
+            
+            // Reset button
+            saveButton.textContent = 'Save Survey';
+            saveButton.removeAttribute('data-survey-index');
+        } else {
+            // Add new survey
+            const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+            surveys.push(survey);
+            localStorage.setItem('surveys', JSON.stringify(surveys));
+        }
+        
+        // Update active survey count
+        updateActiveSurveyCount();
+        
+        // Close modal
+        createSurveyModal.hide();
+        
         // Show success message
-        Swal.fire({
-            title: "Success!",
-            text: "Survey created successfully!",
-            icon: "success"
-        }).then(() => {
-            // Reset form and close modal
-            document.getElementById('surveyForm').reset();
-            document.getElementById('surveyFields').innerHTML = '';
-            createSurveyModal.hide();
-        });
+        alert('Survey saved successfully');
     });
+    
+    // Function to reset the survey form
+    function resetSurveyForm() {
+        document.getElementById('surveyTitle').value = '';
+        document.getElementById('surveyDescription').value = '';
+        document.getElementById('surveyFields').innerHTML = '';
+        document.getElementById('groupsList').innerHTML = '';
+        
+        // Reset save button
+        const saveButton = document.getElementById('btnSaveSurvey');
+        saveButton.textContent = 'Save Survey';
+        saveButton.removeAttribute('data-survey-index');
+    }
+    
+    // Function to update active survey count
+    function updateActiveSurveyCount() {
+        const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+        document.getElementById('activeSurveyCount').textContent = surveys.length;
+    }
 }
 
 // Event handlers
