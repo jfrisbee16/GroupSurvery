@@ -172,7 +172,7 @@ function renderRegister(container) {
 
 function renderStudentDashboard(container) {
     container.innerHTML = `
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">TTU Group Survey</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -201,7 +201,7 @@ function renderStudentDashboard(container) {
                 </div>
             </div>
         </nav>
-        <div class="container mt-4">
+        <div class="container mt-4 " >
             <h1>Student Dashboard</h1>
             <p>Welcome to your student dashboard. Here you can view and complete surveys.</p>
             
@@ -695,7 +695,7 @@ function renderStudentDashboard(container) {
 
 function renderFacultyDashboard(container) {
     container.innerHTML = `
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">TTU Group Survey</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
