@@ -5,47 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/pulse/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <title>Document</title>
+    <title>Student Evals</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Disabled</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Student Evals</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class ="nav-item">
+            <a class="nav-link active" id="Welcome" href="#" data-bs-target="tab">Welcome</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" id='viewClasses'href="#" data-bs-toggle="tab">View Classes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id='viewEvals'href="#" data-bs-toggle="tab">Evaluations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
+  <form class="">
+
+  </form>
+  <div class ="bg-image d-flex align-items-center justify-content-center" style="background-image: url('Scenes_Social_Spring_13Mar2024_17159.jpg'); background-size: cover; height: 100vh;">
+    <!-- Welcome  -->
+     <div class="card col-12 col-md-6 col-lg-4 rounded" id="WelcomeTab">
+        <div class="card-body">
+          <h1 class="text-center">Welcome</h1>
+        </div>
+
+      
+
+     </div>
+
+
+  
+
+  
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script>
+
+
+ 
+  
+  
+
+
+  // loggging out function
+  function logout() 
+  {
+    Swal.fire({
+      title: 'Are you sure you want to logout?',
+      text: "You wil now be redirected to login page",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Logout Please!',
+      cancelButtonText: "No, Don't leave",
+    }).then((result)=> {
+      if (result.isConfirmed){
+        // Redirect to login page
+        window.location.href = 'index.html';
+      } else {
+        // User clicked cancel, do nothing
+        Swal.fire({
+          title: 'Logout Cancelled',
+          text: 'You are still logged in',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
+    })
+
+
+    
+
+  
+  }
+</script>
 </html>

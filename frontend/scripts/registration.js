@@ -82,15 +82,17 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
             title: "Registration Successful",
             text: "Sending student to the student dashboard"
         }).then(()=>{
-            window.location.href = "student.html";
+            document.getElementById("frmStudentDash").style.display="block";
+            document.getElementById("frmRegister").style.display="none";
         })
-    }else if(role === 'Instructor'){
+    }else if(role === 'Faculty'){
         Swal.fire({
             icon: "success",
             title: "Registration Successful",
-            text: "Sending student to the student dashboard"
+            text: "Sending student to the instructor dashboard"
         }).then(()=>{
-            window.location.href = "instructor.html";
+            document.getElementById("frmFacultyDash").style.display="block";
+            document.getElementById("frmRegister").style.display="none";
         })
 
     }else {
