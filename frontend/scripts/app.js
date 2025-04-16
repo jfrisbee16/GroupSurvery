@@ -187,12 +187,12 @@ function renderStudentDashboard(container) {
                             <a class="nav-link" href="#">Surveys</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 Account
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a class="dropdown-item" href="#" id="btnBackToDashboard">Back to Dashboard</a></li>
+                                <li><a class="dropdown-item" href="#" id="btnToSettings">Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
                             </ul>
@@ -418,6 +418,8 @@ function renderStudentDashboard(container) {
         const surveyDetailContent = document.getElementById('surveyDetailContent');
         const surveyDetailModalLabel = document.getElementById('surveyDetailModalLabel');
         
+        if (!surveyDetailContent || !surveyDetailModalLabel) return;
+        
         surveyDetailModalLabel.textContent = survey.title;
         
         // Create HTML for survey details
@@ -499,13 +501,16 @@ function renderStudentDashboard(container) {
             deleteSurvey(index);
         });
         
-        surveyDetailModal.show();
+        const surveyDetailModal = bootstrap.Modal.getInstance(document.getElementById('surveyDetailModal'));
+        if (surveyDetailModal) surveyDetailModal.show();
     }
     
     // Function to show group responses
     function showGroupResponses(survey, groupId) {
         const groupResponsesContent = document.getElementById('groupResponsesContent');
         const groupResponsesModalLabel = document.getElementById('groupResponsesModalLabel');
+        
+        if (!groupResponsesContent || !groupResponsesModalLabel) return;
         
         // Find the group
         const group = survey.groups.find(g => g.id === groupId);
@@ -552,17 +557,22 @@ function renderStudentDashboard(container) {
         groupResponsesContent.innerHTML = html;
         
         // Hide survey detail modal and show group responses modal
-        surveyDetailModal.hide();
-        groupResponsesModal.show();
+        const surveyDetailModal = bootstrap.Modal.getInstance(document.getElementById('surveyDetailModal'));
+        if (surveyDetailModal) surveyDetailModal.hide();
+        
+        const groupResponsesModal = bootstrap.Modal.getInstance(document.getElementById('groupResponsesModal'));
+        if (groupResponsesModal) groupResponsesModal.show();
     }
     
     // Function to edit a survey
     function editSurvey(survey, index) {
         // Hide the survey detail modal
-        surveyDetailModal.hide();
+        const surveyDetailModal = bootstrap.Modal.getInstance(document.getElementById('surveyDetailModal'));
+        if (surveyDetailModal) surveyDetailModal.hide();
         
         // Show the create survey modal with pre-filled data
-        const createSurveyModal = new bootstrap.Modal(document.getElementById('createSurveyModal'));
+        const createSurveyModal = bootstrap.Modal.getInstance(document.getElementById('createSurveyModal'));
+        if (!createSurveyModal) return;
         
         // Set the form values
         document.getElementById('surveyTitle').value = survey.title;
@@ -617,7 +627,8 @@ function renderStudentDashboard(container) {
             localStorage.setItem('surveys', JSON.stringify(surveys));
             
             // Hide the modal
-            surveyDetailModal.hide();
+            const surveyDetailModal = bootstrap.Modal.getInstance(document.getElementById('surveyDetailModal'));
+            if (surveyDetailModal) surveyDetailModal.hide();
             
             // Show success message
             alert('Survey deleted successfully.');
@@ -654,7 +665,7 @@ function renderStudentDashboard(container) {
         return fieldElement;
     }
     
-    // Helper function to create a group element
+    // Helper function to create a group element for the survey
     function createGroupElement(group) {
         const groupElement = document.createElement('div');
         groupElement.className = 'card mb-3';
@@ -702,12 +713,12 @@ function renderFacultyDashboard(container) {
                             <a class="nav-link" href="#">Manage Groups</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                                 Account
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a class="dropdown-item" href="#" id="btnBackToDashboard">Back to Dashboard</a></li>
+                                <li><a class="dropdown-item" href="#" id="btnToSettings">Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
                             </ul>
@@ -1068,6 +1079,17 @@ function renderFacultyDashboard(container) {
         addFieldModal.show();
     });
     
+    // Settings Button
+    document.getElementById('btnToSettings').addEventListener('click', () => {
+        router.navigate('/settings');
+    });
+    
+    // Logout Button
+    document.getElementById('btnLogout').addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        router.navigate('/');
+    });
+    
     // When Add Field modal is closed, remove blur from Create Survey modal
     document.getElementById('addFieldModal').addEventListener('hidden.bs.modal', () => {
         const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
@@ -1079,13 +1101,218 @@ function renderFacultyDashboard(container) {
         // Add blur class to Create Survey modal content
         const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
         createSurveyContent.classList.add('blur-background');
-        addGroupModal.show();
+        
+        // Create a temporary modal to show existing groups
+        const selectGroupModalElement = document.createElement('div');
+        selectGroupModalElement.className = 'modal fade';
+        selectGroupModalElement.id = 'selectGroupModal';
+        selectGroupModalElement.setAttribute('tabindex', '-1');
+        selectGroupModalElement.setAttribute('aria-labelledby', 'selectGroupModalLabel');
+        selectGroupModalElement.setAttribute('aria-hidden', 'true');
+        selectGroupModalElement.style.zIndex = '1060';
+        
+        // Create modal content
+        selectGroupModalElement.innerHTML = `
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="selectGroupModalLabel">Select Groups</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-end mb-3">
+                            <a href="#" class="btn btn-info" id="btnManageGroups">
+                                <i class="bi bi-gear"></i> Manage Groups
+                            </a>
+                        </div>
+                        <div id="selectGroupsListContainer" class="list-group">
+                            <!-- Groups will be loaded here dynamically -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Add modal to the document
+        document.body.appendChild(selectGroupModalElement);
+        
+        // Initialize the modal using Bootstrap's Modal constructor
+        const selectGroupModal = new bootstrap.Modal(selectGroupModalElement);
+        
+        // Debug: Check if groups exist in localStorage
+        console.log('All groups in localStorage before loading:', JSON.parse(localStorage.getItem('groups')));
+        
+        // Load existing groups
+        loadSelectableGroups();
+        
+        // Add event listener for Manage Groups button
+        document.getElementById('btnManageGroups').addEventListener('click', (e) => {
+            e.preventDefault();
+            selectGroupModal.hide();
+            manageGroupsModal.show();
+            
+            // When Manage Groups modal is closed, show the select groups modal again
+            document.getElementById('manageGroupsModal').addEventListener('hidden.bs.modal', function handler() {
+                document.getElementById('manageGroupsModal').removeEventListener('hidden.bs.modal', handler);
+                selectGroupModal.show();
+                loadSelectableGroups(); // Reload groups in case new ones were added
+            }, { once: true });
+        });
+        
+        // Show the modal
+        selectGroupModal.show();
+        
+        // When the modal is closed, remove blur from Create Survey modal and clean up
+        selectGroupModalElement.addEventListener('hidden.bs.modal', () => {
+            createSurveyContent.classList.remove('blur-background');
+            // Remove the modal from the DOM
+            document.body.removeChild(selectGroupModalElement);
+        });
     });
+    
+    // Function to load selectable groups
+    function loadSelectableGroups() {
+        const selectGroupsListContainer = document.getElementById('selectGroupsListContainer');
+        if (!selectGroupsListContainer) return;
+        
+        selectGroupsListContainer.innerHTML = '';
+        
+        // Check if groups exist in localStorage
+        if (!checkGroupsInLocalStorage()) {
+            selectGroupsListContainer.innerHTML = '<div class="alert alert-info">No groups available. Click "Manage Groups" to create groups.</div>';
+            return;
+        }
+        
+        // Get groups from local storage
+        const groups = JSON.parse(localStorage.getItem('groups')) || [];
+        
+        console.log('Loading groups for Select Groups modal:', groups);
+        
+        // Get already selected groups
+        const selectedGroups = [];
+        const groupsList = document.getElementById('groupsList');
+        if (groupsList) {
+            document.querySelectorAll('#groupsList .card').forEach(card => {
+                const groupName = card.querySelector('.card-title').textContent;
+                selectedGroups.push(groupName);
+            });
+        }
+        
+        // Create list items for each group
+        groups.forEach(group => {
+            const isSelected = selectedGroups.includes(group.name);
+            
+            const listItem = document.createElement('div');
+            listItem.className = 'list-group-item';
+            listItem.innerHTML = `
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">${group.name}</h5>
+                        <p class="mb-1">${group.members.length} members</p>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm ${isSelected ? 'btn-secondary' : 'btn-primary'} select-group" data-group-id="${group.id}">
+                            <i class="bi ${isSelected ? 'bi-check-circle' : 'bi-plus-circle'}"></i> ${isSelected ? 'Selected' : 'Select'}
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <small>Members: ${group.members.map(m => m.name).join(', ')}</small>
+                </div>
+            `;
+            
+            // Add event listener for select button
+            listItem.querySelector('.select-group').addEventListener('click', () => {
+                if (isSelected) {
+                    // Remove the group from the survey
+                    document.querySelectorAll('#groupsList .card').forEach(card => {
+                        if (card.querySelector('.card-title').textContent === group.name) {
+                            card.remove();
+                        }
+                    });
+                } else {
+                    // Add the group to the survey
+                    const groupElement = createGroupElement(group);
+                    const groupsList = document.getElementById('groupsList');
+                    if (groupsList) {
+                        groupsList.appendChild(groupElement);
+                    }
+                }
+                
+                // Update the button
+                const button = listItem.querySelector('.select-group');
+                button.className = `btn btn-sm ${!isSelected ? 'btn-secondary' : 'btn-primary'} select-group`;
+                button.innerHTML = `<i class="bi ${!isSelected ? 'bi-check-circle' : 'bi-plus-circle'}"></i> ${!isSelected ? 'Selected' : 'Select'}`;
+            });
+            
+            selectGroupsListContainer.appendChild(listItem);
+        });
+    }
+    
+    // Helper function to create a group element for the survey
+    function createGroupElement(group) {
+        const groupElement = document.createElement('div');
+        groupElement.className = 'card mb-3';
+        groupElement.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title">${group.name}</h6>
+                    <button type="button" class="btn btn-danger btn-sm delete-group">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="card-text">
+                    <p>Members: ${group.members.length}</p>
+                    <p>${group.members.map(m => m.name).join(', ')}</p>
+                </div>
+            </div>
+        `;
+        
+        // Add delete event listener
+        groupElement.querySelector('.delete-group').addEventListener('click', () => {
+            groupElement.remove();
+        });
+        
+        return groupElement;
+    }
     
     // When Add Group modal is closed, remove blur from Create Survey modal
     document.getElementById('addGroupModal').addEventListener('hidden.bs.modal', () => {
         const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
         createSurveyContent.classList.remove('blur-background');
+    });
+    
+    // When Manage Groups modal is closed, remove blur from Create Survey modal
+    document.getElementById('manageGroupsModal').addEventListener('hidden.bs.modal', () => {
+        const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
+        if (createSurveyContent) {
+            createSurveyContent.classList.remove('blur-background');
+        }
+    });
+    
+    // When Create Survey modal is closed, ensure all blur effects are removed
+    document.getElementById('createSurveyModal').addEventListener('hidden.bs.modal', () => {
+        // Remove blur from all modal contents
+        document.querySelectorAll('.modal-content').forEach(content => {
+            content.classList.remove('blur-background');
+        });
+        
+        // Also remove blur from the Create Survey modal itself
+        const createSurveyContent = document.querySelector('#createSurveyModal .modal-content');
+        if (createSurveyContent) {
+            createSurveyContent.classList.remove('blur-background');
+        }
+    });
+    
+    // Add a global event listener to remove blur when any modal is closed
+    document.addEventListener('hidden.bs.modal', (event) => {
+        // Remove blur from all modal contents
+        document.querySelectorAll('.modal-content').forEach(content => {
+            content.classList.remove('blur-background');
+        });
     });
     
     // Field Type Change
@@ -1179,32 +1406,13 @@ function renderFacultyDashboard(container) {
         groups.push(group);
         localStorage.setItem('groups', JSON.stringify(groups));
         
+        console.log('Group saved:', group);
+        console.log('All groups in localStorage:', JSON.parse(localStorage.getItem('groups')));
+        
         // If we're in the Create Survey modal, add the group to the survey
         if (document.getElementById('groupsList')) {
             // Create group element
-            const groupElement = document.createElement('div');
-            groupElement.className = 'card mb-3';
-            groupElement.innerHTML = `
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="card-title">${groupName}</h6>
-                        <button type="button" class="btn btn-danger btn-sm delete-group">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-                    <div class="card-text">
-                        <p>Members: ${members.length}</p>
-                        <p>${members.join(', ')}</p>
-                    </div>
-                </div>
-            `;
-            
-            // Add delete event listener
-            groupElement.querySelector('.delete-group').addEventListener('click', () => {
-                groupElement.remove();
-            });
-            
-            // Add group to survey
+            const groupElement = createGroupElement(group);
             document.getElementById('groupsList').appendChild(groupElement);
         }
         
@@ -1220,6 +1428,8 @@ function renderFacultyDashboard(container) {
         
         // Get groups from local storage
         const groups = JSON.parse(localStorage.getItem('groups')) || [];
+        
+        console.log('Loading groups for Manage Groups modal:', groups);
         
         if (groups.length === 0) {
             groupsListContainer.innerHTML = '<div class="alert alert-info">No groups available. Click "Add New Group" to create one.</div>';
@@ -1289,8 +1499,13 @@ function renderFacultyDashboard(container) {
     
     // Save Survey
     document.getElementById('btnSaveSurvey').addEventListener('click', () => {
+        console.log('Save Survey button clicked');
+        
         const surveyTitle = document.getElementById('surveyTitle').value;
         const surveyDescription = document.getElementById('surveyDescription').value;
+        
+        console.log('Survey Title:', surveyTitle);
+        console.log('Survey Description:', surveyDescription);
         
         if (!surveyTitle) {
             alert('Survey title is required');
@@ -1302,9 +1517,13 @@ function renderFacultyDashboard(container) {
         document.querySelectorAll('#surveyFields .card').forEach(card => {
             const fieldLabel = card.querySelector('.card-title').textContent.replace('*', '').trim();
             const fieldRequired = card.querySelector('.card-title').textContent.includes('*');
-            const fieldType = card.querySelector('input, select, textarea').type || 
-                             (card.querySelector('select') ? 'select' : 
-                              card.querySelector('textarea') ? 'textarea' : 'text');
+            
+            // Get field type from the card text
+            const fieldTypeText = card.querySelector('.card-text p').textContent;
+            const fieldType = fieldTypeText.includes('Type:') ? 
+                fieldTypeText.split('Type:')[1].trim() : 'text';
+            
+            console.log('Field:', { label: fieldLabel, required: fieldRequired, type: fieldType });
             
             fields.push({
                 label: fieldLabel,
@@ -1318,48 +1537,34 @@ function renderFacultyDashboard(container) {
         document.querySelectorAll('#groupsList .card').forEach(card => {
             const groupName = card.querySelector('.card-title').textContent;
             const membersText = card.querySelector('p:nth-child(2)').textContent;
-            const members = membersText.split(', ');
+            
+            console.log('Group:', { name: groupName, members: membersText });
             
             groups.push({
-                id: Date.now() + Math.random().toString(36).substr(2, 9),
                 name: groupName,
-                members: members.map(name => ({
-                    name,
-                    completed: false
-                })),
-                totalMembers: members.length,
-                completedCount: 0
+                members: membersText.split(', ').map(m => ({ name: m }))
             });
         });
         
         // Create survey object
         const survey = {
+            id: Date.now().toString(),
             title: surveyTitle,
             description: surveyDescription,
             fields: fields,
             groups: groups,
-            createdAt: new Date().toISOString()
+            created: new Date().toISOString(),
+            status: 'active'
         };
         
-        // Check if we're updating an existing survey
-        const saveButton = document.getElementById('btnSaveSurvey');
-        const surveyIndex = saveButton.getAttribute('data-survey-index');
+        console.log('Survey object:', survey);
         
-        if (surveyIndex !== null) {
-            // Update existing survey
-            const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
-            surveys[surveyIndex] = survey;
-            localStorage.setItem('surveys', JSON.stringify(surveys));
-            
-            // Reset button
-            saveButton.textContent = 'Save Survey';
-            saveButton.removeAttribute('data-survey-index');
-        } else {
-            // Add new survey
-            const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
-            surveys.push(survey);
-            localStorage.setItem('surveys', JSON.stringify(surveys));
-        }
+        // Save to localStorage
+        const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+        surveys.push(survey);
+        localStorage.setItem('surveys', JSON.stringify(surveys));
+        
+        console.log('Saved surveys:', surveys);
         
         // Update active survey count
         updateActiveSurveyCount();
@@ -1368,7 +1573,7 @@ function renderFacultyDashboard(container) {
         createSurveyModal.hide();
         
         // Show success message
-        alert('Survey saved successfully');
+        alert('Survey saved successfully!');
     });
     
     // Function to reset the survey form
@@ -1387,7 +1592,30 @@ function renderFacultyDashboard(container) {
     // Function to update active survey count
     function updateActiveSurveyCount() {
         const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
-        document.getElementById('activeSurveyCount').textContent = surveys.length;
+        const activeSurveyCountElement = document.getElementById('activeSurveyCount');
+        if (activeSurveyCountElement) {
+            activeSurveyCountElement.textContent = surveys.length;
+        }
+    }
+    
+    // Function to check if groups exist in localStorage
+    function checkGroupsInLocalStorage() {
+        const groups = localStorage.getItem('groups');
+        console.log('Raw groups from localStorage:', groups);
+        
+        if (!groups) {
+            console.log('No groups found in localStorage');
+            return false;
+        }
+        
+        try {
+            const parsedGroups = JSON.parse(groups);
+            console.log('Parsed groups from localStorage:', parsedGroups);
+            return parsedGroups.length > 0;
+        } catch (e) {
+            console.error('Error parsing groups from localStorage:', e);
+            return false;
+        }
     }
 }
 
@@ -1397,53 +1625,56 @@ function handleLogin(e) {
     
     const strEmail = document.querySelector("#strUsername").value.trim();
     const strPassword = document.querySelector("#strPassword").value.trim();
-    
+    console.log("Captured Password:", strPassword); // Debugging
+
     const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
     const regPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     let errors = "";
 
+    let blnError = false;
+    let strMessage = "";
+
     if (!regEmail.test(strEmail)) {
-        errors += "<p>Please enter a valid email address.</p>";
+        blnError = true;
+        strMessage += "<p>Please enter a valid email address.</p>";
     } 
-    if (!regPassword.test(strPassword)) {
-        errors += "<p>Please enter a valid password.</p>";
+    if (!regPassword.test(strPassword)) {  // <-- FIXED: Separate condition
+        blnError = true;
+        strMessage += "<p>Please enter a valid password.</p>";
     }
 
-    if (errors) {
+    if (blnError) {
+        console.log("Error Message:", strMessage); // Debugging
         Swal.fire({
             title: "Error",
-            html: errors,
+            html: strMessage,
             icon: "error",
         });
     } else {
-        // For demo purposes, redirect based on email
-        if (strEmail.includes('student')) {
-            Swal.fire({
-                title: "Success!",
-                text: "Login successful! Redirecting to student dashboard...",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                router.navigate('/student');
-            });
-        } else if (strEmail.includes('faculty')) {
-            Swal.fire({
-                title: "Success!",
-                text: "Login successful! Redirecting to faculty dashboard...",
-                icon: "success",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                router.navigate('/faculty');
-            });
-        } else {
-            Swal.fire({
-                title: "Success!",
-                text: "Login Successful!",
-                icon: "success"
-            });
-        }
+        // For demo purposes, create a mock user based on email
+        const role = strEmail.includes('student') ? 'Student' : 'Faculty';
+        const userData = {
+            email: strEmail,
+            password: strPassword,
+            role: role,
+            firstName: 'John',
+            lastName: 'Doe',
+            middleName: '',
+            createdAt: new Date().toISOString()
+        };
+        
+        // Store user data in localStorage
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        
+        Swal.fire({
+            title: "Success!",
+            text: `Login successful! Redirecting to ${role.toLowerCase()} dashboard...`,
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false
+        }).then(() => {
+            router.navigate(role === 'Student' ? '/student' : '/faculty');
+        });
     }
 }
 
@@ -1461,6 +1692,7 @@ function handleRegister(e) {
     let confirmPassword = document.querySelector("#strConfirmPassword").value.trim();
     let firstName = document.querySelector("#strFirstName").value.trim();
     let lastName = document.querySelector("#strLastName").value.trim();
+    let middleName = document.querySelector("#strMiddleName").value.trim();
     
     let errors = "";
 
@@ -1488,29 +1720,327 @@ function handleRegister(e) {
             html: errors,
             icon: "error"
         });
-    } else if(role === 'Student'){
-        Swal.fire({
-            icon: "success",
-            title: "Registration Successful",
-            text: "Sending student to the student dashboard"
-        }).then(()=>{
-            router.navigate('/student');
-        });
-    } else if(role === 'Faculty'){
-        Swal.fire({
-            icon: "success",
-            title: "Registration Successful",
-            text: "Sending faculty to the faculty dashboard"
-        }).then(()=>{
-            router.navigate('/faculty');
-        });
     } else {
-        Swal.fire({
-            icon: "error",
-            title: "Registration Error",
-            text: "Please select a valid role"
-        });
+        // Store user data in localStorage
+        const userData = {
+            firstName,
+            middleName,
+            lastName,
+            email,
+            password,
+            role,
+            createdAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        
+        if(role === 'Student'){
+            Swal.fire({
+                icon: "success",
+                title: "Registration Successful",
+                text: "Sending student to the student dashboard"
+            }).then(()=>{
+                router.navigate('/student');
+            });
+        } else if(role === 'Faculty'){
+            Swal.fire({
+                icon: "success",
+                title: "Registration Successful",
+                text: "Sending faculty to the faculty dashboard"
+            }).then(()=>{
+                router.navigate('/faculty');
+            });
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Registration Error",
+                text: "Please select a valid role"
+            });
+        }
     }
+}
+
+// Profile page component
+function renderProfile(container) {
+    const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
+    
+    container.innerHTML = `
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">TTU Group Survey</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="btnBackToDashboard">Back to Dashboard</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                Account
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item active" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="#" id="btnToSettings">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">Profile Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4"><strong>First Name:</strong></div>
+                                <div class="col-md-8">${userData.firstName || 'Not provided'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4"><strong>Middle Name:</strong></div>
+                                <div class="col-md-8">${userData.middleName || 'Not provided'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4"><strong>Last Name:</strong></div>
+                                <div class="col-md-8">${userData.lastName || 'Not provided'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4"><strong>Email:</strong></div>
+                                <div class="col-md-8">${userData.email || 'Not provided'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4"><strong>Role:</strong></div>
+                                <div class="col-md-8">${userData.role || 'Not provided'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('btnBackToDashboard').addEventListener('click', () => {
+        router.navigate(userData.role === 'Student' ? '/student' : '/faculty');
+    });
+    
+    document.getElementById('btnToSettings').addEventListener('click', () => {
+        router.navigate('/settings');
+    });
+    
+    document.getElementById('btnLogout').addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        router.navigate('/');
+    });
+}
+
+// Settings page component
+function renderSettings(container) {
+    const userData = JSON.parse(localStorage.getItem('currentUser')) || {};
+    
+    container.innerHTML = `
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">TTU Group Survey</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="btnBackToDashboard">Back to Dashboard</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                Account
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" id="btnToProfile">Profile</a></li>
+                                <li><a class="dropdown-item active" href="#">Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">Account Settings</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="settingsForm">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" value="${userData.email || ''}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="currentPassword" class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="btnSaveSettings">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('btnBackToDashboard').addEventListener('click', () => {
+        router.navigate(userData.role === 'Student' ? '/student' : '/faculty');
+    });
+    
+    document.getElementById('btnToProfile').addEventListener('click', () => {
+        router.navigate('/profile');
+    });
+    
+    document.getElementById('btnLogout').addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        router.navigate('/');
+    });
+    
+    document.getElementById('btnSaveSettings').addEventListener('click', () => {
+        const email = document.getElementById('email').value.trim();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (currentPassword !== userData.password) {
+            Swal.fire({
+                title: 'Error',
+                text: 'Current password is incorrect',
+                icon: 'error'
+            });
+            return;
+        }
+        
+        if (newPassword !== confirmPassword) {
+            Swal.fire({
+                title: 'Error',
+                text: 'New passwords do not match',
+                icon: 'error'
+            });
+            return;
+        }
+        
+        userData.email = email;
+        userData.password = newPassword;
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        
+        Swal.fire({
+            title: 'Success',
+            text: 'Settings updated successfully',
+            icon: 'success'
+        }).then(() => {
+            document.getElementById('settingsForm').reset();
+        });
+    });
+}
+
+// Global functions for survey and group management
+function loadSurveys() {
+    const surveysList = document.getElementById('surveysList');
+    if (!surveysList) return; // Exit if element doesn't exist
+    
+    surveysList.innerHTML = '';
+    
+    // Get surveys from local storage
+    const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+    
+    if (surveys.length === 0) {
+        surveysList.innerHTML = '<div class="alert alert-info">No surveys available.</div>';
+        return;
+    }
+    
+    // Create list items for each survey
+    surveys.forEach((survey, index) => {
+        const listItem = document.createElement('a');
+        listItem.href = '#';
+        listItem.className = 'list-group-item list-group-item-action';
+        listItem.innerHTML = `
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">${survey.title}</h5>
+                <small>Created: ${new Date(survey.createdAt).toLocaleDateString()}</small>
+            </div>
+            <p class="mb-1">${survey.description || 'No description'}</p>
+            <small>${survey.groups ? survey.groups.length : 0} groups assigned</small>
+        `;
+        
+        // Add click event to view survey details
+        listItem.addEventListener('click', () => {
+            const viewSurveysModal = bootstrap.Modal.getInstance(document.getElementById('viewSurveysModal'));
+            if (viewSurveysModal) viewSurveysModal.hide();
+            showSurveyDetails(survey, index);
+        });
+        
+        surveysList.appendChild(listItem);
+    });
+}
+
+function loadGroups() {
+    const groupsListContainer = document.getElementById('groupsListContainer');
+    if (!groupsListContainer) return; // Exit if element doesn't exist
+    
+    groupsListContainer.innerHTML = '';
+    
+    // Get groups from local storage
+    const groups = JSON.parse(localStorage.getItem('groups')) || [];
+    
+    if (groups.length === 0) {
+        groupsListContainer.innerHTML = '<div class="alert alert-info">No groups available. Click "Add New Group" to create one.</div>';
+        return;
+    }
+    
+    // Create list items for each group
+    groups.forEach((group, index) => {
+        const listItem = document.createElement('div');
+        listItem.className = 'list-group-item';
+        listItem.innerHTML = `
+            <div class="d-flex w-100 justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">${group.name}</h5>
+                    <p class="mb-1">${group.members.length} members</p>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-primary me-2 edit-group" data-group-id="${group.id}">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger delete-group" data-group-id="${group.id}">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <div class="mt-2">
+                <small>Members: ${group.members.map(m => m.name).join(', ')}</small>
+            </div>
+        `;
+        
+        // Add event listeners for edit and delete buttons
+        listItem.querySelector('.edit-group').addEventListener('click', () => {
+            editGroup(group, index);
+        });
+        
+        listItem.querySelector('.delete-group').addEventListener('click', () => {
+            deleteGroup(index);
+        });
+        
+        groupsListContainer.appendChild(listItem);
+    });
 }
 
 // Define routes
@@ -1518,7 +2048,9 @@ const routes = [
     { path: '/', component: renderLogin },
     { path: '/register', component: renderRegister },
     { path: '/student', component: renderStudentDashboard },
-    { path: '/faculty', component: renderFacultyDashboard }
+    { path: '/faculty', component: renderFacultyDashboard },
+    { path: '/profile', component: renderProfile },
+    { path: '/settings', component: renderSettings }
 ];
 
 // Initialize router
