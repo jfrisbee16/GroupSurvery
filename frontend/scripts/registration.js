@@ -6,10 +6,7 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
     const regPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     const regPhone = /^[0-9]{10}$/;
     const regZip = /^[0-9]{5}$/;
-<<<<<<< HEAD
-=======
     const role = document.getElementById("strRole").value;
->>>>>>> fa8f1754b3cca34d79ab61e7682fac5d49c3a09b
 
     let email = document.querySelector("#strEmail").value.trim();
     let password = document.querySelector("#strNewPassword").value.trim();
@@ -37,9 +34,6 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
         errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
     }
 
-<<<<<<< HEAD
-
-=======
     // else if(role === 'Student'){
     //     Swal.fire({
     //         icon: "Success",
@@ -64,7 +58,6 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
     //         text: "Please select a valid role"
     //     })
     // }
->>>>>>> fa8f1754b3cca34d79ab61e7682fac5d49c3a09b
 
     if (errors) {
         Swal.fire({
@@ -72,9 +65,6 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
             html: errors,
             icon: "error"
         });
-<<<<<<< HEAD
-    } else {
-=======
 
     } else if(role === 'Student'){
         Swal.fire({
@@ -96,15 +86,11 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
         })
 
     }else {
->>>>>>> fa8f1754b3cca34d79ab61e7682fac5d49c3a09b
         Swal.fire({
             title: "Success!",
             text: "Registration successful",
             icon: "success"
         });
     }
-<<<<<<< HEAD
-=======
     
->>>>>>> fa8f1754b3cca34d79ab61e7682fac5d49c3a09b
 });
