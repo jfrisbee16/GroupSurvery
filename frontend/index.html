@@ -15,8 +15,118 @@
 
 <body>
     <!-- Main container for SPA -->
-    <div id="app"></div>
-    
+    <!-- <div id="app"></div> -->
+    <div class="bg-image d-flex align-items-center justify-content-center" style="background-image: url('Event_COE_Doner recognition and awards_04Nov2024_69481-Enhanced-NR.jpg'); background-size: cover; height:100vh;">
+            <form class="card col-12 col-md-6 col-lg-4 rounded" id="frmLogin">
+                <div class="card-body">
+                    <h2 class="text-center">TTU Group Survey Login</h2>
+                    <h5 class="text-center">Login below</h5>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input id="strUsername" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">
+                        </div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="strPassword" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input id="strPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
+                        </div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
+                    <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
+                </div>
+            </form>
+            <form class="card col-12 col-md-6 col-lg-4 p-4 shadow" id="frmRegister" style="display:none;">
+                <div class="card-body">
+                    <h2 class="text-center mb-3">TTU Group Survey Registration</h2>
+                    <h5 class="text-center mb-4">Register below</h5>
+            
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label for="strFirstName" class="form-label">First Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input id="strFirstName" class="form-control" type="text" placeholder="John" aria-label="First Name">
+                        </div>
+                    </div>
+            
+                    <!-- Middle Name -->
+                    <div class="mb-3">
+                        <label for="strMiddleName" class="form-label">Middle Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input id="strMiddleName" class="form-control" type="text" placeholder="Optional" aria-label="Middle Name">
+                        </div>
+                    </div>
+            
+                    <!-- Last Name -->
+                    <div class="mb-3">
+                        <label for="strLastName" class="form-label">Last Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <input id="strLastName" class="form-control" type="text" placeholder="Doe" aria-label="Last Name">
+                        </div>
+                    </div>
+            
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label for="strEmail" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                            <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
+                        </div>
+                    </div>
+                    
+                    <!-- Role -->
+                    <div class="mb-3">
+                        <label for="strRole" class="form-label">Role</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            <select id="strRole" class="form-select" aria-label="Input for role of user">
+                                <option selected disabled value="">Select Role</option>
+                                <option value="Student">Student</option>
+                                <option value="Faculty">Faculty</option>
+                            </select>
+                        </div>
+                    </div>
+            
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="strNewPassword" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input id="strNewPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
+                        </div>
+                    </div>
+            
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                        <label for="strConfirmPassword" class="form-label">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            <input id="strConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" aria-label="Confirm Password">
+                        </div>
+                    </div>
+            
+                    <!-- Register Button -->
+                    <button type="button" class="btn btn-primary col-12 mt-3" id="btnRegister">Register</button>
+            
+                    <!-- Back to Login Button -->
+                    <button type="button" class="btn btn-link col-12 mt-2 text-center" id="btnBack">Already have an account? Login here</button>
+                </div>
+            </form>
+        </div>
     <!-- Bootstrap JS -->
     <script type="module" src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -27,4 +137,129 @@
     <script type="module" src="scripts/app.js"></script>
 </body>
 
+<script>
+
+    // Validation for Login Form
+document.querySelector("#btnLogin").addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent form submission
+
+    const strEmail = document.querySelector("#strUsername").value.trim();
+    const strPassword = document.querySelector("#strPassword").value.trim();
+    console.log("Captured Password:", strPassword); // Debugging
+
+    const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
+    const regPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    let errors = "";
+
+    let blnError = false;
+    let strMessage = "";
+
+    if (!regEmail.test(strEmail)) {
+        blnError = true;
+        strMessage += "<p>Please enter a valid email address.</p>";
+    } 
+    if (!regPassword.test(strPassword)) {  // <-- FIXED: Separate condition
+        blnError = true;
+        strMessage += "<p>Please enter a valid password.</p>";
+    }
+
+    if (blnError) {
+        console.log("Error Message:", strMessage); // Debugging
+        Swal.fire({
+            title: "Error",
+            html: strMessage,
+            icon: "error",
+        });
+    } else {
+        Swal.fire({
+            title: "Success!",
+            text: "Login Successful!",
+            icon: "success"
+        });
+    }
+});
+    // Validation for Registration Form
+document.querySelector("#btnRegister").addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent form submission
+    
+    const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
+    const regPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    const regPhone = /^[0-9]{10}$/;
+    const regZip = /^[0-9]{5}$/;
+    const role = document.getElementById("strRole").value;
+
+    let email = document.querySelector("#strEmail").value.trim();
+    let password = document.querySelector("#strNewPassword").value.trim();
+    let confirmPassword = document.querySelector("#strConfirmPassword").value.trim();
+    let firstName = document.querySelector("#strFirstName").value.trim();
+    let lastName = document.querySelector("#strLastName").value.trim();
+    
+    let errors = "";
+
+    // Required Field Validation
+    if (!firstName) errors += "<p class='mb-1 mt-1'>First Name is required</p>";
+    if (!lastName) errors += "<p class='mb-1 mt-1'>Last Name is required</p>";    
+
+    // Email Validation
+    if (!regEmail.test(email)) {
+        errors += "<p class='mb-1 mt-1'>Invalid email format</p>";
+    }
+
+    // Password Validation
+    if (!regPass.test(password)) {
+        errors += "<p class='mb-1 mt-1'>Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, and one number</p>";
+    }
+
+    if (password !== confirmPassword) {
+        errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
+    }
+
+   //Role validation
+    if (errors) {
+        Swal.fire({
+            title: "Registration Error!",
+            html: errors,
+            icon: "error"
+        });
+
+    } else if(role === 'Student'){
+        Swal.fire({
+            icon: "success",
+            title: "Registration Successful",
+            text: "Sending student to the student dashboard"
+        }).then(()=>{
+            document.getElementById("frmStudentDash").style.display="block";
+            document.getElementById("frmRegister").style.display="none";
+        })
+    }else if(role === 'Faculty'){
+        Swal.fire({
+            icon: "success",
+            title: "Registration Successful",
+            text: "Sending student to the instructor dashboard"
+        }).then(()=>{
+            document.getElementById("frmFacultyDash").style.display="block";
+            document.getElementById("frmRegister").style.display="none";
+        })
+
+    }else {
+        Swal.fire({
+            title: "Success!",
+            text: "Registration successful",
+            icon: "success"
+        });
+    }
+    
+});
+
+    document.getElementById('btnSwap').addEventListener('click',function(){
+        document.getElementById('frmLogin').style.display = 'none';
+        document.getElementById('frmRegister').style.display = 'block';
+    })
+
+    document.getElementById('btnBack').addEventListener('click',function(){
+        document.getElementById('frmLogin').style.display='block';
+        document.getElementById('frmRegister').style.display='none';
+    })
+
+</script>
 </html>
