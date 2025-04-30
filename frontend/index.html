@@ -14,242 +14,475 @@
 </head>
 
 <body>
+
     <!-- Main container for SPA -->
     <!-- <div id="app"></div> -->
-    <div class="bg-image d-flex align-items-center justify-content-center" style="background-image: url('Event_COE_Doner recognition and awards_04Nov2024_69481-Enhanced-NR.jpg'); background-size: cover; height:100vh;">
-            <form class="card col-12 col-md-6 col-lg-4 rounded" id="frmLogin">
-                <div class="card-body">
-                    <h2 class="text-center">TTU Group Survey Login</h2>
-                    <h5 class="text-center">Login below</h5>
 
-                    <!-- Email -->
-                    <div class="mb-3">
-                        <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input id="strUsername" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">
-                        </div>
-                    </div>
-                    
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label for="strPassword" class="form-label">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                            <input id="strPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
-                        </div>
-                        <div class="text-right">
-                            <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
-                        </div>
-                    </div>
+    <!-- Login and Registration Container with Background Image -->
+    <div id="bgImage" class="bg-image d-flex align-items-center justify-content-center" >
+        <!-- Login form -->
+        <form class="card col-12 col-md-6 col-lg-4 rounded" id="frmLogin">
+            <div class="card-body">
+                <h2 class="text-center">TTU Group Survey Login</h2>
+                <h5 class="text-center">Login below</h5>
 
-                    <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
-                    <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strUsername" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">
+                    </div>
                 </div>
-            </form>
-            <form class="card col-12 col-md-6 col-lg-4 p-4 shadow" id="frmRegister" style="display:none;">
-                <div class="card-body">
-                    <h2 class="text-center mb-3">TTU Group Survey Registration</h2>
-                    <h5 class="text-center mb-4">Register below</h5>
-            
-                    <!-- First Name -->
-                    <div class="mb-3">
-                        <label for="strFirstName" class="form-label">First Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input id="strFirstName" class="form-control" type="text" placeholder="John" aria-label="First Name">
-                        </div>
+                
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="strPassword" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input id="strPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
                     </div>
-            
-                    <!-- Middle Name -->
-                    <div class="mb-3">
-                        <label for="strMiddleName" class="form-label">Middle Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input id="strMiddleName" class="form-control" type="text" placeholder="Optional" aria-label="Middle Name">
-                        </div>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
                     </div>
-            
-                    <!-- Last Name -->
-                    <div class="mb-3">
-                        <label for="strLastName" class="form-label">Last Name</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input id="strLastName" class="form-control" type="text" placeholder="Doe" aria-label="Last Name">
-                        </div>
-                    </div>
-            
-                    <!-- Email -->
-                    <div class="mb-3">
-                        <label for="strEmail" class="form-label">Email</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-                            <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
-                        </div>
-                    </div>
-                    
-                    <!-- Role -->
-                    <div class="mb-3">
-                        <label for="strRole" class="form-label">Role</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <select id="strRole" class="form-select" aria-label="Input for role of user">
-                                <option selected disabled value="">Select Role</option>
-                                <option value="Student">Student</option>
-                                <option value="Faculty">Faculty</option>
-                            </select>
-                        </div>
-                    </div>
-            
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label for="strNewPassword" class="form-label">Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                            <input id="strNewPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
-                        </div>
-                    </div>
-            
-                    <!-- Confirm Password -->
-                    <div class="mb-3">
-                        <label for="strConfirmPassword" class="form-label">Confirm Password</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                            <input id="strConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" aria-label="Confirm Password">
-                        </div>
-                    </div>
-            
-                    <!-- Register Button -->
-                    <button type="button" class="btn btn-primary col-12 mt-3" id="btnRegister">Register</button>
-            
-                    <!-- Back to Login Button -->
-                    <button type="button" class="btn btn-link col-12 mt-2 text-center" id="btnBack">Already have an account? Login here</button>
                 </div>
-            </form>
-        </div>
-    <!-- Bootstrap JS -->
-    <script type="module" src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+                <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
+                <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
+            </div>
+        </form>
+        <form class="card col-12 col-md-6 col-lg-4 p-4 shadow" id="frmRegister" style="display:none;">
+            <div class="card-body">
+                <h2 class="text-center mb-3">TTU Group Survey Registration</h2>
+                <h5 class="text-center mb-4">Register below</h5>
+        
+                <!-- First Name -->
+                <div class="mb-3">
+                    <label for="strFirstName" class="form-label">First Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strFirstName" class="form-control" type="text" placeholder="John" aria-label="First Name">
+                    </div>
+                </div>
+        
+                <!-- Middle Name -->
+                <div class="mb-3">
+                    <label for="strMiddleName" class="form-label">Middle Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strMiddleName" class="form-control" type="text" placeholder="Optional" aria-label="Middle Name">
+                    </div>
+                </div>
+        
+                <!-- Last Name -->
+                <div class="mb-3">
+                    <label for="strLastName" class="form-label">Last Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input id="strLastName" class="form-control" type="text" placeholder="Doe" aria-label="Last Name">
+                    </div>
+                </div>
+        
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="strEmail" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                        <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
+                    </div>
+                </div>
+                
+                <!-- Role -->
+                <div class="mb-3">
+                    <label for="strRole" class="form-label">Role</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <select id="strRole" class="form-select" aria-label="Input for role of user">
+                            <option selected disabled value="">Select Role</option>
+                            <option value="Student">Student</option>
+                            <option value="Faculty">Faculty</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="strNewPassword" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input id="strNewPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
+                    </div>
+                </div>
+        
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label for="strConfirmPassword" class="form-label">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input id="strConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" aria-label="Confirm Password">
+                    </div>
+                </div>
+        
+                <!-- Register Button -->
+                <button type="button" class="btn btn-primary col-12 mt-3" id="btnRegister">Register</button>
+        
+                <!-- Back to Login Button -->
+                <button type="button" class="btn btn-link col-12 mt-2 text-center" id="btnBack">Already have an account? Login here</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Student Dashboard (Outside of background image container) -->
+    <div>
+        <form  id="frmStudentDash" style="display:none;">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
+                <div class="container">
+                    <a class="navbar-brand" href="#">TTU Group Survey</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Surveys</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Account
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" id="btnLogout" onclick="logout()">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container mt-4 " >
+                <h1>Student Dashboard</h1>
+                <p>Welcome to your student dashboard. Here you can view and complete surveys.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Available Surveys</h5>
+                                <p class="card-text">You have 3 surveys waiting for your response.</p>
+                                <button class="btn btn-primary" id="btnViewSurveys">View Surveys</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Completed Surveys</h5>
+                                <p class="card-text">You have completed 5 surveys.</p>
+                                <a href="#" class="btn btn-secondary">View History</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Groups</h5>
+                                <p class="card-text">You are a member of 2 groups.</p>
+                                <a href="#" class="btn btn-info">View Groups</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- View Surveys Modal -->
+            <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewSurveysModalLabel">Available Surveys</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="surveysList" class="list-group">
+                                <!-- Surveys will be loaded here dynamically -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Survey Detail Modal -->
+            <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="surveyDetailContent">
+                                <!-- Survey details will be loaded here dynamically -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="btnEditSurvey">Edit</button>
+                            <button type="button" class="btn btn-danger" id="btnDeleteSurvey">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Group Responses Modal -->
+            <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="groupResponsesContent">
+                                <!-- Group responses will be loaded here dynamically -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Manage Groups Modal -->
+            <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-end mb-3">
+                                <button type="button" class="btn btn-success" id="btnAddNewGroup">
+                                    <i class="bi bi-plus-circle"></i> Add New Group
+                                </button>
+                            </div>
+                            <div id="groupsListContainer" class="list-group">
+                                <!-- Groups will be loaded here dynamically -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add custom CSS for modal z-index -->
+            <style>
+                .modal-backdrop {
+                    z-index: 1050;
+                }
+                #createSurveyModal {
+                    z-index: 1055 !important;
+                }
+                #createSurveyModal .modal-dialog {
+                    z-index: 1056 !important;
+                }
+                #addFieldModal {
+                    z-index: 1060 !important;
+                }
+                #addFieldModal .modal-dialog {
+                    z-index: 1061 !important;
+                }
+                #addGroupModal {
+                    z-index: 1060 !important;
+                }
+                #addGroupModal .modal-dialog {
+                    z-index: 1061 !important;
+                }
+                #manageGroupsModal {
+                    z-index: 1060 !important;
+                }
+                #manageGroupsModal .modal-dialog {
+                    z-index: 1061 !important;
+                }
+                .blur-background {
+                    filter: blur(5px);
+                    -webkit-filter: blur(5px);
+                }
+            </style>
+        </form>
+    </div>
+
     
-    <!-- SweetAlert2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Main application script -->
-    <script type="module" src="scripts/app.js"></script>
+   
 </body>
+ <!-- Bootstrap JS -->
+ <script type="module" src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+ <!-- SweetAlert2 JS -->
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+ <!-- Main application script -->
+ <script type="module" src="scripts/app.js"></script>
 
 <script>
 
     // Validation for Login Form
-document.querySelector("#btnLogin").addEventListener("click", (e) => {
-    e.preventDefault(); // Prevent form submission
 
-    const strEmail = document.querySelector("#strUsername").value.trim();
-    const strPassword = document.querySelector("#strPassword").value.trim();
-    console.log("Captured Password:", strPassword); // Debugging
+    document.querySelector("#btnLogin").addEventListener("click", (e) => {
 
-    const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
-    const regPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    let errors = "";
+        e.preventDefault(); // Prevent form submission
 
-    let blnError = false;
-    let strMessage = "";
+        const strEmail = document.querySelector("#strUsername").value.trim();
+        const strPassword = document.querySelector("#strPassword").value.trim();
+        console.log("Captured Password:", strPassword); // Debugging
 
-    if (!regEmail.test(strEmail)) {
-        blnError = true;
-        strMessage += "<p>Please enter a valid email address.</p>";
-    } 
-    if (!regPassword.test(strPassword)) {  // <-- FIXED: Separate condition
-        blnError = true;
-        strMessage += "<p>Please enter a valid password.</p>";
-    }
+        const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
+        const regPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        let errors = "";
 
-    if (blnError) {
-        console.log("Error Message:", strMessage); // Debugging
-        Swal.fire({
-            title: "Error",
-            html: strMessage,
-            icon: "error",
-        });
-    } else {
-        Swal.fire({
-            title: "Success!",
-            text: "Login Successful!",
-            icon: "success"
-        });
-    }
-});
+        let blnError = false;
+        let strMessage = "";
+
+        if (!regEmail.test(strEmail)) {
+            blnError = true;
+            strMessage += "<p>Please enter a valid email address.</p>";
+        } 
+        if (!regPassword.test(strPassword)) {  // <-- FIXED: Separate condition
+            blnError = true;
+            strMessage += "<p>Please enter a valid password.</p>";
+        }
+
+        if (blnError) {
+            console.log("Error Message:", strMessage); // Debugging
+            Swal.fire({
+                title: "Error",
+                html: strMessage,
+                icon: "error",
+            });
+        } else {
+            Swal.fire({
+                title: "Success!",
+                text: "Login Successful!",
+                icon: "success"
+            }).then(() => {
+                document.getElementById("bgImage").style.display = "none";
+                document.getElementById("frmStudentDash").style.display = "block";
+            });
+        }
+    });
     // Validation for Registration Form
-document.querySelector("#btnRegister").addEventListener("click", (e) => {
-    e.preventDefault(); // Prevent form submission
-    
-    const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
-    const regPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    const regPhone = /^[0-9]{10}$/;
-    const regZip = /^[0-9]{5}$/;
-    const role = document.getElementById("strRole").value;
+    document.querySelector("#btnRegister").addEventListener("click", (e) => {
 
-    let email = document.querySelector("#strEmail").value.trim();
-    let password = document.querySelector("#strNewPassword").value.trim();
-    let confirmPassword = document.querySelector("#strConfirmPassword").value.trim();
-    let firstName = document.querySelector("#strFirstName").value.trim();
-    let lastName = document.querySelector("#strLastName").value.trim();
-    
-    let errors = "";
+        e.preventDefault(); // Prevent form submission
+        
+        const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
+        const regPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        const regPhone = /^[0-9]{10}$/;
+        const regZip = /^[0-9]{5}$/;
+        const role = document.getElementById("strRole").value;
 
-    // Required Field Validation
-    if (!firstName) errors += "<p class='mb-1 mt-1'>First Name is required</p>";
-    if (!lastName) errors += "<p class='mb-1 mt-1'>Last Name is required</p>";    
+        let email = document.querySelector("#strEmail").value.trim();
+        let password = document.querySelector("#strNewPassword").value.trim();
+        let confirmPassword = document.querySelector("#strConfirmPassword").value.trim();
+        let firstName = document.querySelector("#strFirstName").value.trim();
+        let lastName = document.querySelector("#strLastName").value.trim();
+        
+        let errors = "";
 
-    // Email Validation
-    if (!regEmail.test(email)) {
-        errors += "<p class='mb-1 mt-1'>Invalid email format</p>";
-    }
+        // Required Field Validation
+        if (!firstName) errors += "<p class='mb-1 mt-1'>First Name is required</p>";
+        if (!lastName) errors += "<p class='mb-1 mt-1'>Last Name is required</p>";    
 
-    // Password Validation
-    if (!regPass.test(password)) {
-        errors += "<p class='mb-1 mt-1'>Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, and one number</p>";
-    }
+        // Email Validation
+        if (!regEmail.test(email)) {
+            errors += "<p class='mb-1 mt-1'>Invalid email format</p>";
+        }
 
-    if (password !== confirmPassword) {
-        errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
-    }
+        // Password Validation
+        if (!regPass.test(password)) {
+            errors += "<p class='mb-1 mt-1'>Password must be at least 8 characters, contain one uppercase letter, one lowercase letter, and one number</p>";
+        }
 
-   //Role validation
-    if (errors) {
+        if (password !== confirmPassword) {
+            errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
+        }
+
+    //Role validation
+        if (errors) {
+            Swal.fire({
+                title: "Registration Error!",
+                html: errors,
+                icon: "error"
+            });
+
+        } else if(role === 'Student'){
+            Swal.fire({
+                icon: "success",
+                title: "Registration Successful",
+                text: "Sending student to the student dashboard"
+            }).then(()=>{
+                document.getElementById("frmStudentDash").style.display="block";
+                document.getElementById("frmRegister").style.display="none";
+                document.getElementById("bgImage").style.display="none";
+            })
+        }else if(role === 'Faculty'){
+            Swal.fire({
+                icon: "success",
+                title: "Registration Successful",
+                text: "Sending student to the instructor dashboard"
+            }).then(()=>{
+                document.getElementById("frmFacultyDash").style.display="block";
+                document.getElementById("frmRegister").style.display="none";
+            })
+
+        }else {
+            Swal.fire({
+                title: "Success!",
+                text: "Registration successful",
+                icon: "success"
+            });
+        }
+        
+    });
+    function logout() 
+    {
         Swal.fire({
-            title: "Registration Error!",
-            html: errors,
-            icon: "error"
-        });
-
-    } else if(role === 'Student'){
-        Swal.fire({
-            icon: "success",
-            title: "Registration Successful",
-            text: "Sending student to the student dashboard"
-        }).then(()=>{
-            document.getElementById("frmStudentDash").style.display="block";
-            document.getElementById("frmRegister").style.display="none";
+        title: 'Are you sure you want to logout?',
+        text: "You wil now be redirected to login page",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Logout Please!',
+        cancelButtonText: "No, Don't leave",
+        }).then((result)=> {
+        if (result.isConfirmed){
+            // Redirect to login page
+            document.getElementById("frmStudentDash").style.display = "none";
+            document.getElementById("frmLogin").style.display="block";
+        } else {
+            // User clicked cancel, do nothing
+            Swal.fire({
+            title: 'Logout Cancelled',
+            text: 'You are still logged in',
+            icon: 'error',
+            confirmButtonText: 'OK'
+            });
+        }
         })
-    }else if(role === 'Faculty'){
-        Swal.fire({
-            icon: "success",
-            title: "Registration Successful",
-            text: "Sending student to the instructor dashboard"
-        }).then(()=>{
-            document.getElementById("frmFacultyDash").style.display="block";
-            document.getElementById("frmRegister").style.display="none";
-        })
 
-    }else {
-        Swal.fire({
-            title: "Success!",
-            text: "Registration successful",
-            icon: "success"
-        });
-    }
+
     
-});
+    }
 
     document.getElementById('btnSwap').addEventListener('click',function(){
         document.getElementById('frmLogin').style.display = 'none';
