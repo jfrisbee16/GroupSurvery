@@ -173,7 +173,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Available Surveys</h5>
                                 <p class="card-text">You have 3 surveys waiting for your response.</p>
-                                <button class="btn btn-primary" id="btnViewSurveys">View Surveys</button>
+                                <button class="btn btn-primary" id="btnViewAvaSurveys">View Surveys</button>
                             </div>
                         </div>
                     </div>
@@ -375,7 +375,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Active Surveys</h5>
                                 <p class="card-text">You have <span id="activeSurveyCount">0</span> active surveys.</p>
-                                <button class="btn btn-secondary" id="btnViewSurveys">View Surveys</button>
+                                <button class="btn btn-secondary" id="btnViewActSurveys">View Surveys</button>
                             </div>
                         </div>
                     </div>
@@ -649,24 +649,104 @@
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  
  <!-- Main application script -->
- <script type="module" src="scripts/app.js"></script>
+ <script>
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Validation for Login Form
+        const btnLogin = document.querySelector("#btnLogin");
+        if (btnLogin) {
+            btnLogin.addEventListener("click", handleLogin);
+        }
 
-<script>
+        // Validation for Registration Form
+        const btnRegister = document.querySelector("#btnRegister");
+        if (btnRegister) {
+            btnRegister.addEventListener("click", handleRegister);
+        }
 
-    // Validation for Login Form
+        // Form switching
+        const btnSwap = document.getElementById('btnSwap');
+        if (btnSwap) {
+            btnSwap.addEventListener('click', function(){
+                document.getElementById('frmLogin').style.display = 'none';
+                document.getElementById('frmRegister').style.display = 'block';
+            });
+        }
 
-    document.querySelector("#btnLogin").addEventListener("click", (e) => {
+        const btnBack = document.getElementById('btnBack');
+        if (btnBack) {
+            btnBack.addEventListener('click', function(){
+                document.getElementById('frmLogin').style.display='block';
+                document.getElementById('frmRegister').style.display='none';
+            });
+        }
 
-        e.preventDefault(); // Prevent form submission
+        // Forgot Password
+        const btnForgot = document.getElementById('btnForgot');
+        if (btnForgot) {
+            btnForgot.addEventListener('click', function(){
+                Swal.fire({
+                    title: 'Forgot Password',
+                    text: 'Please contact Professor for password reset',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            });
+        }
 
+        // View Available Surveys Modal
+        const btnViewAvaSurveys = document.getElementById('btnViewAvaSurveys');
+        if (btnViewAvaSurveys) {
+            btnViewAvaSurveys.addEventListener('click', function() {
+                const modal = document.getElementById('viewSurveysModal');
+                if (modal) {
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // View Active Surveys Modal
+        const btnViewActSurveys = document.getElementById('btnViewActSurveys');
+        if (btnViewActSurveys) {
+            btnViewActSurveys.addEventListener('click', function() {
+                const modal = document.getElementById('viewSurveysModal');
+                if (modal) {
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Create Survey Modal
+        const btnCreateSurvey = document.getElementById('btnCreateSurvey');
+        if (btnCreateSurvey) {
+            btnCreateSurvey.addEventListener('click', function() {
+                const modal = document.getElementById('createSurveyModal');
+                if (modal) {
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Logout button
+        const btnLogout = document.getElementById('btnLogout');
+        if (btnLogout) {
+            btnLogout.addEventListener('click', logout);
+        }
+    });
+
+    // Login handler
+    function handleLogin(e) {
+        e.preventDefault();
+        
         const strEmail = document.querySelector("#strUsername").value.trim();
         const strPassword = document.querySelector("#strPassword").value.trim();
-        console.log("Captured Password:", strPassword); // Debugging
+        console.log("Captured Password:", strPassword);
 
         const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
         const regPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        let errors = "";
-
         let blnError = false;
         let strMessage = "";
 
@@ -674,38 +754,68 @@
             blnError = true;
             strMessage += "<p>Please enter a valid email address.</p>";
         } 
-        if (!regPassword.test(strPassword)) {  // <-- FIXED: Separate condition
+        if (!regPassword.test(strPassword)) {
             blnError = true;
             strMessage += "<p>Please enter a valid password.</p>";
         }
 
         if (blnError) {
-            console.log("Error Message:", strMessage); // Debugging
             Swal.fire({
                 title: "Error",
                 html: strMessage,
                 icon: "error",
             });
         } else {
-            Swal.fire({
-                title: "Success!",
-                text: "Login Successful!",
-                icon: "success"
-            }).then(() => {
-                document.getElementById("bgImage").style.display = "none";
-                document.getElementById("frmStudentDash").style.display = "block";
-            });
+            // For demo purposes, create a mock user based on email
+            const role = strEmail.includes('student') ? 'Student' : 'Faculty';
+            const userData = {
+                email: strEmail,
+                password: strPassword,
+                role: role,
+                firstName: 'John',
+                lastName: 'Doe',
+                middleName: '',
+                createdAt: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                
+                Swal.fire({
+                    title: "Success!",
+                    text: `Login successful! Redirecting to ${role.toLowerCase()} dashboard...`,
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    const bgImage = document.getElementById("bgImage");
+                    if (bgImage) bgImage.style.display = "none";
+                    
+                    if (role === 'Student') {
+                        const studentDash = document.getElementById("frmStudentDash");
+                        if (studentDash) studentDash.style.display = "block";
+                    } else {
+                        const facultyDash = document.getElementById("frmFacultyDash");
+                        if (facultyDash) facultyDash.style.display = "block";
+                    }
+                });
+            } catch (error) {
+                console.error("Error saving user data:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to save user data. Please try again.",
+                    icon: "error"
+                });
+            }
         }
-    });
-    // Validation for Registration Form
-    document.querySelector("#btnRegister").addEventListener("click", (e) => {
+    }
 
-        e.preventDefault(); // Prevent form submission
+    // Registration handler
+    function handleRegister(e) {
+        e.preventDefault();
         
         const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
         const regPass = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        const regPhone = /^[0-9]{10}$/;
-        const regZip = /^[0-9]{5}$/;
         const role = document.getElementById("strRole").value;
 
         let email = document.querySelector("#strEmail").value.trim();
@@ -713,6 +823,7 @@
         let confirmPassword = document.querySelector("#strConfirmPassword").value.trim();
         let firstName = document.querySelector("#strFirstName").value.trim();
         let lastName = document.querySelector("#strLastName").value.trim();
+        let middleName = document.querySelector("#strMiddleName").value.trim();
         
         let errors = "";
 
@@ -734,98 +845,113 @@
             errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
         }
 
-    //Role validation
         if (errors) {
             Swal.fire({
                 title: "Registration Error!",
                 html: errors,
                 icon: "error"
             });
-
-        } else if(role === 'Student'){
-            Swal.fire({
-                icon: "success",
-                title: "Registration Successful",
-                text: "Sending student to the student dashboard"
-            }).then(()=>{
-                document.getElementById("frmStudentDash").style.display="block";
-                document.getElementById("frmRegister").style.display="none";
-                document.getElementById("bgImage").style.display="none";
-            })
-        }else if(role === 'Faculty'){
-            Swal.fire({
-                icon: "success",
-                title: "Registration Successful",
-                text: "Sending faculty to the instructor dashboard"
-            }).then(()=>{
-                document.getElementById("frmFacultyDash").style.display="block";
-                document.getElementById("frmRegister").style.display="none";
-            })
-
-        }else {
-            Swal.fire({
-                title: "Success!",
-                text: "Registration successful",
-                icon: "success"
-            });
-        }
-        
-    });
-    function logout() 
-    {
-        Swal.fire({
-        title: 'Are you sure you want to logout?',
-        text: "You wil now be redirected to login page",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, Logout Please!',
-        cancelButtonText: "No, Don't leave",
-        }).then((result)=> {
-        if (result.isConfirmed){
-            // Redirect to login page
-            document.getElementById("frmStudentDash").style.display = "none";
-            document.getElementById("frmLogin").style.display="block";
-            document.getElementById("frmFacultyDash").style.display="none";
         } else {
-            // User clicked cancel, do nothing
-            Swal.fire({
-            title: 'Logout Cancelled',
-            text: 'You are still logged in',
-            icon: 'error',
-            confirmButtonText: 'OK'
-            });
+            try {
+                // Store user data in localStorage
+                const userData = {
+                    firstName,
+                    middleName,
+                    lastName,
+                    email,
+                    password,
+                    role,
+                    createdAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                
+                if(role === 'Student'){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Registration Successful",
+                        text: "Sending student to the student dashboard"
+                    }).then(()=>{
+                        const studentDash = document.getElementById("frmStudentDash");
+                        const registerForm = document.getElementById("frmRegister");
+                        const bgImage = document.getElementById("bgImage");
+                        
+                        if (studentDash) studentDash.style.display = "block";
+                        if (registerForm) registerForm.style.display = "none";
+                        if (bgImage) bgImage.style.display = "none";
+                    });
+                } else if(role === 'Faculty'){
+                    Swal.fire({
+                        icon: "success",
+                        title: "Registration Successful",
+                        text: "Sending faculty to the faculty dashboard"
+                    }).then(()=>{
+                        const facultyDash = document.getElementById("frmFacultyDash");
+                        const registerForm = document.getElementById("frmRegister");
+                        const bgImage = document.getElementById("bgImage");
+                        
+                        if (facultyDash) facultyDash.style.display = "block";
+                        if (registerForm) registerForm.style.display = "none";
+                        if (bgImage) bgImage.style.display = "none";
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Registration Error",
+                        text: "Please select a valid role"
+                    });
+                }
+            } catch (error) {
+                console.error("Error saving user data:", error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Failed to save user data. Please try again.",
+                    icon: "error"
+                });
+            }
         }
-        })
-
-
-    
     }
 
-    
-
-    document.getElementById('btnSwap').addEventListener('click',function(){
-        document.getElementById('frmLogin').style.display = 'none';
-        document.getElementById('frmRegister').style.display = 'block';
-    })
-
-    document.getElementById('btnBack').addEventListener('click',function(){
-        document.getElementById('frmLogin').style.display='block';
-        document.getElementById('frmRegister').style.display='none';
-    })
-
-    document.getElementById('btnForgot').addEventListener('click',function(){
+    // Logout function
+    function logout() {
         Swal.fire({
-            title: 'Forgot Password',
-            text: 'Please contact Professor for password reset',
-            icon: 'info',
-            confirmButtonText: 'OK'
-        })
-    })
-
-    document.getElementById('btnViewSurveys').addEventListener('click', function() {
-        // Show the modal
-        var myModal = new bootstrap.Modal(document.getElementById('viewSurveysModal'));
-        myModal.show();
-    });
+            title: 'Are you sure you want to logout?',
+            text: "You will now be redirected to login page",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Logout Please!',
+            cancelButtonText: "No, Don't leave",
+        }).then((result)=> {
+            if (result.isConfirmed){
+                try {
+                    localStorage.removeItem('currentUser');
+                    
+                    const studentDash = document.getElementById("frmStudentDash");
+                    const loginForm = document.getElementById("frmLogin");
+                    const facultyDash = document.getElementById("frmFacultyDash");
+                    const bgImage = document.getElementById("bgImage");
+                    
+                    if (studentDash) studentDash.style.display = "none";
+                    if (loginForm) loginForm.style.display = "block";
+                    if (facultyDash) facultyDash.style.display = "none";
+                    if (bgImage) bgImage.style.display = "block";
+                } catch (error) {
+                    console.error("Error during logout:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to logout. Please try again.",
+                        icon: "error"
+                    });
+                }
+            } else {
+                Swal.fire({
+                    title: 'Logout Cancelled',
+                    text: 'You are still logged in',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    }
 </script>
 </html>
