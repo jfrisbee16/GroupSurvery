@@ -813,5 +813,19 @@
         document.getElementById('frmRegister').style.display='none';
     })
 
+    document.getElementById('btnForgot').addEventListener('click',function(){
+        Swal.fire({
+            title: 'Forgot Password',
+            text: 'Please contact Professor for password reset',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        })
+    })
+
+    document.getElementById('btnViewSurveys').addEventListener('click', function() {
+        // Show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('viewSurveysModal'));
+        myModal.show();
+    });
 </script>
 </html>
