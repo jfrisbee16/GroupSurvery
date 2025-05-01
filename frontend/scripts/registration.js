@@ -34,13 +34,13 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
         errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
     }
 
-    fetch("/registration", {
+    fetch('/register', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            //email: email,
+            email: email,
             password: password,
             firstName: firstName,
             lastName: lastName,
