@@ -13,25 +13,14 @@ app.use(cors())
 app.use(express.json())
 
 //Need a role and change user id to email in the database
-//Use this to in registration.js to post to the server for the backend
-// fetch("/user", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify({
-//       email: "user@example.com",
-//       password: "MyPassword123!"
-//     })
-//   });
 
 //Registration route
-app.post('(enter path)', (req, res, next) => {
+app.post('/register', (req, res, next) => {
     let strEmail = req.body.email.trim().toLowerCase();
     let strPassword = req.body.password;
     let strFirstName = req.body.firstName.trim();
     let strLastName = req.body.lastName.trim();
-    let strRole = req.body.role;
+    //let strRole = req.body.role;
 
     //Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
