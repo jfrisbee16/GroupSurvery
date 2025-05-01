@@ -67,7 +67,7 @@ app.post('/register', (req, res, next) => {
                 message:err.message
             })
         } else {
-            res.status(201).json({
+            res.status(200).json({
                 status:"success"
             })
         }
@@ -75,7 +75,7 @@ app.post('/register', (req, res, next) => {
 })
 
 //Login route
-app.post('(enter path)', (req, res) => {
+app.post('/user', (req, res) => {
     let strEmail = req.body.email.trim().toLowerCase(); // This would correspond to the request body key
     let strPassword = req.body.password;
 
