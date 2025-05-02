@@ -75,13 +75,17 @@ app.post('/register', (req, res, next) => {
 })
 
 //Login route
-app.post('(enter path)', (req, res) => {
-    let strEmail = req.body.email.trim().toLowerCase(); // This would correspond to the request body key
+app.post('/login', (req, res) => {
+    let strEmail = req.body.email.trim().toLowerCase();
     let strPassword = req.body.password;
 
-    let strCommand = `SELECT EmailPassword FROM tblUsers WHERE UserId = ?`; // Corrected column name
+    let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`;
 
     db.get(strCommand, [strEmail], (err, row) => {
+        if (err) {
+            return res.status(500).json({ status: "error", message: "Database error" });
+        }
+
         //Will check if the email exists
         if (!row) {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
@@ -93,7 +97,15 @@ app.post('(enter path)', (req, res) => {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
         }
 
-        return res.status(200).json({ status: "success", message: "Login successful" });
+        return res.status(200).json({ 
+            status: "success", 
+            message: "Login successful",
+            user: {
+                email: strEmail,
+                firstName: row.FirstName,
+                lastName: row.LastName
+            }
+        });
     });
 });
 
