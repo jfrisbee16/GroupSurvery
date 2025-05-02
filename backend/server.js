@@ -1,99 +1,103 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
-const app = express();
-const PORT = process.env.PORT || 3000;
+const express = require('express')
+const cors = require('cors')
+const sqlite3 = require('sqlite3').verbose()
+const bcrypt = require('bcrypt')
+const intSalt = 10
 
-// Enable CORS
-app.use(cors());
+const dbSource = 'group_survey_project.db'
+const db = new sqlite3.Database(dbSource)
+const HTTP_PORT = 8000
 
-// Serve static files from the frontend directory
-app.use(express.static(path.join(__dirname, '../frontend')));
-app.use('/scripts', express.static(path.join(__dirname, '../frontend/scripts')));
-app.use('/node_modules', express.static(path.join(__dirname, '../frontend/node_modules')));
+var app = express()
+app.use(cors())
+app.use(express.json())
 
-// --- SQLite3 Setup ---
-const DB_PATH = path.join(__dirname, 'group_survey_project.db');
-const db = new sqlite3.Database(DB_PATH, (err) => {
-  if (err) {
-    console.error('Failed to connect to database:', err);
-  } else {
-    console.log('Connected to SQLite database.');
-  }
+//Need a role and change user id to email in the database
+
+//Registration route
+app.post('/register', (req, res, next) => {
+    let strEmail = req.body.email.trim().toLowerCase();
+    let strPassword = req.body.password;
+    let strFirstName = req.body.firstName.trim();
+    let strLastName = req.body.lastName.trim();
+    //let strRole = req.body.role;
+
+    //Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(strEmail)) {
+        return res.status(400).json({ error: "You must provide a valid email address" });
+    }
+
+    //Password validation
+    if (strPassword.length < 8) {
+        return res.status(400).json({ error: "Password must be at least 8 characters long" });
+    }
+    if (!/[A-Z]/.test(strPassword)) {
+        return res.status(400).json({ error: "Password must contain at least one uppercase letter" });
+    }
+    if (!/[a-z]/.test(strPassword)) {
+        return res.status(400).json({ error: "Password must contain at least one lowercase letter" });
+    }
+    if (!/[0-9]/.test(strPassword)) {
+        return res.status(400).json({ error: "Password must contain at least one number" });
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(strPassword)) {
+        return res.status(400).json({ error: "Password must contain at least one special character" });
+    }
+
+    //First Name validation
+    if (strFirstName.length < 3) {
+        return res.status(400).json({ error: "First name must be at least 3 characters long" });
+    }
+
+    //Last Name validation
+    if (strLastName.length < 3) {
+        return res.status(400).json({ error: "Last name must be at least 3 characters long" });
+    }
+
+    strPassword = bcrypt.hashSync(strPassword, intSalt);
+
+    // If validations pass
+    let strCommand = `INSERT INTO tblUsers VALUES (?, ?, ?, ?)`;
+    db.run(strCommand, [strEmail, strFirstName, strLastName, strPassword], function (err) {
+        if(err){
+            console.log(err)
+            res.status(400).json({
+                status:"error",
+                message:err.message
+            })
+        } else {
+            res.status(200).json({
+                status:"success"
+            })
+        }
+    })
+})
+
+//Login route
+app.post('/user', (req, res) => {
+    let strEmail = req.body.email.trim().toLowerCase(); // This would correspond to the request body key
+    let strPassword = req.body.password;
+
+    let strCommand = `SELECT EmailPassword FROM tblUsers WHERE UserId = ?`; // Corrected column name
+
+    db.get(strCommand, [strEmail], (err, row) => {
+        //Will check if the email exists
+        if (!row) {
+            return res.status(401).json({ status: "fail", message: "Invalid email or password" });
+        }
+
+        //Returns a boolean value of whether the password matches
+        const passwordMatch = bcrypt.compareSync(strPassword, row.EmailPassword);
+        if (!passwordMatch) {
+            return res.status(401).json({ status: "fail", message: "Invalid email or password" });
+        }
+
+        return res.status(200).json({ status: "success", message: "Login successful" });
+    });
 });
 
-// --- Body parser for JSON ---
-app.use(express.json());
 
-// --- API: Create new group ---
-app.post('/api/groups', (req, res) => {
-  const { GroupName, CourseID } = req.body;
-  if (!GroupName || !CourseID) return res.status(400).json({ error: 'GroupName and CourseID required' });
-  db.run('INSERT INTO tblCourseGroups (GroupName, CourseID) VALUES (?, ?)', [GroupName, CourseID], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ GroupID: this.lastID, GroupName, CourseID });
-  });
-});
-
-// --- API: Create new survey (assessment) ---
-app.post('/api/assessments', (req, res) => {
-  const { Name, StartDate, EndDate, Status, Type } = req.body;
-  if (!Name || !StartDate || !EndDate || !Status || !Type) return res.status(400).json({ error: 'All fields required' });
-  db.run('INSERT INTO tblAssessments (Name, StartDate, EndDate, Status, Type) VALUES (?, ?, ?, ?, ?)', [Name, StartDate, EndDate, Status, Type], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ AssessmentID: this.lastID, Name, StartDate, EndDate, Status, Type });
-  });
-});
-
-// --- API: Add student to group ---
-app.post('/api/groups/:groupId/members', (req, res) => {
-  const { UserID } = req.body;
-  const { groupId } = req.params;
-  if (!UserID) return res.status(400).json({ error: 'UserID required' });
-  db.run('INSERT INTO tblGroupMembers (GroupID, UserID) VALUES (?, ?)', [groupId, UserID], function(err) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ GroupMemberID: this.lastID, GroupID: groupId, UserID });
-  });
-});
-
-// --- API: List groups ---
-app.get('/api/groups', (req, res) => {
-  db.all('SELECT * FROM tblCourseGroups', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
-});
-
-// --- API: List assessments ---
-app.get('/api/assessments', (req, res) => {
-  db.all('SELECT * FROM tblAssessments', [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
-});
-
-// --- API: List group members ---
-app.get('/api/groups/:groupId/members', (req, res) => {
-  const { groupId } = req.params;
-  db.all('SELECT u.* FROM tblGroupMembers gm JOIN tblUsers u ON gm.UserID = u.UserID WHERE gm.GroupID = ?', [groupId], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
-  });
-});
-
-// --- API: Assign survey to group (example join table, not present, so just placeholder) ---
-// You may want to create a tblGroupAssessments join table for this functionality.
-// For now, this is a placeholder endpoint.
-app.post('/api/groups/:groupId/assessments', (req, res) => {
-  res.status(501).json({ error: 'Assigning surveys to groups not yet implemented. Consider adding a tblGroupAssessments table.' });
-});
-
-// Handle all routes for SPA
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+app.listen(HTTP_PORT,() => {
+    console.log('App listening on',HTTP_PORT)
+})

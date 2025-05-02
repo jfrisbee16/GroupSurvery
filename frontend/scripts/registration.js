@@ -34,6 +34,23 @@ document.querySelector("#btnRegister").addEventListener("click", (e) => {
         errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
     }
 
+    fetch('/register', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: email,
+            password: password,
+            firstName: firstName,
+            lastName: lastName,
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error("Error:", error));
+      
+
     // else if(role === 'Student'){
     //     Swal.fire({
     //         icon: "Success",
