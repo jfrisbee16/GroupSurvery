@@ -3,6 +3,7 @@ const cors = require('cors')
 const sqlite3 = require('sqlite3').verbose()
 const bcrypt = require('bcrypt')
 const intSalt = 10
+const path = require('path');
 
 const dbSource = 'group_survey_project.db'
 const db = new sqlite3.Database(dbSource)
@@ -13,6 +14,9 @@ app.use(cors())
 app.use(express.json())
 
 //Need a role and change user id to email in the database
+
+// Serve static files from the frontend directory
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 //Registration route
 app.post('/register', (req, res, next) => {
@@ -97,6 +101,10 @@ app.post('/user', (req, res) => {
     });
 });
 
+// Serve index.html for the root route
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
