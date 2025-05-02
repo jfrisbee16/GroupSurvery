@@ -18,122 +18,133 @@
     <!-- Main container for SPA -->
     <!-- <div id="app"></div> -->
 
-    <!-- Login form -->
-    <div id="bgImage" class="bg-image d-flex align-items-center justify-content-center"  >
-        <form class="card col-12 col-md-6 col-lg-4 rounded" id="frmLogin" >
-            <div class="card-body">
-                <h2 class="text-center">TTU Group Survey Login</h2>
-                <h5 class="text-center">Login below</h5>
+    <!-- Login and Registration forms container -->
+    <div class="d-flex align-items-center justify-content-center min-vh-100">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- Login Form -->
+                <div class="col-12 col-md-6 col-lg-4">
+                    <form class="card shadow-lg" id="frmLogin">
+                        <div class="card-body p-4">
+                            <h2 class="text-center mb-3">TTU Group Survey Login</h2>
+                            <h5 class="text-center mb-4">Login below</h5>
 
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                        <input id="strUsername" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">
-                    </div>
-                </div>
-                
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="strPassword" class="form-label">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input id="strPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
-                    </div>
-                    <div class="text-right">
-                        <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
-                    </div>
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="strUsername" class="form-label d-flex align-items-start">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input id="strUsername" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="input for user Email">
+                                </div>
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="strPassword" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input id="strPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
+                                </div>
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-link" id="btnForgot">Forgot Password</button>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
+                            <button type="button" class="btn btn-link col-12 mt-2" id="btnSwap">Don't have an account? Register here</button>
+                        </div>
+                    </form>
                 </div>
 
-                <button type="button" class="btn btn-primary col-12 mt-2" id="btnLogin">Login</button>
-                <button type="button" class="btn btn-link col-12 mt-0" id="btnSwap">Don't have an account? Register here</button>
+                <!-- Registration Form -->
+                <div class="col-12 col-md-8 col-lg-6">
+                    <form class="card shadow-lg" id="frmRegister" style="display:none;">
+                        <div class="card-body p-4">
+                            <h2 class="text-center mb-3">TTU Group Survey Registration</h2>
+                            <h5 class="text-center mb-4">Register below</h5>
+                    
+                            <!-- First Name -->
+                            <div class="mb-3">
+                                <label for="strFirstName" class="form-label">First Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input id="strFirstName" class="form-control" type="text" placeholder="John" aria-label="First Name">
+                                </div>
+                            </div>
+                    
+                            <!-- Middle Name -->
+                            <div class="mb-3">
+                                <label for="strMiddleName" class="form-label">Middle Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input id="strMiddleName" class="form-control" type="text" placeholder="Optional" aria-label="Middle Name">
+                                </div>
+                            </div>
+                    
+                            <!-- Last Name -->
+                            <div class="mb-3">
+                                <label for="strLastName" class="form-label">Last Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input id="strLastName" class="form-control" type="text" placeholder="Doe" aria-label="Last Name">
+                                </div>
+                            </div>
+                    
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="strEmail" class="form-label">Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                    <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
+                                </div>
+                            </div>
+                            
+                            <!-- Role -->
+                            <div class="mb-3">
+                                <label for="strRole" class="form-label">Role</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <select id="strRole" class="form-select" aria-label="Input for role of user">
+                                        <option selected disabled value="">Select Role</option>
+                                        <option value="Student">Student</option>
+                                        <option value="Faculty">Faculty</option>
+                                    </select>
+                                </div>
+                            </div>
+                    
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label for="strNewPassword" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input id="strNewPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
+                                </div>
+                            </div>
+                    
+                            <!-- Confirm Password -->
+                            <div class="mb-3">
+                                <label for="strConfirmPassword" class="form-label">Confirm Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input id="strConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" aria-label="Confirm Password">
+                                </div>
+                            </div>
+                    
+                            <!-- Register Button -->
+                            <button type="button" class="btn btn-primary col-12 mt-3" id="btnRegister">Register</button>
+                    
+                            <!-- Back to Login Button -->
+                            <button type="button" class="btn btn-link col-12 mt-2 text-center" id="btnBack">Already have an account? Login here</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
-        <form class="card col-12 col-md-6 col-lg-4 p-4 shadow" id="frmRegister" style="display:none;">
-            <div class="card-body">
-                <h2 class="text-center mb-3">TTU Group Survey Registration</h2>
-                <h5 class="text-center mb-4">Register below</h5>
-        
-                <!-- First Name -->
-                <div class="mb-3">
-                    <label for="strFirstName" class="form-label">First Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                        <input id="strFirstName" class="form-control" type="text" placeholder="John" aria-label="First Name">
-                    </div>
-                </div>
-        
-                <!-- Middle Name -->
-                <div class="mb-3">
-                    <label for="strMiddleName" class="form-label">Middle Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                        <input id="strMiddleName" class="form-control" type="text" placeholder="Optional" aria-label="Middle Name">
-                    </div>
-                </div>
-        
-                <!-- Last Name -->
-                <div class="mb-3">
-                    <label for="strLastName" class="form-label">Last Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                        <input id="strLastName" class="form-control" type="text" placeholder="Doe" aria-label="Last Name">
-                    </div>
-                </div>
-        
-                <!-- Email -->
-                <div class="mb-3">
-                    <label for="strEmail" class="form-label">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-                        <input id="strEmail" class="form-control" type="email" placeholder="JohnDoe@tntech.edu" aria-label="Email">
-                    </div>
-                </div>
-                
-                <!-- Role -->
-                <div class="mb-3">
-                    <label for="strRole" class="form-label">Role</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                        <select id="strRole" class="form-select" aria-label="Input for role of user">
-                            <option selected disabled value="">Select Role</option>
-                            <option value="Student">Student</option>
-                            <option value="Faculty">Faculty</option>
-                        </select>
-                    </div>
-                </div>
-        
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="strNewPassword" class="form-label">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input id="strNewPassword" class="form-control" type="password" placeholder="Password" aria-label="Password">
-                    </div>
-                </div>
-        
-                <!-- Confirm Password -->
-                <div class="mb-3">
-                    <label for="strConfirmPassword" class="form-label">Confirm Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                        <input id="strConfirmPassword" class="form-control" type="password" placeholder="Confirm Password" aria-label="Confirm Password">
-                    </div>
-                </div>
-        
-                <!-- Register Button -->
-                <button type="button" class="btn btn-primary col-12 mt-3" id="btnRegister">Register</button>
-        
-                <!-- Back to Login Button -->
-                <button type="button" class="btn btn-link col-12 mt-2 text-center" id="btnBack">Already have an account? Login here</button>
-            </div>
-        </form>
+        </div>
     </div>
 
-    <!-- Student Dashboard (Outside of background image container) -->
+    <!-- Student Dashboard -->
     <div>
-        <form  id="frmStudentDash" style="display:none; background: linear-gradient(360deg, rgb(127, 114, 153) 25%, rgba(127, 114, 153, 0) 50%); min-height: 100vh; overflow: auto;">
+        <form id="frmStudentDash" style="display:none;">
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark w-100">
                 <div class="container">
                     <a class="navbar-brand" href="#">TTU Group Survey</a>
@@ -317,12 +328,17 @@
                 .blur-background {
                     filter: blur(5px);
                     -webkit-filter: blur(5px);
+                    transition: filter 0.3s ease;
+                }
+                .blur-background .modal-content {
+                    filter: none;
+                    -webkit-filter: none;
                 }
             </style>
         </form>
     </div>
-    <!-- Faculty Dashbord -->
-    <div>
+    <!-- Faculty Dashboard -->
+    <div class="position-absolute top-0 start-0 w-100">
         <form id="frmFacultyDash" style="display:none;">
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">  
                 <div class="container-fluid">
@@ -633,6 +649,11 @@
                 .blur-background {
                     filter: blur(5px);
                     -webkit-filter: blur(5px);
+                    transition: filter 0.3s ease;
+                }
+                .blur-background .modal-content {
+                    filter: none;
+                    -webkit-filter: none;
                 }
             </style>
         </form>
@@ -670,14 +691,18 @@
             btnSwap.addEventListener('click', function(){
                 document.getElementById('frmLogin').style.display = 'none';
                 document.getElementById('frmRegister').style.display = 'block';
+                // Scroll to the top of the page
+                window.scrollTo(0, 0);
             });
         }
 
         const btnBack = document.getElementById('btnBack');
         if (btnBack) {
             btnBack.addEventListener('click', function(){
-                document.getElementById('frmLogin').style.display='block';
-                document.getElementById('frmRegister').style.display='none';
+                document.getElementById('frmLogin').style.display = 'block';
+                document.getElementById('frmRegister').style.display = 'none';
+                // Scroll to the top of the page
+                window.scrollTo(0, 0);
             });
         }
 
@@ -697,10 +722,35 @@
         // View Available Surveys Modal
         const btnViewAvaSurveys = document.getElementById('btnViewAvaSurveys');
         if (btnViewAvaSurveys) {
-            btnViewAvaSurveys.addEventListener('click', function() {
+            btnViewAvaSurveys.addEventListener('click', function () {
+                const surveysList = document.getElementById('surveysList');
+                if (surveysList) {
+                    surveysList.innerHTML = ''; // Clear existing content
+
+                    // Retrieve surveys from localStorage
+                    const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+
+                    if (surveys.length === 0) {
+                        surveysList.innerHTML = '<p class="text-center">No surveys available.</p>';
+                    } else {
+                        surveys.forEach((survey, index) => {
+                            const surveyItem = document.createElement('div');
+                            surveyItem.className = 'list-group-item';
+                            surveyItem.innerHTML = `
+                                <h5>${survey.title}</h5>
+                                <p>${survey.description}</p>
+                                <p><strong>Groups:</strong> ${survey.groups.join(', ') || 'None'}</p>
+                                <button class="btn btn-link" onclick="viewSurveyDetails(${index})">View Details</button>
+                            `;
+                            surveysList.appendChild(surveyItem);
+                        });
+                    }
+                }
+
+                // Show the modal
                 const modal = document.getElementById('viewSurveysModal');
                 if (modal) {
-                    var myModal = new bootstrap.Modal(modal);
+                    const myModal = new bootstrap.Modal(modal);
                     myModal.show();
                 }
             });
@@ -730,10 +780,337 @@
             });
         }
 
+        // Create Survey Card Button
+        const btnCreateSurveyCard = document.getElementById('btnCreateSurveyCard');
+        if (btnCreateSurveyCard) {
+            btnCreateSurveyCard.addEventListener('click', function() {
+                const modal = document.getElementById('createSurveyModal');
+                if (modal) {
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
         // Logout button
         const btnLogout = document.getElementById('btnLogout');
         if (btnLogout) {
             btnLogout.addEventListener('click', logout);
+        }
+
+        // Add Field Button
+        const btnAddField = document.getElementById('btnAddField');
+        if (btnAddField) {
+            btnAddField.addEventListener('click', function() {
+                const modal = document.getElementById('addFieldModal');
+                const createSurveyModal = document.getElementById('createSurveyModal');
+                if (modal) {
+                    // Add blur class to create survey modal
+                    if (createSurveyModal) {
+                        createSurveyModal.classList.add('blur-background');
+                    }
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Add event listener for when the Add Field modal is hidden
+        const addFieldModal = document.getElementById('addFieldModal');
+        if (addFieldModal) {
+            addFieldModal.addEventListener('hidden.bs.modal', function () {
+                const createSurveyModal = document.getElementById('createSurveyModal');
+                if (createSurveyModal) {
+                    createSurveyModal.classList.remove('blur-background');
+                }
+            });
+        }
+
+        // Field Type Change Handler
+        const fieldType = document.getElementById('fieldType');
+        if (fieldType) {
+            fieldType.addEventListener('change', function() {
+                const optionsContainer = document.getElementById('optionsContainer');
+                if (optionsContainer) {
+                    const showOptions = ['select', 'multiselect', 'radio', 'checkbox'].includes(this.value);
+                    optionsContainer.style.display = showOptions ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Save Field Button
+        const btnSaveField = document.getElementById('btnSaveField');
+        if (btnSaveField) {
+            btnSaveField.addEventListener('click', function() {
+                const fieldLabel = document.getElementById('fieldLabel').value;
+                const fieldType = document.getElementById('fieldType').value;
+                const fieldRequired = document.getElementById('fieldRequired').checked;
+                let fieldOptions = [];
+
+                if (['select', 'multiselect', 'radio', 'checkbox'].includes(fieldType)) {
+                    fieldOptions = document.getElementById('fieldOptions').value.split('\n').filter(option => option.trim() !== '');
+                }
+
+                if (!fieldLabel) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please enter a field label',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Create the field HTML
+                const fieldHTML = createFieldHTML(fieldLabel, fieldType, fieldRequired, fieldOptions);
+                
+                // Add the field to the survey fields container
+                const surveyFields = document.getElementById('surveyFields');
+                if (surveyFields) {
+                    surveyFields.appendChild(fieldHTML);
+                }
+
+                // Close the modal
+                const modal = document.getElementById('addFieldModal');
+                if (modal) {
+                    var myModal = bootstrap.Modal.getInstance(modal);
+                    myModal.hide();
+                }
+
+                // Reset the form
+                document.getElementById('fieldForm').reset();
+                document.getElementById('optionsContainer').style.display = 'none';
+            });
+        }
+
+        // Helper function to create field HTML
+        function createFieldHTML(label, type, required, options) {
+            const fieldDiv = document.createElement('div');
+            fieldDiv.className = 'mb-3 p-3 border rounded';
+            
+            let fieldHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">${label} (${type}) ${required ? '<span class="text-danger">*</span>' : ''}</h6>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            switch(type) {
+                case 'text':
+                    fieldHTML += `<input type="text" class="form-control" ${required ? 'required' : ''}>`;
+                    break;
+                case 'textarea':
+                    fieldHTML += `<textarea class="form-control" ${required ? 'required' : ''}></textarea>`;
+                    break;
+                case 'select':
+                    fieldHTML += `<select class="form-select" ${required ? 'required' : ''}>
+                        <option value="">Select an option</option>
+                        ${options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    </select>`;
+                    break;
+                case 'multiselect':
+                    fieldHTML += `<select class="form-select" multiple ${required ? 'required' : ''}>
+                        ${options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                    </select>`;
+                    break;
+                case 'radio':
+                    fieldHTML += options.map(option => `
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="${label}" value="${option}" ${required ? 'required' : ''}>
+                            <label class="form-check-label">${option}</label>
+                        </div>
+                    `).join('');
+                    break;
+                case 'checkbox':
+                    fieldHTML += options.map(option => `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${option}">
+                            <label class="form-check-label">${option}</label>
+                        </div>
+                    `).join('');
+                    break;
+                case 'date':
+                    fieldHTML += `<input type="date" class="form-control" ${required ? 'required' : ''}>`;
+                    break;
+                case 'number':
+                    fieldHTML += `<input type="number" class="form-control" ${required ? 'required' : ''}>`;
+                    break;
+            }
+
+            fieldDiv.innerHTML = fieldHTML;
+            return fieldDiv;
+        }
+
+        // Add Group Button in Create Survey Modal
+        const btnAddGroup = document.getElementById('btnAddGroup');
+        if (btnAddGroup) {
+            btnAddGroup.addEventListener('click', function() {
+                const modal = document.getElementById('addGroupModal');
+                const createSurveyModal = document.getElementById('createSurveyModal');
+                if (modal) {
+                    // Add blur class to create survey modal
+                    if (createSurveyModal) {
+                        createSurveyModal.classList.add('blur-background');
+                    }
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Add New Group Button in Manage Groups Modal
+        const btnAddNewGroup = document.getElementById('btnAddNewGroup');
+        if (btnAddNewGroup) {
+            btnAddNewGroup.addEventListener('click', function() {
+                const modal = document.getElementById('addGroupModal');
+                const manageGroupsModal = document.getElementById('manageGroupsModal');
+                if (modal) {
+                    // Add blur class to manage groups modal
+                    if (manageGroupsModal) {
+                        manageGroupsModal.classList.add('blur-background');
+                    }
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Add event listener for when the Add Group modal is hidden
+        const addGroupModal = document.getElementById('addGroupModal');
+        if (addGroupModal) {
+            addGroupModal.addEventListener('hidden.bs.modal', function () {
+                const createSurveyModal = document.getElementById('createSurveyModal');
+                const manageGroupsModal = document.getElementById('manageGroupsModal');
+                
+                if (createSurveyModal) {
+                    createSurveyModal.classList.remove('blur-background');
+                }
+                if (manageGroupsModal) {
+                    manageGroupsModal.classList.remove('blur-background');
+                }
+            });
+        }
+
+        // Save Group Button
+        const btnSaveGroup = document.getElementById('btnSaveGroup');
+        if (btnSaveGroup) {
+            btnSaveGroup.addEventListener('click', function() {
+                const groupName = document.getElementById('groupName').value.trim();
+                const groupMembers = document.getElementById('groupMembers').value.trim();
+
+                if (!groupName) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please enter a group name',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                if (!groupMembers) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please enter at least one group member',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Create the group HTML
+                const groupHTML = createGroupHTML(groupName, groupMembers);
+                
+                // Add the group to the groups list container
+                const groupsList = document.getElementById('groupsList');
+                if (groupsList) {
+                    groupsList.appendChild(groupHTML);
+                }
+
+                // Close the modal
+                const modal = document.getElementById('addGroupModal');
+                if (modal) {
+                    var myModal = bootstrap.Modal.getInstance(modal);
+                    myModal.hide();
+                }
+
+                // Reset the form
+                document.getElementById('groupForm').reset();
+            });
+        }
+
+        // Helper function to create group HTML
+        function createGroupHTML(name, members) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'mb-3 p-3 border rounded';
+            
+            const membersList = members.split('\n').filter(member => member.trim() !== '');
+            
+            const groupHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">${name}</h6>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                <div class="members-list">
+                    ${membersList.map(member => `<div class="member-item">${member}</div>`).join('')}
+                </div>
+            `;
+
+            groupDiv.innerHTML = groupHTML;
+            return groupDiv;
+        }
+
+        // Save Survey Button
+        const btnSaveSurvey = document.getElementById('btnSaveSurvey');
+        if (btnSaveSurvey) {
+            btnSaveSurvey.addEventListener('click', function () {
+                const surveyTitle = document.getElementById('surveyTitle').value.trim();
+                const surveyDescription = document.getElementById('surveyDescription').value.trim();
+                const surveyFields = document.getElementById('surveyFields').innerHTML; // Save the fields as HTML
+                const assignedGroups = Array.from(document.querySelectorAll('#groupsList .member-item')).map(group => group.textContent.trim());
+
+                if (!surveyTitle) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please enter a survey title',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Create survey object
+                const survey = {
+                    title: surveyTitle,
+                    description: surveyDescription,
+                    fields: surveyFields,
+                    groups: assignedGroups,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Save survey to localStorage
+                let surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+                surveys.push(survey);
+                localStorage.setItem('surveys', JSON.stringify(surveys));
+
+                // Show success message
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Survey saved successfully!',
+                    icon: 'success'
+                });
+
+                // Reset the form and close the modal
+                document.getElementById('surveyForm').reset();
+                document.getElementById('surveyFields').innerHTML = '';
+                document.getElementById('groupsList').innerHTML = '';
+
+                const modal = document.getElementById('createSurveyModal');
+                if (modal) {
+                    const myModal = bootstrap.Modal.getInstance(modal);
+                    myModal.hide();
+                }
+            });
         }
     });
 
@@ -874,11 +1251,11 @@
                     }).then(()=>{
                         const studentDash = document.getElementById("frmStudentDash");
                         const registerForm = document.getElementById("frmRegister");
-                        const bgImage = document.getElementById("bgImage");
                         
                         if (studentDash) studentDash.style.display = "block";
                         if (registerForm) registerForm.style.display = "none";
-                        if (bgImage) bgImage.style.display = "none";
+                        // Scroll to the top of the page
+                        window.scrollTo(0, 0);
                     });
                 } else if(role === 'Faculty'){
                     Swal.fire({
@@ -888,11 +1265,14 @@
                     }).then(()=>{
                         const facultyDash = document.getElementById("frmFacultyDash");
                         const registerForm = document.getElementById("frmRegister");
-                        const bgImage = document.getElementById("bgImage");
+                        const loginForm = document.getElementById("frmLogin");
                         
-                        if (facultyDash) facultyDash.style.display = "block";
+                        if (facultyDash) {
+                            facultyDash.style.display = "block";
+                            facultyDash.scrollIntoView({ behavior: 'instant' });
+                        }
                         if (registerForm) registerForm.style.display = "none";
-                        if (bgImage) bgImage.style.display = "none";
+                        if (loginForm) loginForm.style.display = "none";
                     });
                 } else {
                     Swal.fire({
@@ -929,12 +1309,12 @@
                     const studentDash = document.getElementById("frmStudentDash");
                     const loginForm = document.getElementById("frmLogin");
                     const facultyDash = document.getElementById("frmFacultyDash");
-                    const bgImage = document.getElementById("bgImage");
                     
                     if (studentDash) studentDash.style.display = "none";
                     if (loginForm) loginForm.style.display = "block";
                     if (facultyDash) facultyDash.style.display = "none";
-                    if (bgImage) bgImage.style.display = "block";
+                    // Scroll to the top of the page
+                    window.scrollTo(0, 0);
                 } catch (error) {
                     console.error("Error during logout:", error);
                     Swal.fire({
@@ -953,5 +1333,32 @@
             }
         });
     }
+
+    function viewSurveyDetails(index) {
+        const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+        const survey = surveys[index];
+
+        if (survey) {
+            const surveyDetailContent = document.getElementById('surveyDetailContent');
+            if (surveyDetailContent) {
+                surveyDetailContent.innerHTML = `
+                    <h5>${survey.title}</h5>
+                    <p>${survey.description}</p>
+                    <h6>Fields:</h6>
+                    <div>${survey.fields}</div>
+                    <h6>Groups:</h6>
+                    <p>${survey.groups.join(', ') || 'None'}</p>
+                `;
+            }
+
+            // Show the survey detail modal
+            const modal = document.getElementById('surveyDetailModal');
+            if (modal) {
+                const myModal = new bootstrap.Modal(modal);
+                myModal.show();
+            }
+        }
+    }
 </script>
 </html>
+
