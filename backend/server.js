@@ -144,6 +144,33 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Get student groups route
+app.get('/student-groups', (req, res) => {
+    const strEmail = req.query.email;
+    
+    if (!strEmail) {
+        return res.status(400).json({ error: "Email is required" });
+    }
+
+    let strCommand = `
+        SELECT g.GroupName, g.Members 
+        FROM tblGroups g
+        WHERE g.Members LIKE ?
+    `;
+
+    db.all(strCommand, [`%${strEmail}%`], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        const groups = rows.map(row => ({
+            name: row.GroupName,
+            members: row.Members.split(',').map(member => member.trim())
+        }));
+
+        res.json({ groups });
+    });
+});
 
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
