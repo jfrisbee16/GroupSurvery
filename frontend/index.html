@@ -414,7 +414,7 @@
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
                                     <li><a class="dropdown-item" href="#">Settings</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
+                                    <li><a class="dropdown-item logout-link" href="#" onclick="logout()">Logout</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -431,16 +431,16 @@
                             <div class="card-body">
                                 <h5 class="card-title">Create Survey</h5>
                                 <p class="card-text">Create a new survey for your students.</p>
-                                <button class="btn btn-primary" id="btnCreateSurveyCard">Create Survey</button>
+                                <button type="button" class="btn btn-primary" id="btnCreateSurveyCard">Create Survey</button>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Active Surveys</h5>
-                                <p class="card-text">You have <span id="activeSurveyCount">0</span> active surveys.</p>
-                                <button class="btn btn-secondary" id="btnViewActSurveys">View Surveys</button>
+                                <h5 class="card-title">View Surveys</h5>
+                                <p class="card-text">View and manage your existing surveys.</p>
+                                <button type="button" class="btn btn-success" id="btnViewSurveys">View Surveys</button>
                             </div>
                         </div>
                     </div>
@@ -455,374 +455,408 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Create Survey Modal -->
-            <div class="modal fade" id="createSurveyModal" tabindex="-1" aria-labelledby="createSurveyModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="createSurveyModalLabel">Create New Survey</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="surveyForm">
-                                <div class="mb-3">
-                                    <label for="surveyTitle" class="form-label">Survey Title</label>
-                                    <input type="text" class="form-control" id="surveyTitle" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="surveyDescription" class="form-label">Survey Description</label>
-                                    <textarea class="form-control" id="surveyDescription" rows="3"></textarea>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <h5>Survey Fields</h5>
-                                    <div id="surveyFields" class="mb-3">
-                                        <!-- Fields will be added here dynamically -->
-                                    </div>
-                                    <button type="button" class="btn btn-success" id="btnAddField">
-                                        <i class="bi bi-plus-circle"></i> Add Field
-                                    </button>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <h5>Assign to Groups</h5>
-                                    <div id="groupsList" class="mb-3">
-                                        <!-- Groups will be added here dynamically -->
-                                    </div>
-                                    <button type="button" class="btn btn-success" id="btnAddGroup">
-                                        <i class="bi bi-plus-circle"></i> Add Group
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="btnSaveSurvey">Save Survey</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add Field Modal -->
-            <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true" style="z-index: 1060;">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addFieldModalLabel">Add Survey Field</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="fieldForm">
-                                <div class="mb-3">
-                                    <label for="fieldLabel" class="form-label">Field Label</label>
-                                    <input type="text" class="form-control" id="fieldLabel" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="fieldType" class="form-label">Field Type</label>
-                                    <select class="form-select" id="fieldType" required>
-                                        <option value="text">Text Box</option>
-                                        <option value="textarea">Text Area</option>
-                                        <option value="select">Dropdown</option>
-                                        <option value="multiselect">Multiple Select</option>
-                                        <option value="radio">Radio Buttons</option>
-                                        <option value="checkbox">Checkboxes</option>
-                                        <option value="date">Date</option>
-                                        <option value="number">Number</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3" id="optionsContainer" style="display: none;">
-                                    <label for="fieldOptions" class="form-label">Options (one per line)</label>
-                                    <textarea class="form-control" id="fieldOptions" rows="3"></textarea>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="fieldRequired">
-                                    <label class="form-check-label" for="fieldRequired">
-                                        Required field
-                                    </label>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="btnSaveField">Add Field</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add Group Modal -->
-            <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true" style="z-index: 1060;">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addGroupModalLabel">Add Group</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="groupForm">
-                                <div class="mb-3">
-                                    <label for="groupName" class="form-label">Group Name</label>
-                                    <input type="text" class="form-control" id="groupName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="groupMembers" class="form-label">Group Members (one per line)</label>
-                                    <textarea class="form-control" id="groupMembers" rows="5" required></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="btnSaveGroup">Add Group</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- View Surveys Modal -->
-            <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="viewSurveysModalLabel">Your Surveys</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="surveysList" class="list-group">
-                                <!-- Surveys will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Survey Detail Modal -->
-            <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="surveyDetailContent">
-                                <!-- Survey details will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="btnCompleteSurvey">Complete Survey</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Complete Survey Modal -->
-            <div class="modal fade" id="completeSurveyModal" tabindex="-1" aria-labelledby="completeSurveyModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="completeSurveyModalLabel">Complete Survey</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="surveyResponseForm">
-                                <div class="mb-3">
-                                    <label for="facultyGroupMemberSelect" class="form-label">Select Group Member</label>
-                                    <select class="form-select" id="facultyGroupMemberSelect" required>
-                                        <option value="">Choose a group member...</option>
-                                    </select>
-                                </div>
-                                <div id="surveyFieldsContainer">
-                                    <!-- Survey fields will be loaded here dynamically -->
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="btnSubmitSurvey">Submit Response</button>
-                            <button type="button" class="btn btn-success" id="btnCompleteAnother">Complete Another</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Group Responses Modal -->
-            <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="groupResponsesContent">
-                                <!-- Group responses will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Manage Groups Modal -->
-            <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="d-flex justify-content-end mb-3">
-                                <button type="button" class="btn btn-success" id="btnAddNewGroup">
-                                    <i class="bi bi-plus-circle"></i> Add New Group
-                                </button>
-                            </div>
-                            <div id="groupsListContainer" class="list-group">
-                                <!-- Groups will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Student Groups Modal -->
-            <div class="modal fade" id="studentGroupsModal" tabindex="-1" aria-labelledby="studentGroupsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="studentGroupsModalLabel">Your Groups</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="studentGroupsList" class="list-group">
-                                <!-- Groups will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Profile Modal -->
-            <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="profileModalLabel">Faculty Profile</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <!-- Profile Information -->
-                                <div class="col-md-4">
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Profile Information</h5>
-                                            <div class="text-center mb-3">
-                                                <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
-                                            </div>
-                                            <div id="profileInfo">
-                                                <p><strong>Name:</strong> <span id="profileName"></span></p>
-                                                <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-                                                <p><strong>Department:</strong> <span id="profileDepartment"></span></p>
-                                                <p><strong>Classes Teaching:</strong> <span id="profileClasses"></span></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Schedule Calendar -->
-                                <div class="col-md-8">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Weekly Schedule</h5>
-                                            <div class="table-responsive">
-                                                <table class="table table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Time</th>
-                                                            <th>Monday</th>
-                                                            <th>Tuesday</th>
-                                                            <th>Wednesday</th>
-                                                            <th>Thursday</th>
-                                                            <th>Friday</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="scheduleTable">
-                                                        <!-- Schedule will be populated dynamically -->
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="btnEditProfile">Edit Profile</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add custom CSS for modal z-index -->
-            <style>
-                .modal-backdrop {
-                    z-index: 1050;
-                }
-                #createSurveyModal {
-                    z-index: 1055 !important;
-                }
-                #createSurveyModal .modal-dialog {
-                    z-index: 1056 !important;
-                }
-                #addFieldModal {
-                    z-index: 1060 !important;
-                }
-                #addFieldModal .modal-dialog {
-                    z-index: 1061 !important;
-                }
-                #addGroupModal {
-                    z-index: 1060 !important;
-                }
-                #addGroupModal .modal-dialog {
-                    z-index: 1061 !important;
-                }
-                #manageGroupsModal {
-                    z-index: 1060 !important;
-                }
-                #manageGroupsModal .modal-dialog {
-                    z-index: 1061 !important;
-                }
-                .blur-background {
-                    filter: blur(5px);
-                    -webkit-filter: blur(5px);
-                    transition: filter 0.3s ease;
-                }
-                .blur-background .modal-content {
-                    filter: none;
-                    -webkit-filter: none;
-                }
-            </style>
         </form>
     </div>
     
-
+    <!-- Create Survey Modal -->
+    <div class="modal fade" id="createSurveyModal" tabindex="-1" aria-labelledby="createSurveyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createSurveyModalLabel">Create New Survey</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="surveyForm">
+                        <div class="mb-3">
+                            <label for="surveyTitle" class="form-label">Survey Title</label>
+                            <input type="text" class="form-control" id="surveyTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surveyDescription" class="form-label">Survey Description</label>
+                            <textarea class="form-control" id="surveyDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Survey Fields</h5>
+                            <div id="surveyFields" class="mb-3">
+                                <!-- Fields will be added here dynamically -->
+                            </div>
+                            <button type="button" class="btn btn-success" id="btnAddField">
+                                <i class="bi bi-plus-circle"></i> Add Field
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Assign to Groups</h5>
+                            <div id="groupsList" class="mb-3">
+                                <!-- Groups will be added here dynamically -->
+                            </div>
+                            <button type="button" class="btn btn-success" id="btnAddGroup">
+                                <i class="bi bi-plus-circle"></i> Add Group
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveSurvey">Save Survey</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
-   
+    <!-- Add Field Modal -->
+    <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFieldModalLabel">Add Survey Field</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="fieldForm">
+                        <div class="mb-3">
+                            <label for="fieldLabel" class="form-label">Field Label</label>
+                            <input type="text" class="form-control" id="fieldLabel" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fieldType" class="form-label">Field Type</label>
+                            <select class="form-select" id="fieldType" required>
+                                <option value="text">Text Box</option>
+                                <option value="textarea">Text Area</option>
+                                <option value="select">Dropdown</option>
+                                <option value="multiselect">Multiple Select</option>
+                                <option value="radio">Radio Buttons</option>
+                                <option value="checkbox">Checkboxes</option>
+                                <option value="date">Date</option>
+                                <option value="number">Number</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="optionsContainer" style="display: none;">
+                            <label for="fieldOptions" class="form-label">Options (one per line)</label>
+                            <textarea class="form-control" id="fieldOptions" rows="3"></textarea>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="fieldRequired">
+                            <label class="form-check-label" for="fieldRequired">
+                                Required field
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveField">Add Field</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Group Modal -->
+    <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addGroupModalLabel">Add Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="groupForm">
+                        <div class="mb-3">
+                            <label for="groupName" class="form-label">Group Name</label>
+                            <input type="text" class="form-control" id="groupName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="groupMembers" class="form-label">Group Members (one per line)</label>
+                            <textarea class="form-control" id="groupMembers" rows="5" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveGroup">Add Group</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Surveys Modal -->
+    <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewSurveysModalLabel">Your Surveys</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="surveysList" class="list-group">
+                        <!-- Surveys will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Survey Detail Modal -->
+    <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="surveyDetailContent">
+                        <!-- Survey details will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnCompleteSurvey">Complete Survey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Complete Survey Modal -->
+    <div class="modal fade" id="completeSurveyModal" tabindex="-1" aria-labelledby="completeSurveyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completeSurveyModalLabel">Complete Survey</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="surveyResponseForm">
+                        <div class="mb-3">
+                            <label for="facultyGroupMemberSelect" class="form-label">Select Group Member</label>
+                            <select class="form-select" id="facultyGroupMemberSelect" required>
+                                <option value="">Choose a group member...</option>
+                            </select>
+                        </div>
+                        <div id="surveyFieldsContainer">
+                            <!-- Survey fields will be loaded here dynamically -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnSubmitSurvey">Submit Response</button>
+                    <button type="button" class="btn btn-success" id="btnCompleteAnother">Complete Another</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Group Responses Modal -->
+    <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="groupResponsesContent">
+                        <!-- Group responses will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Manage Groups Modal -->
+    <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button type="button" class="btn btn-success" id="btnAddNewGroup">
+                            <i class="bi bi-plus-circle"></i> Add New Group
+                        </button>
+                    </div>
+                    <div id="groupsListContainer" class="list-group">
+                        <!-- Groups will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Student Groups Modal -->
+    <div class="modal fade" id="studentGroupsModal" tabindex="-1" aria-labelledby="studentGroupsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentGroupsModalLabel">Your Groups</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="studentGroupsList" class="list-group">
+                        <!-- Groups will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">Faculty Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Profile Information -->
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Profile Information</h5>
+                                    <div class="text-center mb-3">
+                                        <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                                    </div>
+                                    <div id="profileInfo">
+                                        <p><strong>Name:</strong> <span id="profileName"></span></p>
+                                        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+                                        <p><strong>Department:</strong> <span id="profileDepartment"></span></p>
+                                        <p><strong>Classes Teaching:</strong> <span id="profileClasses"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Teaching Schedule -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Teaching Schedule</h5>
+                                    <div id="teachingSchedule">
+                                        <!-- Teaching schedule will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Weekly Schedule -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Weekly Schedule</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 100px;">Time</th>
+                                                    <th>Monday</th>
+                                                    <th>Tuesday</th>
+                                                    <th>Wednesday</th>
+                                                    <th>Thursday</th>
+                                                    <th>Friday</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="scheduleTable">
+                                                <!-- Schedule will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle"></i> 
+                                            Green cells indicate teaching hours, yellow cells indicate office hours, and white cells indicate available time.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnEditProfile">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add custom CSS for modal z-index -->
+    <style>
+        .modal-backdrop {
+            z-index: 1050;
+        }
+        #createSurveyModal {
+            z-index: 1055 !important;
+        }
+        #createSurveyModal .modal-dialog {
+            z-index: 1056 !important;
+        }
+        #addFieldModal {
+            z-index: 1060 !important;
+        }
+        #addFieldModal .modal-dialog {
+            z-index: 1061 !important;
+        }
+        #addGroupModal {
+            z-index: 1060 !important;
+        }
+        #addGroupModal .modal-dialog {
+            z-index: 1061 !important;
+        }
+        #manageGroupsModal {
+            z-index: 1060 !important;
+        }
+        #manageGroupsModal .modal-dialog {
+            z-index: 1061 !important;
+        }
+        .blur-background {
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+            transition: filter 0.3s ease;
+        }
+        .blur-background .modal-content {
+            filter: none;
+            -webkit-filter: none;
+        }
+        .schedule-cell {
+            min-height: 60px;
+            padding: 5px;
+        }
+        .teaching-hour {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .office-hour {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+        .available-hour {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+        }
+        .teaching-schedule-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+    </style>
 </body>
  <!-- Bootstrap JS -->
  <script type="module" src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -977,9 +1011,14 @@
         }
 
         // Logout button
-        const btnLogout = document.getElementById('btnLogout');
+        const btnLogout = document.querySelectorAll('#btnLogout');
         if (btnLogout) {
-            btnLogout.addEventListener('click', logout);
+            btnLogout.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            });
         }
 
         // Add Field Button
@@ -1742,8 +1781,8 @@
         }
 
         // Profile Button Click Handler
-        const profileLink = document.querySelector('.dropdown-item[href="#"]');
-        if (profileLink) {
+        const profileLinks = document.querySelectorAll('.dropdown-item[href="#"]');
+        profileLinks.forEach(profileLink => {
             profileLink.addEventListener('click', function(e) {
                 e.preventDefault();
                 console.log('Profile link clicked');
@@ -1770,6 +1809,21 @@
                             document.getElementById('profileDepartment').textContent = data.profile.department || 'Not specified';
                             document.getElementById('profileClasses').textContent = data.profile.classesTeaching || '0';
 
+                            // Update teaching schedule
+                            const teachingSchedule = document.getElementById('teachingSchedule');
+                            if (data.profile.teachingSchedule && data.profile.teachingSchedule.length > 0) {
+                                teachingSchedule.innerHTML = data.profile.teachingSchedule.map(course => `
+                                    <div class="teaching-schedule-item">
+                                        <h6>${course.name}</h6>
+                                        <p class="mb-1"><strong>Time:</strong> ${course.time}</p>
+                                        <p class="mb-1"><strong>Days:</strong> ${course.days.join(', ')}</p>
+                                        <p class="mb-0"><strong>Location:</strong> ${course.location}</p>
+                                    </div>
+                                `).join('');
+                            } else {
+                                teachingSchedule.innerHTML = '<p class="text-muted">No teaching schedule available.</p>';
+                            }
+
                             // Generate schedule table
                             const scheduleTable = document.getElementById('scheduleTable');
                             scheduleTable.innerHTML = ''; // Clear existing content
@@ -1784,7 +1838,34 @@
                                 // Add cells for each day
                                 for (let day = 0; day < 5; day++) {
                                     const cell = document.createElement('td');
-                                    cell.textContent = ''; // Empty for now
+                                    cell.className = 'schedule-cell';
+                                    
+                                    // Check if this time slot has a class
+                                    const hasClass = data.profile.teachingSchedule?.some(course => {
+                                        const courseTime = parseInt(course.time.split(':')[0]);
+                                        const courseDays = course.days;
+                                        const currentDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day];
+                                        return courseTime === hour && courseDays.includes(currentDay);
+                                    });
+
+                                    // Check if this is office hours (example: 2-4 PM on Monday and Wednesday)
+                                    const isOfficeHour = (hour >= 14 && hour < 16) && (day === 0 || day === 2);
+
+                                    if (hasClass) {
+                                        cell.className += ' teaching-hour';
+                                        const course = data.profile.teachingSchedule.find(c => 
+                                            parseInt(c.time.split(':')[0]) === hour && 
+                                            c.days.includes(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day])
+                                        );
+                                        cell.innerHTML = `<strong>${course.name}</strong><br>${course.location}`;
+                                    } else if (isOfficeHour) {
+                                        cell.className += ' office-hour';
+                                        cell.innerHTML = '<strong>Office Hours</strong>';
+                                    } else {
+                                        cell.className += ' available-hour';
+                                        cell.innerHTML = 'Available';
+                                    }
+
                                     row.appendChild(cell);
                                 }
 
@@ -1814,7 +1895,24 @@
                         });
                     });
             });
-        }
+        });
+
+        // Logout functionality
+        document.querySelectorAll('.logout-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear localStorage
+                localStorage.removeItem('currentUser');
+                // Show login form
+                document.getElementById('loginForm').style.display = 'block';
+                // Hide all other forms
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('frmFacultyDash').style.display = 'none';
+                document.getElementById('frmStudentDash').style.display = 'none';
+                // Scroll to login form
+                document.getElementById('loginForm').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
     });
 
     // Login handler
@@ -1976,7 +2074,6 @@
                         middleName,
                         lastName,
                         email,
-                        password,
                         role,
                         createdAt: new Date().toISOString()
                     };
@@ -2018,22 +2115,42 @@
                             }
                             if (registerForm) registerForm.style.display = "none";
                             if (loginForm) loginForm.style.display = "none";
+                            // Scroll to the top of the page
+                            window.scrollTo(0, 0);
                         });
                     }
                 } else {
-                    Swal.fire({
-                        title: "Registration Error",
-                        text: data.error || "An error occurred during registration",
-                        icon: "error"
-                    });
+                    let errorMessage = data.message || 'Registration failed';
+                    if (errorMessage.includes('already registered')) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Account Exists',
+                            text: 'This email address is already registered. Please use a different email or try logging in.',
+                            confirmButtonText: 'Go to Login',
+                            showCancelButton: true,
+                            cancelButtonText: 'Try Again'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('registerForm').style.display = 'none';
+                                document.getElementById('loginForm').style.display = 'block';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    }
                 }
             })
             .catch(error => {
                 console.error("Error during registration:", error);
                 Swal.fire({
-                    title: "Error",
-                    text: "Failed to connect to the server. Please try again.",
-                    icon: "error"
+                    icon: 'error',
+                    title: 'Registration Error',
+                    text: 'Failed to connect to the server. Please try again.',
+                    confirmButtonText: 'Try Again'
                 });
             });
         }
