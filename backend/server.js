@@ -116,12 +116,7 @@ app.post('/register', (req, res, next) => {
 app.post('/login', (req, res) => {
     let strEmail = req.body.email.trim().toLowerCase();
     let strPassword = req.body.password;
-<<<<<<< HEAD
-
-    let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`;
-=======
     let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`; // Corrected column name
->>>>>>> backend
 
     db.get(strCommand, [strEmail], (err, row) => {
         if (err) {
@@ -138,11 +133,13 @@ app.post('/login', (req, res) => {
         if (!passwordMatch) {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
         }
-<<<<<<< HEAD
 
+        // Issue JWT
+        const token = jwt.sign({ email: strEmail }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
         return res.status(200).json({ 
             status: "success", 
             message: "Login successful",
+            token,
             user: {
                 email: strEmail,
                 firstName: row.FirstName,
@@ -151,6 +148,18 @@ app.post('/login', (req, res) => {
         });
     });
 });
+
+// JWT middleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.sendStatus(401);
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
 
 // Get student groups route
 app.get('/student-groups', (req, res) => {
@@ -179,24 +188,6 @@ app.get('/student-groups', (req, res) => {
         res.json({ groups });
     });
 });
-=======
-        // Issue JWT
-        const token = jwt.sign({ email: strEmail }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
-        return res.status(200).json({ status: "success", message: "Login successful", token });
-    });
-});
-
-// JWT middleware
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.sendStatus(401);
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
 
 // Profile endpoint (protected)
 app.get('/profile', authenticateToken, (req, res) => {
@@ -247,7 +238,6 @@ app.get('/groups', authenticateToken, (req, res) => {
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
->>>>>>> backend
 
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
