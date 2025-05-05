@@ -116,10 +116,11 @@ app.post('/register', (req, res, next) => {
 app.post('/login', (req, res) => {
     let strEmail = req.body.email.trim().toLowerCase();
     let strPassword = req.body.password;
-    let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`; // Corrected column name
+    let strCommand = `SELECT UserPassword, FirstName, LastName, UserRole FROM tblUsers WHERE UserEmail = ?`; // Updated column names
 
     db.get(strCommand, [strEmail], (err, row) => {
         if (err) {
+            console.error('Database error:', err);
             return res.status(500).json({ status: "error", message: "Database error" });
         }
 
@@ -129,7 +130,7 @@ app.post('/login', (req, res) => {
         }
 
         //Returns a boolean value of whether the password matches
-        const passwordMatch = bcrypt.compareSync(strPassword, row.EmailPassword);
+        const passwordMatch = bcrypt.compareSync(strPassword, row.UserPassword);
         if (!passwordMatch) {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
         }
@@ -143,7 +144,8 @@ app.post('/login', (req, res) => {
             user: {
                 email: strEmail,
                 firstName: row.FirstName,
-                lastName: row.LastName
+                lastName: row.LastName,
+                role: row.UserRole
             }
         });
     });
