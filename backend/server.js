@@ -110,8 +110,8 @@ app.post('/register', (req, res, next) => {
   
 
 //Login route
-app.post('/login', (req, res) => {
-    let strEmail = req.body.email.trim().toLowerCase();
+app.post('(enter path)', (req, res) => {
+    let strEmail = req.body.email.trim().toLowerCase(); // This would correspond to the request body key
     let strPassword = req.body.password;
 
     let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`;
