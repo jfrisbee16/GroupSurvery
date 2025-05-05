@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const uuid = require('uuid').v4
 const sqlite3 = require('sqlite3').verbose()
 const bcrypt = require('bcrypt')
 const intSalt = 10
@@ -16,50 +17,82 @@ app.use(express.json())
 
 //Registration route
 app.post('/register', (req, res, next) => {
-    let strEmail = req.body.email.trim().toLowerCase();
-    let strPassword = req.body.password;
+    let strUserId = uuid();
     let strFirstName = req.body.firstName.trim();
+    let strMiddleName = req.body.middleName.trim();
     let strLastName = req.body.lastName.trim();
-    //let strRole = req.body.role;
-
+    let strEmail = req.body.email.trim().toLowerCase();
+    let strRole = req.body.role.trim();
+    let strPassword = req.body.password;
+  
     //Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(strEmail)) {
         return res.status(400).json({ error: "You must provide a valid email address" });
     }
-
+  
+    let blnError = false;
+  
     //Password validation
     if (strPassword.length < 8) {
+        blnError = true;
         return res.status(400).json({ error: "Password must be at least 8 characters long" });
     }
     if (!/[A-Z]/.test(strPassword)) {
+        blnError = true;
         return res.status(400).json({ error: "Password must contain at least one uppercase letter" });
     }
     if (!/[a-z]/.test(strPassword)) {
+        blnError = true;
         return res.status(400).json({ error: "Password must contain at least one lowercase letter" });
     }
     if (!/[0-9]/.test(strPassword)) {
+        blnError = true;
         return res.status(400).json({ error: "Password must contain at least one number" });
     }
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(strPassword)) {
+        blnError = true;
         return res.status(400).json({ error: "Password must contain at least one special character" });
     }
-
+  
     //First Name validation
     if (strFirstName.length < 3) {
+        blnError = true;
         return res.status(400).json({ error: "First name must be at least 3 characters long" });
+    }
+  
+    //Middle Name validation
+    if (strMiddleName.length < 3) {
+        blnError = true;  
+        return res.status(400).json({ error: "Middle name must be at least 3 characters long" });
     }
 
     //Last Name validation
     if (strLastName.length < 3) {
+        blnError = true;  
         return res.status(400).json({ error: "Last name must be at least 3 characters long" });
     }
-
-    strPassword = bcrypt.hashSync(strPassword, intSalt);
-
+  
+    //Role validation
+    const validRoles = ['Faculty', 'Student'];
+    if (!validRoles.includes(strRole)) {
+        blnError = true;
+        return res.status(400).json({ error: "Role must be either 'Student' or 'Faculty'" });
+    }
+  
+    //strPassword = bcrypt.hashSync(strPassword, intSalt);
+  
     // If validations pass
-    let strCommand = `INSERT INTO tblUsers VALUES (?, ?, ?, ?)`;
-    db.run(strCommand, [strEmail, strFirstName, strLastName, strPassword], function (err) {
+    if(blnError == true){
+        return res.status(400).json({ error: "Validation failed" });
+    } else {
+    req.body.userId = strUserId;
+    //let strCommand = `INSERT INTO tblUsers VALUES ('${strUserId}', '${strFirstName}', '${strMiddleName}', '${strLastName}', '${strEmail}', '${strRole}', '${strPassword}')`;
+  
+    let strCommand = `INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    let arrParams = [strUserId, strFirstName, strMiddleName, strLastName, strEmail, strRole, strPassword];
+    console.log(strCommand)
+    db.run(strCommand, arrParams, function (err) {
         if(err){
             console.log(err)
             res.status(400).json({
@@ -72,16 +105,22 @@ app.post('/register', (req, res, next) => {
             })
         }
     })
-})
+    }
+  })
+  
 
 //Login route
-app.post('/user', (req, res) => {
-    let strEmail = req.body.email.trim().toLowerCase(); // This would correspond to the request body key
+app.post('/login', (req, res) => {
+    let strEmail = req.body.email.trim().toLowerCase();
     let strPassword = req.body.password;
 
-    let strCommand = `SELECT EmailPassword FROM tblUsers WHERE UserId = ?`; // Corrected column name
+    let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`;
 
     db.get(strCommand, [strEmail], (err, row) => {
+        if (err) {
+            return res.status(500).json({ status: "error", message: "Database error" });
+        }
+
         //Will check if the email exists
         if (!row) {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
@@ -93,10 +132,45 @@ app.post('/user', (req, res) => {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
         }
 
-        return res.status(200).json({ status: "success", message: "Login successful" });
+        return res.status(200).json({ 
+            status: "success", 
+            message: "Login successful",
+            user: {
+                email: strEmail,
+                firstName: row.FirstName,
+                lastName: row.LastName
+            }
+        });
     });
 });
 
+// Get student groups route
+app.get('/student-groups', (req, res) => {
+    const strEmail = req.query.email;
+    
+    if (!strEmail) {
+        return res.status(400).json({ error: "Email is required" });
+    }
+
+    let strCommand = `
+        SELECT g.GroupName, g.Members 
+        FROM tblGroups g
+        WHERE g.Members LIKE ?
+    `;
+
+    db.all(strCommand, [`%${strEmail}%`], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: "Database error" });
+        }
+
+        const groups = rows.map(row => ({
+            name: row.GroupName,
+            members: row.Members.split(',').map(member => member.trim())
+        }));
+
+        res.json({ groups });
+    });
+});
 
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
