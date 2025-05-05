@@ -167,7 +167,7 @@
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
                                     <li><a class="dropdown-item" href="#">Settings</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#" id="btnLogout" onclick="logout()">Logout</a></li>
+                                    <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -261,8 +261,8 @@
                         <div class="modal-body">
                             <form id="surveyResponseForm">
                                 <div class="mb-3">
-                                    <label for="groupMemberSelect" class="form-label">Select Group Member</label>
-                                    <select class="form-select" id="groupMemberSelect" required>
+                                    <label for="studentGroupMemberSelect" class="form-label">Select Group Member</label>
+                                    <select class="form-select" id="studentGroupMemberSelect" required>
                                         <option value="">Choose a group member...</option>
                                     </select>
                                 </div>
@@ -404,7 +404,7 @@
                                 <a class="nav-link" href="#" id="btnCreateSurvey">Create Survey</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Manage Groups</a>
+                                <button class="nav-link btn btn-link" type="button" id="btnManageGroupsNav">Manage Groups</button>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -414,7 +414,7 @@
                                     <li><a class="dropdown-item" href="#">Profile</a></li>
                                     <li><a class="dropdown-item" href="#">Settings</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#" id="btnLogout" onclick="logout()">Logout</a></li>
+                                    <li><a class="dropdown-item logout-link" href="#" onclick="logout()">Logout</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -431,16 +431,16 @@
                             <div class="card-body">
                                 <h5 class="card-title">Create Survey</h5>
                                 <p class="card-text">Create a new survey for your students.</p>
-                                <button class="btn btn-primary" id="btnCreateSurveyCard">Create Survey</button>
+                                <button type="button" class="btn btn-primary" id="btnCreateSurveyCard">Create Survey</button>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Active Surveys</h5>
-                                <p class="card-text">You have <span id="activeSurveyCount">0</span> active surveys.</p>
-                                <button class="btn btn-secondary" id="btnViewActSurveys">View Surveys</button>
+                                <h5 class="card-title">View Surveys</h5>
+                                <p class="card-text">View and manage your existing surveys.</p>
+                                <button type="button" class="btn btn-success" id="btnViewSurveys">View Surveys</button>
                             </div>
                         </div>
                     </div>
@@ -449,297 +449,414 @@
                             <div class="card-body">
                                 <h5 class="card-title">Manage Groups</h5>
                                 <p class="card-text">Create and manage student groups.</p>
-                                <a href="#" class="btn btn-info">Manage Groups</a>
+                                <button type="button" class="btn btn-info" id="btnManageGroupsCard">Manage Groups</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Create Survey Modal -->
-            <div class="modal fade" id="createSurveyModal" tabindex="-1" aria-labelledby="createSurveyModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="createSurveyModalLabel">Create New Survey</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="surveyForm">
-                                <div class="mb-3">
-                                    <label for="surveyTitle" class="form-label">Survey Title</label>
-                                    <input type="text" class="form-control" id="surveyTitle" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="surveyDescription" class="form-label">Survey Description</label>
-                                    <textarea class="form-control" id="surveyDescription" rows="3"></textarea>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <h5>Survey Fields</h5>
-                                    <div id="surveyFields" class="mb-3">
-                                        <!-- Fields will be added here dynamically -->
-                                    </div>
-                                    <button type="button" class="btn btn-success" id="btnAddField">
-                                        <i class="bi bi-plus-circle"></i> Add Field
-                                    </button>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <h5>Assign to Groups</h5>
-                                    <div id="groupsList" class="mb-3">
-                                        <!-- Groups will be added here dynamically -->
-                                    </div>
-                                    <button type="button" class="btn btn-success" id="btnAddGroup">
-                                        <i class="bi bi-plus-circle"></i> Add Group
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="btnSaveSurvey">Save Survey</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add Field Modal -->
-            <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true" style="z-index: 1060;">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addFieldModalLabel">Add Survey Field</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="fieldForm">
-                                <div class="mb-3">
-                                    <label for="fieldLabel" class="form-label">Field Label</label>
-                                    <input type="text" class="form-control" id="fieldLabel" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="fieldType" class="form-label">Field Type</label>
-                                    <select class="form-select" id="fieldType" required>
-                                        <option value="text">Text Box</option>
-                                        <option value="textarea">Text Area</option>
-                                        <option value="select">Dropdown</option>
-                                        <option value="multiselect">Multiple Select</option>
-                                        <option value="radio">Radio Buttons</option>
-                                        <option value="checkbox">Checkboxes</option>
-                                        <option value="date">Date</option>
-                                        <option value="number">Number</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3" id="optionsContainer" style="display: none;">
-                                    <label for="fieldOptions" class="form-label">Options (one per line)</label>
-                                    <textarea class="form-control" id="fieldOptions" rows="3"></textarea>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="fieldRequired">
-                                    <label class="form-check-label" for="fieldRequired">
-                                        Required field
-                                    </label>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="btnSaveField">Add Field</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add Group Modal -->
-            <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true" style="z-index: 1060;">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addGroupModalLabel">Add Group</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="groupForm">
-                                <div class="mb-3">
-                                    <label for="groupName" class="form-label">Group Name</label>
-                                    <input type="text" class="form-control" id="groupName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="groupMembers" class="form-label">Group Members (one per line)</label>
-                                    <textarea class="form-control" id="groupMembers" rows="5" required></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" id="btnSaveGroup">Add Group</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- View Surveys Modal -->
-            <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="viewSurveysModalLabel">Your Surveys</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="surveysList" class="list-group">
-                                <!-- Surveys will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Survey Detail Modal -->
-            <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="surveyDetailContent">
-                                <!-- Survey details will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="btnCompleteSurvey">Complete Survey</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Complete Survey Modal -->
-            <div class="modal fade" id="completeSurveyModal" tabindex="-1" aria-labelledby="completeSurveyModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="completeSurveyModalLabel">Complete Survey</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="surveyResponseForm">
-                                <div class="mb-3">
-                                    <label for="groupMemberSelect" class="form-label">Select Group Member</label>
-                                    <select class="form-select" id="groupMemberSelect" required>
-                                        <option value="">Choose a group member...</option>
-                                    </select>
-                                </div>
-                                <div id="surveyFieldsContainer">
-                                    <!-- Survey fields will be loaded here dynamically -->
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="btnSubmitSurvey">Submit Response</button>
-                            <button type="button" class="btn btn-success" id="btnCompleteAnother">Complete Another</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Group Responses Modal -->
-            <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="groupResponsesContent">
-                                <!-- Group responses will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Manage Groups Modal -->
-            <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="d-flex justify-content-end mb-3">
-                                <button type="button" class="btn btn-success" id="btnAddNewGroup">
-                                    <i class="bi bi-plus-circle"></i> Add New Group
-                                </button>
-                            </div>
-                            <div id="groupsListContainer" class="list-group">
-                                <!-- Groups will be loaded here dynamically -->
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Add custom CSS for modal z-index -->
-            <style>
-                .modal-backdrop {
-                    z-index: 1050;
-                }
-                #createSurveyModal {
-                    z-index: 1055 !important;
-                }
-                #createSurveyModal .modal-dialog {
-                    z-index: 1056 !important;
-                }
-                #addFieldModal {
-                    z-index: 1060 !important;
-                }
-                #addFieldModal .modal-dialog {
-                    z-index: 1061 !important;
-                }
-                #addGroupModal {
-                    z-index: 1060 !important;
-                }
-                #addGroupModal .modal-dialog {
-                    z-index: 1061 !important;
-                }
-                #manageGroupsModal {
-                    z-index: 1060 !important;
-                }
-                #manageGroupsModal .modal-dialog {
-                    z-index: 1061 !important;
-                }
-                .blur-background {
-                    filter: blur(5px);
-                    -webkit-filter: blur(5px);
-                    transition: filter 0.3s ease;
-                }
-                .blur-background .modal-content {
-                    filter: none;
-                    -webkit-filter: none;
-                }
-            </style>
         </form>
     </div>
     
-
+    <!-- Create Survey Modal -->
+    <div class="modal fade" id="createSurveyModal" tabindex="-1" aria-labelledby="createSurveyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createSurveyModalLabel">Create New Survey</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="surveyForm">
+                        <div class="mb-3">
+                            <label for="surveyTitle" class="form-label">Survey Title</label>
+                            <input type="text" class="form-control" id="surveyTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surveyDescription" class="form-label">Survey Description</label>
+                            <textarea class="form-control" id="surveyDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Survey Fields</h5>
+                            <div id="surveyFields" class="mb-3">
+                                <!-- Fields will be added here dynamically -->
+                            </div>
+                            <button type="button" class="btn btn-success" id="btnAddField">
+                                <i class="bi bi-plus-circle"></i> Add Field
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Assign to Groups</h5>
+                            <div id="groupsList" class="mb-3">
+                                <!-- Groups will be added here dynamically -->
+                            </div>
+                            <button type="button" class="btn btn-success" id="btnAddGroup">
+                                <i class="bi bi-plus-circle"></i> Add Group
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveSurvey">Save Survey</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
-   
+    <!-- Add Field Modal -->
+    <div class="modal fade" id="addFieldModal" tabindex="-1" aria-labelledby="addFieldModalLabel" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFieldModalLabel">Add Survey Field</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="fieldForm">
+                        <div class="mb-3">
+                            <label for="fieldLabel" class="form-label">Field Label</label>
+                            <input type="text" class="form-control" id="fieldLabel" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fieldType" class="form-label">Field Type</label>
+                            <select class="form-select" id="fieldType" required>
+                                <option value="text">Text Box</option>
+                                <option value="textarea">Text Area</option>
+                                <option value="select">Dropdown</option>
+                                <option value="multiselect">Multiple Select</option>
+                                <option value="radio">Radio Buttons</option>
+                                <option value="checkbox">Checkboxes</option>
+                                <option value="date">Date</option>
+                                <option value="number">Number</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="optionsContainer" style="display: none;">
+                            <label for="fieldOptions" class="form-label">Options (one per line)</label>
+                            <textarea class="form-control" id="fieldOptions" rows="3"></textarea>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="fieldRequired">
+                            <label class="form-check-label" for="fieldRequired">
+                                Required field
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveField">Add Field</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Group Modal -->
+    <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModalLabel" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addGroupModalLabel">Add Group</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="groupForm">
+                        <div class="mb-3">
+                            <label for="groupName" class="form-label">Group Name</label>
+                            <input type="text" class="form-control" id="groupName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="groupMembers" class="form-label">Group Members (one per line)</label>
+                            <textarea class="form-control" id="groupMembers" rows="5" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveGroup">Add Group</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- View Surveys Modal -->
+    <div class="modal fade" id="viewSurveysModal" tabindex="-1" aria-labelledby="viewSurveysModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewSurveysModalLabel">Your Surveys</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="surveysList" class="list-group">
+                        <!-- Surveys will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Survey Detail Modal -->
+    <div class="modal fade" id="surveyDetailModal" tabindex="-1" aria-labelledby="surveyDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="surveyDetailModalLabel">Survey Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="surveyDetailContent">
+                        <!-- Survey details will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnCompleteSurvey">Complete Survey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Complete Survey Modal -->
+    <div class="modal fade" id="completeSurveyModal" tabindex="-1" aria-labelledby="completeSurveyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completeSurveyModalLabel">Complete Survey</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="surveyResponseForm">
+                        <div class="mb-3">
+                            <label for="facultyGroupMemberSelect" class="form-label">Select Group Member</label>
+                            <select class="form-select" id="facultyGroupMemberSelect" required>
+                                <option value="">Choose a group member...</option>
+                            </select>
+                        </div>
+                        <div id="surveyFieldsContainer">
+                            <!-- Survey fields will be loaded here dynamically -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnSubmitSurvey">Submit Response</button>
+                    <button type="button" class="btn btn-success" id="btnCompleteAnother">Complete Another</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Group Responses Modal -->
+    <div class="modal fade" id="groupResponsesModal" tabindex="-1" aria-labelledby="groupResponsesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="groupResponsesModalLabel">Group Responses</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="groupResponsesContent">
+                        <!-- Group responses will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Manage Groups Modal -->
+    <div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manageGroupsModalLabel">Manage Groups</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button type="button" class="btn btn-success" id="btnAddNewGroup">
+                            <i class="bi bi-plus-circle"></i> Add New Group
+                        </button>
+                    </div>
+                    <div id="groupsListContainer" class="list-group">
+                        <!-- Groups will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Student Groups Modal -->
+    <div class="modal fade" id="studentGroupsModal" tabindex="-1" aria-labelledby="studentGroupsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="studentGroupsModalLabel">Your Groups</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="studentGroupsList" class="list-group">
+                        <!-- Groups will be loaded here dynamically -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">Faculty Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Profile Information -->
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Profile Information</h5>
+                                    <div class="text-center mb-3">
+                                        <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                                    </div>
+                                    <div id="profileInfo">
+                                        <p><strong>Name:</strong> <span id="profileName"></span></p>
+                                        <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+                                        <p><strong>Department:</strong> <span id="profileDepartment"></span></p>
+                                        <p><strong>Classes Teaching:</strong> <span id="profileClasses"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Teaching Schedule -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Teaching Schedule</h5>
+                                    <div id="teachingSchedule">
+                                        <!-- Teaching schedule will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Weekly Schedule -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Weekly Schedule</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 100px;">Time</th>
+                                                    <th>Monday</th>
+                                                    <th>Tuesday</th>
+                                                    <th>Wednesday</th>
+                                                    <th>Thursday</th>
+                                                    <th>Friday</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="scheduleTable">
+                                                <!-- Schedule will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle"></i> 
+                                            Green cells indicate teaching hours, yellow cells indicate office hours, and white cells indicate available time.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnEditProfile">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add custom CSS for modal z-index -->
+    <style>
+        .modal-backdrop {
+            z-index: 1050;
+        }
+        #createSurveyModal {
+            z-index: 1055 !important;
+        }
+        #createSurveyModal .modal-dialog {
+            z-index: 1056 !important;
+        }
+        #addFieldModal {
+            z-index: 1060 !important;
+        }
+        #addFieldModal .modal-dialog {
+            z-index: 1061 !important;
+        }
+        #addGroupModal {
+            z-index: 1060 !important;
+        }
+        #addGroupModal .modal-dialog {
+            z-index: 1061 !important;
+        }
+        #manageGroupsModal {
+            z-index: 1060 !important;
+        }
+        #manageGroupsModal .modal-dialog {
+            z-index: 1061 !important;
+        }
+        .blur-background {
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+            transition: filter 0.3s ease;
+        }
+        .blur-background .modal-content {
+            filter: none;
+            -webkit-filter: none;
+        }
+        .schedule-cell {
+            min-height: 60px;
+            padding: 5px;
+        }
+        .teaching-hour {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .office-hour {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+        .available-hour {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+        }
+        .teaching-schedule-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+    </style>
 </body>
  <!-- Bootstrap JS -->
  <script type="module" src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -751,6 +868,12 @@
  <script>
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap modals
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            new bootstrap.Modal(modal);
+        });
+
         // Validation for Login Form
         const btnLogin = document.querySelector("#btnLogin");
         if (btnLogin) {
@@ -888,9 +1011,14 @@
         }
 
         // Logout button
-        const btnLogout = document.getElementById('btnLogout');
+        const btnLogout = document.querySelectorAll('#btnLogout');
         if (btnLogout) {
-            btnLogout.addEventListener('click', logout);
+            btnLogout.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            });
         }
 
         // Add Field Button
@@ -1054,15 +1182,18 @@
             });
         }
 
-        // Manage Groups Button in Faculty Dashboard
-        const btnManageGroups = document.querySelector('#frmFacultyDash .nav-link[href="#"]');
-        if (btnManageGroups && btnManageGroups.textContent.trim() === 'Manage Groups') {
-            btnManageGroups.addEventListener('click', function(e) {
+        // Add event listener for Manage Groups Card Button
+        const btnManageGroupsCard = document.getElementById('btnManageGroupsCard');
+        if (btnManageGroupsCard) {
+            console.log('Manage Groups card button found');
+            btnManageGroupsCard.addEventListener('click', function(e) {
                 e.preventDefault();
+                console.log('Manage Groups card button clicked');
                 
                 // Check if user is logged in
                 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                 if (!currentUser) {
+                    console.log('No user logged in');
                     Swal.fire({
                         title: 'Error',
                         text: 'Please login first',
@@ -1070,14 +1201,17 @@
                     });
                     return;
                 }
+                console.log('User logged in:', currentUser);
 
                 // Load existing groups
                 const groupsListContainer = document.getElementById('groupsListContainer');
                 if (groupsListContainer) {
+                    console.log('Groups list container found');
                     groupsListContainer.innerHTML = ''; // Clear existing content
 
                     // Retrieve groups from localStorage
                     const groups = JSON.parse(localStorage.getItem('groups')) || [];
+                    console.log('Retrieved groups:', groups);
 
                     if (groups.length === 0) {
                         groupsListContainer.innerHTML = '<p class="text-center">No groups available.</p>';
@@ -1100,173 +1234,27 @@
                             groupsListContainer.appendChild(groupItem);
                         });
                     }
+                } else {
+                    console.log('Groups list container not found');
                 }
 
                 // Show the modal
-                const modal = document.getElementById('manageGroupsModal');
-                if (modal) {
-                    const myModal = new bootstrap.Modal(modal);
-                    myModal.show();
-                }
-            });
-        }
-
-        // Add New Group Button in Manage Groups Modal
-        const btnAddNewGroup = document.getElementById('btnAddNewGroup');
-        if (btnAddNewGroup) {
-            btnAddNewGroup.addEventListener('click', function() {
-                const modal = document.getElementById('addGroupModal');
                 const manageGroupsModal = document.getElementById('manageGroupsModal');
-                if (modal) {
-                    // Add blur class to manage groups modal
-                    if (manageGroupsModal) {
-                        manageGroupsModal.classList.add('blur-background');
+                if (manageGroupsModal) {
+                    console.log('Manage groups modal found');
+                    try {
+                        const modal = new bootstrap.Modal(manageGroupsModal);
+                        modal.show();
+                        console.log('Modal shown successfully');
+                    } catch (error) {
+                        console.error('Error showing modal:', error);
                     }
-                    var myModal = new bootstrap.Modal(modal);
-                    myModal.show();
+                } else {
+                    console.log('Manage groups modal not found');
                 }
             });
-        }
-
-        // Save Group Button
-        const btnSaveGroup = document.getElementById('btnSaveGroup');
-        if (btnSaveGroup) {
-            btnSaveGroup.addEventListener('click', function() {
-                const groupName = document.getElementById('groupName').value.trim();
-                const groupMembers = document.getElementById('groupMembers').value.trim();
-
-                if (!groupName) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Please enter a group name',
-                        icon: 'error'
-                    });
-                    return;
-                }
-
-                if (!groupMembers) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Please enter at least one group member',
-                        icon: 'error'
-                    });
-                    return;
-                }
-
-                // Create group object
-                const group = {
-                    name: groupName,
-                    members: groupMembers.split('\n').filter(member => member.trim() !== ''),
-                    createdAt: new Date().toISOString()
-                };
-
-                // Save group to localStorage
-                let groups = JSON.parse(localStorage.getItem('groups')) || [];
-                groups.push(group);
-                localStorage.setItem('groups', JSON.stringify(groups));
-
-                // Show success message
-                Swal.fire({
-                    title: 'Success',
-                    text: 'Group saved successfully!',
-                    icon: 'success'
-                });
-
-                // Reset the form and close the modal
-                document.getElementById('groupForm').reset();
-                const modal = document.getElementById('addGroupModal');
-                if (modal) {
-                    const myModal = bootstrap.Modal.getInstance(modal);
-                    myModal.hide();
-                }
-
-                // Refresh the groups list
-                const groupsListContainer = document.getElementById('groupsListContainer');
-                if (groupsListContainer) {
-                    groupsListContainer.innerHTML = ''; // Clear existing content
-
-                    if (groups.length === 0) {
-                        groupsListContainer.innerHTML = '<p class="text-center">No groups available.</p>';
-                    } else {
-                        groups.forEach((group, index) => {
-                            const groupItem = document.createElement('div');
-                            groupItem.className = 'list-group-item';
-                            groupItem.innerHTML = `
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h5>${group.name}</h5>
-                                        <p><strong>Members:</strong> ${group.members.join(', ')}</p>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-primary" onclick="editGroup(${index})">Edit</button>
-                                        <button class="btn btn-danger" onclick="deleteGroup(${index})">Delete</button>
-                                    </div>
-                                </div>
-                            `;
-                            groupsListContainer.appendChild(groupItem);
-                        });
-                    }
-                }
-            });
-        }
-
-        // Delete Group function
-        function deleteGroup(index) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Get current groups
-                    let groups = JSON.parse(localStorage.getItem('groups')) || [];
-                    
-                    // Remove the group at the specified index
-                    groups.splice(index, 1);
-                    
-                    // Save updated groups
-                    localStorage.setItem('groups', JSON.stringify(groups));
-                    
-                    // Show success message
-                    Swal.fire(
-                        'Deleted!',
-                        'Your group has been deleted.',
-                        'success'
-                    );
-                    
-                    // Refresh the groups list
-                    const groupsListContainer = document.getElementById('groupsListContainer');
-                    if (groupsListContainer) {
-                        groupsListContainer.innerHTML = ''; // Clear existing content
-                        
-                        if (groups.length === 0) {
-                            groupsListContainer.innerHTML = '<p class="text-center">No groups available.</p>';
-                        } else {
-                            groups.forEach((group, newIndex) => {
-                                const groupItem = document.createElement('div');
-                                groupItem.className = 'list-group-item';
-                                groupItem.innerHTML = `
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h5>${group.name}</h5>
-                                            <p><strong>Members:</strong> ${group.members.join(', ')}</p>
-                                        </div>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-primary" onclick="editGroup(${newIndex})">Edit</button>
-                                            <button class="btn btn-danger" onclick="deleteGroup(${newIndex})">Delete</button>
-                                        </div>
-                                    </div>
-                                `;
-                                groupsListContainer.appendChild(groupItem);
-                            });
-                        }
-                    }
-                }
-            });
+        } else {
+            console.log('Manage Groups card button not found');
         }
 
         // Save Survey Button
@@ -1509,8 +1497,10 @@
                         return;
                     }
 
-                    // Populate group members dropdown
-                    const groupMemberSelect = document.getElementById('groupMemberSelect');
+                    // Determine which select element to use based on user role
+                    const selectId = currentUser.role === 'Student' ? 'studentGroupMemberSelect' : 'facultyGroupMemberSelect';
+                    const groupMemberSelect = document.getElementById(selectId);
+                    
                     if (groupMemberSelect) {
                         groupMemberSelect.innerHTML = '<option value="">Choose a group member...</option>';
                         
@@ -1557,7 +1547,9 @@
         const btnSubmitSurvey = document.getElementById('btnSubmitSurvey');
         if (btnSubmitSurvey) {
             btnSubmitSurvey.addEventListener('click', function() {
-                const groupMemberSelect = document.getElementById('groupMemberSelect');
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                const selectId = currentUser.role === 'Student' ? 'studentGroupMemberSelect' : 'facultyGroupMemberSelect';
+                const groupMemberSelect = document.getElementById(selectId);
                 const selectedMember = groupMemberSelect.value;
 
                 if (!selectedMember) {
@@ -1629,6 +1621,298 @@
                 form.reset();
             });
         }
+
+        // Add New Group Button in Manage Groups Modal
+        const btnAddNewGroup = document.getElementById('btnAddNewGroup');
+        if (btnAddNewGroup) {
+            btnAddNewGroup.addEventListener('click', function() {
+                const modal = document.getElementById('addGroupModal');
+                const manageGroupsModal = document.getElementById('manageGroupsModal');
+                if (modal) {
+                    // Add blur class to manage groups modal
+                    if (manageGroupsModal) {
+                        manageGroupsModal.classList.add('blur-background');
+                    }
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Save Group Button
+        const btnSaveGroup = document.getElementById('btnSaveGroup');
+        if (btnSaveGroup) {
+            btnSaveGroup.addEventListener('click', function() {
+                const groupName = document.getElementById('groupName').value.trim();
+                const groupMembers = document.getElementById('groupMembers').value.trim();
+
+                if (!groupName) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please enter a group name',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                if (!groupMembers) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please enter at least one group member',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Create group object
+                const group = {
+                    name: groupName,
+                    members: groupMembers.split('\n').filter(member => member.trim() !== ''),
+                    createdAt: new Date().toISOString()
+                };
+
+                // Save group to localStorage
+                let groups = JSON.parse(localStorage.getItem('groups')) || [];
+                groups.push(group);
+                localStorage.setItem('groups', JSON.stringify(groups));
+
+                // Show success message
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Group saved successfully!',
+                    icon: 'success'
+                });
+
+                // Reset the form and close the modal
+                document.getElementById('groupForm').reset();
+                const modal = document.getElementById('addGroupModal');
+                if (modal) {
+                    const myModal = bootstrap.Modal.getInstance(modal);
+                    myModal.hide();
+                }
+
+                // Refresh the groups list
+                const groupsListContainer = document.getElementById('groupsListContainer');
+                if (groupsListContainer) {
+                    groupsListContainer.innerHTML = ''; // Clear existing content
+
+                    if (groups.length === 0) {
+                        groupsListContainer.innerHTML = '<p class="text-center">No groups available.</p>';
+                    } else {
+                        groups.forEach((group, index) => {
+                            const groupItem = document.createElement('div');
+                            groupItem.className = 'list-group-item';
+                            groupItem.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5>${group.name}</h5>
+                                        <p><strong>Members:</strong> ${group.members.join(', ')}</p>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-primary" onclick="editGroup(${index})">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteGroup(${index})">Delete</button>
+                                    </div>
+                                </div>
+                            `;
+                            groupsListContainer.appendChild(groupItem);
+                        });
+                    }
+                }
+            });
+        }
+
+        // Delete Group function
+        function deleteGroup(index) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Get current groups
+                    let groups = JSON.parse(localStorage.getItem('groups')) || [];
+                    
+                    // Remove the group at the specified index
+                    groups.splice(index, 1);
+                    
+                    // Save updated groups
+                    localStorage.setItem('groups', JSON.stringify(groups));
+                    
+                    // Show success message
+                    Swal.fire(
+                        'Deleted!',
+                        'Your group has been deleted.',
+                        'success'
+                    );
+                    
+                    // Refresh the groups list
+                    const groupsListContainer = document.getElementById('groupsListContainer');
+                    if (groupsListContainer) {
+                        groupsListContainer.innerHTML = ''; // Clear existing content
+                        
+                        if (groups.length === 0) {
+                            groupsListContainer.innerHTML = '<p class="text-center">No groups available.</p>';
+                        } else {
+                            groups.forEach((group, newIndex) => {
+                                const groupItem = document.createElement('div');
+                                groupItem.className = 'list-group-item';
+                                groupItem.innerHTML = `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5>${group.name}</h5>
+                                            <p><strong>Members:</strong> ${group.members.join(', ')}</p>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-primary" onclick="editGroup(${newIndex})">Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteGroup(${newIndex})">Delete</button>
+                                        </div>
+                                    </div>
+                                `;
+                                groupsListContainer.appendChild(groupItem);
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        // Profile Button Click Handler
+        const profileLinks = document.querySelectorAll('.dropdown-item[href="#"]');
+        profileLinks.forEach(profileLink => {
+            profileLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Profile link clicked');
+                
+                // Get current user
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (!currentUser) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please login first',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Fetch profile data from backend
+                fetch(`http://localhost:8000/profile?email=${currentUser.email}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Update profile information
+                            document.getElementById('profileName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+                            document.getElementById('profileEmail').textContent = currentUser.email;
+                            document.getElementById('profileDepartment').textContent = data.profile.department || 'Not specified';
+                            document.getElementById('profileClasses').textContent = data.profile.classesTeaching || '0';
+
+                            // Update teaching schedule
+                            const teachingSchedule = document.getElementById('teachingSchedule');
+                            if (data.profile.teachingSchedule && data.profile.teachingSchedule.length > 0) {
+                                teachingSchedule.innerHTML = data.profile.teachingSchedule.map(course => `
+                                    <div class="teaching-schedule-item">
+                                        <h6>${course.name}</h6>
+                                        <p class="mb-1"><strong>Time:</strong> ${course.time}</p>
+                                        <p class="mb-1"><strong>Days:</strong> ${course.days.join(', ')}</p>
+                                        <p class="mb-0"><strong>Location:</strong> ${course.location}</p>
+                                    </div>
+                                `).join('');
+                            } else {
+                                teachingSchedule.innerHTML = '<p class="text-muted">No teaching schedule available.</p>';
+                            }
+
+                            // Generate schedule table
+                            const scheduleTable = document.getElementById('scheduleTable');
+                            scheduleTable.innerHTML = ''; // Clear existing content
+
+                            // Create time slots (8 AM to 5 PM)
+                            for (let hour = 8; hour <= 17; hour++) {
+                                const row = document.createElement('tr');
+                                const timeCell = document.createElement('td');
+                                timeCell.textContent = `${hour}:00`;
+                                row.appendChild(timeCell);
+
+                                // Add cells for each day
+                                for (let day = 0; day < 5; day++) {
+                                    const cell = document.createElement('td');
+                                    cell.className = 'schedule-cell';
+                                    
+                                    // Check if this time slot has a class
+                                    const hasClass = data.profile.teachingSchedule?.some(course => {
+                                        const courseTime = parseInt(course.time.split(':')[0]);
+                                        const courseDays = course.days;
+                                        const currentDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day];
+                                        return courseTime === hour && courseDays.includes(currentDay);
+                                    });
+
+                                    // Check if this is office hours (example: 2-4 PM on Monday and Wednesday)
+                                    const isOfficeHour = (hour >= 14 && hour < 16) && (day === 0 || day === 2);
+
+                                    if (hasClass) {
+                                        cell.className += ' teaching-hour';
+                                        const course = data.profile.teachingSchedule.find(c => 
+                                            parseInt(c.time.split(':')[0]) === hour && 
+                                            c.days.includes(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day])
+                                        );
+                                        cell.innerHTML = `<strong>${course.name}</strong><br>${course.location}`;
+                                    } else if (isOfficeHour) {
+                                        cell.className += ' office-hour';
+                                        cell.innerHTML = '<strong>Office Hours</strong>';
+                                    } else {
+                                        cell.className += ' available-hour';
+                                        cell.innerHTML = 'Available';
+                                    }
+
+                                    row.appendChild(cell);
+                                }
+
+                                scheduleTable.appendChild(row);
+                            }
+
+                            // Show the modal
+                            const profileModal = document.getElementById('profileModal');
+                            if (profileModal) {
+                                const modal = new bootstrap.Modal(profileModal);
+                                modal.show();
+                            }
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to load profile data',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching profile:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to load profile data',
+                            icon: 'error'
+                        });
+                    });
+            });
+        });
+
+        // Logout functionality
+        document.querySelectorAll('.logout-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear localStorage
+                localStorage.removeItem('currentUser');
+                // Show login form
+                document.getElementById('loginForm').style.display = 'block';
+                // Hide all other forms
+                document.getElementById('registerForm').style.display = 'none';
+                document.getElementById('frmFacultyDash').style.display = 'none';
+                document.getElementById('frmStudentDash').style.display = 'none';
+                // Scroll to login form
+                document.getElementById('loginForm').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
     });
 
     // Login handler
@@ -1637,7 +1921,6 @@
         
         const strEmail = document.querySelector("#strUsername").value.trim();
         const strPassword = document.querySelector("#strPassword").value.trim();
-        console.log("Captured Password:", strPassword);
 
         const regEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i;
         const regPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
@@ -1660,47 +1943,65 @@
                 icon: "error",
             });
         } else {
-            // For demo purposes, create a mock user based on email
-            const role = strEmail.includes('student') ? 'Student' : 'Faculty';
-            const userData = {
-                email: strEmail,
-                password: strPassword,
-                role: role,
-                firstName: 'John',
-                lastName: 'Doe',
-                middleName: '',
-                createdAt: new Date().toISOString()
-            };
-            
-            try {
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                
-                Swal.fire({
-                    title: "Success!",
-                    text: `Login successful! Redirecting to ${role.toLowerCase()} dashboard...`,
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    const bgImage = document.getElementById("bgImage");
-                    if (bgImage) bgImage.style.display = "none";
+            // Send login data to backend
+            fetch('http://localhost:8000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: strEmail,
+                    password: strPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // Store user data in localStorage
+                    const userData = {
+                        email: strEmail,
+                        firstName: data.user.firstName,
+                        lastName: data.user.lastName,
+                        role: data.user.role,
+                        createdAt: new Date().toISOString()
+                    };
                     
-                    if (role === 'Student') {
-                        const studentDash = document.getElementById("frmStudentDash");
-                        if (studentDash) studentDash.style.display = "block";
-                    } else {
-                        const facultyDash = document.getElementById("frmFacultyDash");
-                        if (facultyDash) facultyDash.style.display = "block";
-                    }
-                });
-            } catch (error) {
-                console.error("Error saving user data:", error);
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    
+                    Swal.fire({
+                        title: "Success!",
+                        text: `Login successful! Redirecting to ${data.user.role.toLowerCase()} dashboard...`,
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        const bgImage = document.getElementById("bgImage");
+                        if (bgImage) bgImage.style.display = "none";
+                        
+                        if (data.user.role === 'Student') {
+                            const studentDash = document.getElementById("frmStudentDash");
+                            if (studentDash) studentDash.style.display = "block";
+                        } else {
+                            const facultyDash = document.getElementById("frmFacultyDash");
+                            if (facultyDash) facultyDash.style.display = "block";
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Login Error",
+                        text: data.message || "Invalid email or password",
+                        icon: "error"
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error during login:", error);
                 Swal.fire({
                     title: "Error",
-                    text: "Failed to save user data. Please try again.",
+                    text: "Failed to connect to the server. Please try again.",
                     icon: "error"
                 });
-            }
+            });
         }
     }
 
@@ -1746,71 +2047,112 @@
                 icon: "error"
             });
         } else {
-            try {
-                // Store user data in localStorage
-                const userData = {
-                    firstName,
-                    middleName,
-                    lastName,
-                    email,
-                    password,
-                    role,
-                    createdAt: new Date().toISOString()
-                };
-                
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                
-                if(role === 'Student'){
-                    Swal.fire({
-                        icon: "success",
-                        title: "Registration Successful",
-                        text: "Sending student to the student dashboard"
-                    }).then(()=>{
-                        const studentDash = document.getElementById("frmStudentDash");
-                        const registerForm = document.getElementById("frmRegister");
-                        const loginForm = document.getElementById("frmLogin");
-                        
-                        if (studentDash) {
-                            studentDash.style.display = "block";
-                            studentDash.scrollIntoView({ behavior: 'instant' });
-                        }
-                        if (registerForm) registerForm.style.display = "none";
-                        if (loginForm) loginForm.style.display = "none";
-                        // Scroll to the top of the page
-                        window.scrollTo(0, 0);
-                    });
-                } else if(role === 'Faculty'){
-                    Swal.fire({
-                        icon: "success",
-                        title: "Registration Successful",
-                        text: "Sending faculty to the faculty dashboard"
-                    }).then(()=>{
-                        const facultyDash = document.getElementById("frmFacultyDash");
-                        const registerForm = document.getElementById("frmRegister");
-                        const loginForm = document.getElementById("frmLogin");
-                        
-                        if (facultyDash) {
-                            facultyDash.style.display = "block";
-                            facultyDash.scrollIntoView({ behavior: 'instant' });
-                        }
-                        if (registerForm) registerForm.style.display = "none";
-                        if (loginForm) loginForm.style.display = "none";
-                    });
+            // Create the registration data object
+            const registrationData = {
+                firstName,
+                middleName,
+                lastName,
+                email,
+                password,
+                role
+            };
+
+            // Send registration data to backend
+            fetch('http://localhost:8000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(registrationData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // Store user data in localStorage
+                    const userData = {
+                        firstName,
+                        middleName,
+                        lastName,
+                        email,
+                        role,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    
+                    if(role === 'Student'){
+                        Swal.fire({
+                            icon: "success",
+                            title: "Registration Successful",
+                            text: "Sending student to the student dashboard"
+                        }).then(()=>{
+                            const studentDash = document.getElementById("frmStudentDash");
+                            const registerForm = document.getElementById("frmRegister");
+                            const loginForm = document.getElementById("frmLogin");
+                            
+                            if (studentDash) {
+                                studentDash.style.display = "block";
+                                studentDash.scrollIntoView({ behavior: 'instant' });
+                            }
+                            if (registerForm) registerForm.style.display = "none";
+                            if (loginForm) loginForm.style.display = "none";
+                            // Scroll to the top of the page
+                            window.scrollTo(0, 0);
+                        });
+                    } else if(role === 'Faculty'){
+                        Swal.fire({
+                            icon: "success",
+                            title: "Registration Successful",
+                            text: "Sending faculty to the faculty dashboard"
+                        }).then(()=>{
+                            const facultyDash = document.getElementById("frmFacultyDash");
+                            const registerForm = document.getElementById("frmRegister");
+                            const loginForm = document.getElementById("frmLogin");
+                            
+                            if (facultyDash) {
+                                facultyDash.style.display = "block";
+                                facultyDash.scrollIntoView({ behavior: 'instant' });
+                            }
+                            if (registerForm) registerForm.style.display = "none";
+                            if (loginForm) loginForm.style.display = "none";
+                            // Scroll to the top of the page
+                            window.scrollTo(0, 0);
+                        });
+                    }
                 } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Registration Error",
-                        text: "Please select a valid role"
-                    });
+                    let errorMessage = data.message || 'Registration failed';
+                    if (errorMessage.includes('already registered')) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Account Exists',
+                            text: 'This email address is already registered. Please use a different email or try logging in.',
+                            confirmButtonText: 'Go to Login',
+                            showCancelButton: true,
+                            cancelButtonText: 'Try Again'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('registerForm').style.display = 'none';
+                                document.getElementById('loginForm').style.display = 'block';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    }
                 }
-            } catch (error) {
-                console.error("Error saving user data:", error);
+            })
+            .catch(error => {
+                console.error("Error during registration:", error);
                 Swal.fire({
-                    title: "Error",
-                    text: "Failed to save user data. Please try again.",
-                    icon: "error"
+                    icon: 'error',
+                    title: 'Registration Error',
+                    text: 'Failed to connect to the server. Please try again.',
+                    confirmButtonText: 'Try Again'
                 });
-            }
+            });
         }
     }
 
