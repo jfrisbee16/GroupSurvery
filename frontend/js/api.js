@@ -1,9 +1,9 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:8000';
 
 // Auth API calls
 export const authAPI = {
     async register(userData) {
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        const response = await fetch(`${API_BASE_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,7 +14,7 @@ export const authAPI = {
     },
 
     async login(credentials) {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ export const authAPI = {
 export const surveyAPI = {
     async createSurvey(surveyData) {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/surveys`, {
+        const response = await fetch(`${API_BASE_URL}/survey`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const surveyAPI = {
 
     async deleteSurvey(surveyId) {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/surveys/${surveyId}`, {
+        const response = await fetch(`${API_BASE_URL}/survey/${surveyId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -66,7 +66,7 @@ export const surveyAPI = {
 export const groupAPI = {
     async createGroup(groupData) {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/groups`, {
+        const response = await fetch(`${API_BASE_URL}/group`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export const groupAPI = {
 
     async deleteGroup(groupId) {
         const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/groups/${groupId}`, {
+        const response = await fetch(`${API_BASE_URL}/group/${groupId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`

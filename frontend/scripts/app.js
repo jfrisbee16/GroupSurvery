@@ -1,5 +1,4 @@
-// Import bcrypt
-const bcrypt = dcodeIO.bcrypt;
+import { authAPI, surveyAPI, groupAPI } from '../js/api.js';
 
 // Router class for handling navigation
 class Router {
@@ -14,16 +13,17 @@ class Router {
         try {
             console.log('Router init started');
             // Check if user is already logged in
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-            console.log('Current user:', currentUser);
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            console.log('Current user:', user);
             
-            if (currentUser) {
-                if (currentUser.role === 'Student') {
+            if (token && user) {
+                if (user.role === 'Student') {
                     console.log('Redirecting to student dashboard');
-                    this.navigate('/student-dashboard', false);
-                } else if (currentUser.role === 'Faculty') {
+                    this.navigate('/student.html', false);
+                } else if (user.role === 'Faculty') {
                     console.log('Redirecting to faculty dashboard');
-                    this.navigate('/faculty-dashboard', false);
+                    this.navigate('/faculty.html', false);
                 }
             } else {
                 console.log('No user found, redirecting to login');
@@ -116,12 +116,13 @@ const routes = {
 
             if (isAuthenticated()) {
                 console.log('User is authenticated');
-                if (isStudent()) {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (user.role === 'Student') {
                     console.log('User is student, redirecting to student dashboard');
-                    router.navigate('/student-dashboard', true);
+                    router.navigate('/student.html', true);
                 } else {
                     console.log('User is faculty, redirecting to faculty dashboard');
-                    router.navigate('/faculty-dashboard', true);
+                    router.navigate('/faculty.html', true);
                 }
                 return;
             }
@@ -170,34 +171,34 @@ function removeToken() {
     }
 }
 
-function getCurrentUser() {
+function getUser() {
     try {
-        return JSON.parse(localStorage.getItem('currentUser'));
+        return JSON.parse(localStorage.getItem('user'));
     } catch (error) {
-        console.error('Error getting current user:', error);
+        console.error('Error getting user:', error);
         return null;
     }
 }
 
-function setCurrentUser(user) {
+function setUser(user) {
     try {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
     } catch (error) {
-        console.error('Error setting current user:', error);
+        console.error('Error setting user:', error);
     }
 }
 
-function removeCurrentUser() {
+function removeUser() {
     try {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('user');
     } catch (error) {
-        console.error('Error removing current user:', error);
+        console.error('Error removing user:', error);
     }
 }
 
 function isAuthenticated() {
     try {
-        return !!getCurrentUser();
+        return !!getToken() && !!getUser();
     } catch (error) {
         console.error('Error checking authentication:', error);
         return false;
@@ -206,300 +207,199 @@ function isAuthenticated() {
 
 function isFaculty() {
     try {
-        const user = getCurrentUser();
+        const user = getUser();
         return user && user.role === 'Faculty';
     } catch (error) {
-        console.error('Error checking faculty status:', error);
+        console.error('Error checking faculty role:', error);
         return false;
     }
 }
 
 function isStudent() {
     try {
-        const user = getCurrentUser();
+        const user = getUser();
         return user && user.role === 'Student';
     } catch (error) {
-        console.error('Error checking student status:', error);
+        console.error('Error checking student role:', error);
         return false;
     }
 }
 
 function logout() {
     try {
-        console.log('Logging out user');
         removeToken();
-        removeCurrentUser();
-        router.navigate('/', false);
+        removeUser();
+        router.navigate('/', true);
     } catch (error) {
         console.error('Error during logout:', error);
     }
 }
 
-// Login handler with error handling
 async function handleLogin(e) {
+    e.preventDefault();
     try {
-        console.log('Handling login');
-        e.preventDefault();
+        const email = document.querySelector('#strUsername').value.trim();
+        const password = document.querySelector('#strPassword').value.trim();
+
+        const response = await authAPI.login({ email, password });
         
-        const email = document.querySelector("#strUsername").value.trim();
-        const password = document.querySelector("#strPassword").value.trim();
-        console.log('Login attempt for email:', email);
-
-        // For demo purposes - replace with actual backend call
-        const mockUsers = JSON.parse(localStorage.getItem('users') || '[]');
-        const user = mockUsers.find(u => u.email === email);
-        
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            throw new Error('Invalid password');
-        }
-
-        // Set user session
-        setCurrentUser(user);
-        setToken('mock-token');
-
-        // Navigate based on role
-        if (user.role === 'Student') {
-            router.navigate('/student-dashboard');
+        if (response.status === 'success') {
+            setToken(response.token);
+            setUser(response.user);
+            
+            Swal.fire({
+                title: 'Success!',
+                text: 'Login successful',
+                icon: 'success'
+            }).then(() => {
+                if (response.user.role === 'Student') {
+                    router.navigate('/student.html', true);
+                } else {
+                    router.navigate('/faculty.html', true);
+                }
+            });
         } else {
-            router.navigate('/faculty-dashboard');
+            Swal.fire({
+                title: 'Error',
+                text: response.message || 'Login failed',
+                icon: 'error'
+            });
         }
-
     } catch (error) {
         console.error('Login error:', error);
         Swal.fire({
-            icon: 'error',
-            title: 'Login Failed',
-            text: error.message
+            title: 'Error',
+            text: 'An error occurred during login',
+            icon: 'error'
         });
     }
 }
 
-// Registration handler with error handling
 async function handleRegister(e) {
+    e.preventDefault();
     try {
-        console.log('Handling registration');
-        e.preventDefault();
+        const email = document.querySelector('#strEmail').value.trim();
+        const password = document.querySelector('#strNewPassword').value.trim();
+        const firstName = document.querySelector('#strFirstName').value.trim();
+        const middleName = document.querySelector('#strMiddleName').value.trim();
+        const lastName = document.querySelector('#strLastName').value.trim();
+        const role = document.querySelector('#strRole').value;
 
-        const firstName = document.querySelector("#strFirstName").value.trim();
-        const middleName = document.querySelector("#strMiddleName").value.trim();
-        const lastName = document.querySelector("#strLastName").value.trim();
-        const email = document.querySelector("#strEmail").value.trim();
-        const role = document.querySelector("#strRole").value;
-        const password = document.querySelector("#strNewPassword").value;
-        const confirmPassword = document.querySelector("#strConfirmPassword").value;
-
-        console.log('Registering user with role:', role);
-
-        if (password !== confirmPassword) {
-            throw new Error('Passwords do not match');
-        }
-
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Create user object
-        const newUser = {
+        const response = await authAPI.register({
+            email,
+            password,
             firstName,
             middleName,
             lastName,
-            email,
-            role,
-            password: hashedPassword
-        };
-
-        // For demo purposes - store in localStorage
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        if (users.some(u => u.email === email)) {
-            throw new Error('Email already registered');
-        }
-        users.push(newUser);
-        localStorage.setItem('users', JSON.stringify(users));
-
-        // Set current user and token
-        setCurrentUser(newUser);
-        setToken('mock-token');
-
-        // Show success message
-        await Swal.fire({
-            icon: 'success',
-            title: 'Registration Successful',
-            text: 'You have been registered successfully!'
+            role
         });
 
-        // Navigate based on role
-        if (role === 'Student') {
-            router.navigate('/student-dashboard');
+        if (response.status === 'success') {
+            setToken(response.token);
+            
+            Swal.fire({
+                title: 'Success!',
+                text: 'Registration successful',
+                icon: 'success'
+            }).then(() => {
+                if (role === 'Student') {
+                    router.navigate('/student.html', true);
+                } else {
+                    router.navigate('/faculty.html', true);
+                }
+            });
         } else {
-            router.navigate('/faculty-dashboard');
+            Swal.fire({
+                title: 'Error',
+                text: response.message || 'Registration failed',
+                icon: 'error'
+            });
         }
-
     } catch (error) {
         console.error('Registration error:', error);
         Swal.fire({
-            icon: 'error',
-            title: 'Registration Failed',
-            text: error.message
+            title: 'Error',
+            text: 'An error occurred during registration',
+            icon: 'error'
         });
     }
 }
 
-// On load, check for JWT and route accordingly
-window.addEventListener('DOMContentLoaded', () => {
-    const token = getToken();
-    if (token) {
-        // Try to fetch profile, if valid, go to dashboard
-        fetch('/profile', {
-            headers: { 'Authorization': 'Bearer ' + token }
-        })
-        .then(res => res.ok ? res.json() : Promise.reject())
-        .then(profile => {
-            // Choose dashboard based on profile or default to student
-            if (profile && profile.email) {
-                router.navigate('/student', true);
-            } else {
-                router.navigate('/', true);
-            }
-        })
-        .catch(() => {
-            removeToken();
-            router.navigate('/', true);
-        });
-    } else {
-        router.navigate('/', true);
+async function fetchSurveys() {
+    try {
+        const response = await surveyAPI.getSurveys();
+        return response;
+    } catch (error) {
+        console.error('Error fetching surveys:', error);
+        throw error;
     }
-});
-
-// --- Survey and Group API helpers ---
-function fetchSurveys() {
-    return fetch('/surveys', {
-        headers: { 'Authorization': 'Bearer ' + getToken() }
-    }).then(res => res.json());
-}
-function createSurvey(title, questions) {
-    return fetch('/survey', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getToken()
-        },
-        body: JSON.stringify({ title, questions })
-    }).then(res => res.json());
-}
-function fetchGroups() {
-    return fetch('/groups', {
-        headers: { 'Authorization': 'Bearer ' + getToken() }
-    }).then(res => res.json());
-}
-function createGroup(name) {
-    return fetch('/group', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + getToken()
-        },
-        body: JSON.stringify({ name })
-    }).then(res => res.json());
 }
 
-// Component functions
+async function createSurvey(title, questions) {
+    try {
+        const response = await surveyAPI.createSurvey({ title, questions });
+        return response;
+    } catch (error) {
+        console.error('Error creating survey:', error);
+        throw error;
+    }
+}
+
+async function fetchGroups() {
+    try {
+        const response = await groupAPI.getGroups();
+        return response;
+    } catch (error) {
+        console.error('Error fetching groups:', error);
+        throw error;
+    }
+}
+
+async function createGroup(name) {
+    try {
+        const response = await groupAPI.createGroup({ name });
+        return response;
+    } catch (error) {
+        console.error('Error creating group:', error);
+        throw error;
+    }
+}
+
 function renderLogin(container) {
-    if (isAuthenticated()) {
-        const user = getCurrentUser();
-        router.navigate(user.role === 'Student' ? '/student-dashboard' : '/faculty-dashboard', true);
-        return;
-    }
-    
     container.innerHTML = `
         <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card">
+                        <div class="card-header">
+                            <h3 class="text-center">Login</h3>
+                        </div>
                         <div class="card-body">
-                            <h2 class="text-center mb-4">Login</h2>
-                            <form id="frmLogin">
-                                <div class="mb-3">
-                                    <label for="strUsername" class="form-label">Email</label>
+                            <form id="loginForm">
+                                <div class="form-group">
+                                    <label for="strUsername">Email</label>
                                     <input type="email" class="form-control" id="strUsername" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="strPassword" class="form-label">Password</label>
+                                <div class="form-group">
+                                    <label for="strPassword">Password</label>
                                     <input type="password" class="form-control" id="strPassword" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100" id="btnLogin">Login</button>
-                                <div class="text-center mt-3">
-                                    <button type="button" class="btn btn-link" id="btnSwap">Don't have an account? Register</button>
-                                </div>
+                                <button type="submit" class="btn btn-primary btn-block mt-4">Login</button>
                             </form>
-                            <form id="frmRegister" style="display: none;">
-                                <div class="mb-3">
-                                    <label for="strFirstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="strFirstName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="strMiddleName" class="form-label">Middle Name</label>
-                                    <input type="text" class="form-control" id="strMiddleName">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="strLastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="strLastName" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="strEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="strEmail" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="strNewPassword" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="strNewPassword" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="strConfirmPassword" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="strConfirmPassword" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="strRole" class="form-label">Role</label>
-                                    <select class="form-select" id="strRole" required>
-                                        <option value="">Select Role</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Faculty">Faculty</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100" id="btnRegister">Register</button>
-                                <div class="text-center mt-3">
-                                    <button type="button" class="btn btn-link" id="btnBack">Already have an account? Login</button>
-                                </div>
-                            </form>
+                            <div class="text-center mt-3">
+                                <p>Don't have an account? <a href="#" onclick="router.navigate('/register', true)">Register</a></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>`;
-        
-    // Add event listeners
-    document.getElementById('btnLogin').addEventListener('click', handleLogin);
-    document.getElementById('btnRegister').addEventListener('click', handleRegister);
-    document.getElementById('btnSwap').addEventListener('click', () => {
-        document.getElementById('frmLogin').style.display = 'none';
-        document.getElementById('frmRegister').style.display = 'block';
-    });
-    document.getElementById('btnBack').addEventListener('click', () => {
-        document.getElementById('frmLogin').style.display = 'block';
-        document.getElementById('frmRegister').style.display = 'none';
-    });
+        </div>
+    `;
+
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
 }
 
 function renderRegister(container) {
-    if (isAuthenticated()) {
-        const user = getCurrentUser();
-        router.navigate(user.role === 'Student' ? '/student' : '/faculty', true);
-        return;
-    }
-    
     container.innerHTML = `
         <div class="container mt-5">
             <div class="row justify-content-center">
@@ -510,59 +410,51 @@ function renderRegister(container) {
                         </div>
                         <div class="card-body">
                             <form id="registerForm">
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <label for="firstName" class="form-label">First Name</label>
-                                        <input type="text" class="form-control" id="firstName" required>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="middleName" class="form-label">Middle Name</label>
-                                        <input type="text" class="form-control" id="middleName">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="lastName" class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" id="lastName" required>
-                                    </div>
+                                <div class="form-group">
+                                    <label for="strEmail">Email</label>
+                                    <input type="email" class="form-control" id="strEmail" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" required>
+                                <div class="form-group">
+                                    <label for="strFirstName">First Name</label>
+                                    <input type="text" class="form-control" id="strFirstName" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" required>
+                                <div class="form-group">
+                                    <label for="strMiddleName">Middle Name</label>
+                                    <input type="text" class="form-control" id="strMiddleName" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                <div class="form-group">
+                                    <label for="strLastName">Last Name</label>
+                                    <input type="text" class="form-control" id="strLastName" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="role" class="form-label">Role</label>
-                                    <select class="form-select" id="role" required>
+                                <div class="form-group">
+                                    <label for="strNewPassword">Password</label>
+                                    <input type="password" class="form-control" id="strNewPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="strConfirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="strConfirmPassword" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="strRole">Role</label>
+                                    <select class="form-control" id="strRole" required>
                                         <option value="">Select Role</option>
                                         <option value="Student">Student</option>
                                         <option value="Faculty">Faculty</option>
                                     </select>
                                 </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Register</button>
-                                </div>
+                                <button type="submit" class="btn btn-primary btn-block mt-4">Register</button>
                             </form>
                             <div class="text-center mt-3">
-                                <p>Already have an account? <a href="#" id="btnToLogin">Login</a></p>
+                                <p>Already have an account? <a href="#" onclick="router.navigate('/', true)">Login</a></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>`;
-        
-    // Add event listeners
+        </div>
+    `;
+
     document.getElementById('registerForm').addEventListener('submit', handleRegister);
-    document.getElementById('btnToLogin').addEventListener('click', (e) => {
-        e.preventDefault();
-        router.navigate('/', true);
-    });
 }
 
 function renderStudentDashboard(container) {
@@ -571,7 +463,7 @@ function renderStudentDashboard(container) {
         return;
     }
     
-    const user = getCurrentUser();
+    const user = getUser();
     container.innerHTML = `
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
@@ -657,7 +549,7 @@ function renderFacultyDashboard(container) {
         return;
     }
     
-    const user = getCurrentUser();
+    const user = getUser();
     const app = document.getElementById('app');
     if (!app) return;
 
@@ -865,3 +757,16 @@ document.addEventListener('click', function(e) {
     if (e.target && e.target.id === 'btnToSettings') router.navigate('/settings', true);
     if (e.target && e.target.id === 'btnBackToDashboard') router.navigate('/student', true);
 });
+
+// Export functions for use in other files
+export {
+    router,
+    isAuthenticated,
+    isFaculty,
+    isStudent,
+    logout,
+    fetchSurveys,
+    createSurvey,
+    fetchGroups,
+    createGroup
+};
