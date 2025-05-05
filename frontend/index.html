@@ -345,6 +345,80 @@
                 </div>
             </div>
             
+            <!-- Manage Courses Modal -->
+            <div class="modal fade" id="manageCoursesModal" tabindex="-1" aria-labelledby="manageCoursesModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="manageCoursesModalLabel">Manage Courses</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-end mb-3">
+                                <button type="button" class="btn btn-success" id="btnAddNewCourse">
+                                    <i class="bi bi-plus-circle"></i> Add New Course
+                                </button>
+                            </div>
+                            <div id="coursesListContainer" class="list-group">
+                                <!-- Courses will be loaded here dynamically -->
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Course Modal -->
+            <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCourseModalLabel">Add New Course</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="courseForm">
+                                <div class="mb-3">
+                                    <label for="courseName" class="form-label">Course Name</label>
+                                    <input type="text" class="form-control" id="courseName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseNumber" class="form-label">Course Number</label>
+                                    <input type="text" class="form-control" id="courseNumber" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseSection" class="form-label">Section</label>
+                                    <input type="text" class="form-control" id="courseSection" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="courseTerm" class="form-label">Term</label>
+                                    <select class="form-select" id="courseTerm" required>
+                                        <option value="">Select Term</option>
+                                        <option value="Fall">Fall</option>
+                                        <option value="Spring">Spring</option>
+                                        <option value="Summer">Summer</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="endDate" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="btnSaveCourse">Save Course</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Add custom CSS for modal z-index -->
             <style>
                 .modal-backdrop {
@@ -373,6 +447,18 @@
                 }
                 #manageGroupsModal .modal-dialog {
                     z-index: 1061 !important;
+                }
+                #manageCoursesModal {
+                    z-index: 1065 !important;
+                }
+                #manageCoursesModal .modal-dialog {
+                    z-index: 1066 !important;
+                }
+                #addCourseModal {
+                    z-index: 1070 !important;
+                }
+                #addCourseModal .modal-dialog {
+                    z-index: 1071 !important;
                 }
                 .blur-background {
                     filter: blur(5px);
@@ -405,6 +491,9 @@
                             </li>
                             <li class="nav-item">
                                 <button class="nav-link btn btn-link" type="button" id="btnManageGroupsNav">Manage Groups</button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link btn btn-link" type="button" id="btnManageCoursesNav">Manage Courses</button>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -450,6 +539,15 @@
                                 <h5 class="card-title">Manage Groups</h5>
                                 <p class="card-text">Create and manage student groups.</p>
                                 <button type="button" class="btn btn-info" id="btnManageGroupsCard">Manage Groups</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Manage Courses</h5>
+                                <p class="card-text">Create and manage courses.</p>
+                                <button type="button" class="btn btn-info" id="btnManageCoursesCard">Manage Courses</button>
                             </div>
                         </div>
                     </div>
@@ -806,6 +904,18 @@
                 }
                 #manageGroupsModal .modal-dialog {
                     z-index: 1061 !important;
+                }
+                #manageCoursesModal {
+                    z-index: 1065 !important;
+                }
+                #manageCoursesModal .modal-dialog {
+                    z-index: 1066 !important;
+                }
+                #addCourseModal {
+                    z-index: 1070 !important;
+                }
+                #addCourseModal .modal-dialog {
+                    z-index: 1071 !important;
                 }
                 .blur-background {
                     filter: blur(5px);
@@ -1814,6 +1924,299 @@
                         });
                     });
             });
+        }
+
+        // Add event listener for Manage Groups button
+        const btnManageGroups = document.getElementById('btnManageGroups');
+        if (btnManageGroups) {
+            btnManageGroups.addEventListener('click', function() {
+                // ... existing manage groups code ...
+            });
+        }
+
+        // Consolidated Manage Courses functionality
+        const btnManageCoursesNav = document.getElementById('btnManageCoursesNav');
+        const btnManageCoursesCard = document.getElementById('btnManageCoursesCard');
+        const btnAddNewCourse = document.getElementById('btnAddNewCourse');
+
+        function loadCourses() {
+            // Check if user is logged in
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please login first',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Load existing courses
+            const coursesListContainer = document.getElementById('coursesListContainer');
+            if (coursesListContainer) {
+                coursesListContainer.innerHTML = ''; // Clear existing content
+
+                // Retrieve courses from localStorage
+                const courses = JSON.parse(localStorage.getItem('courses')) || [];
+
+                if (courses.length === 0) {
+                    coursesListContainer.innerHTML = '<p class="text-center">No courses available.</p>';
+                } else {
+                    courses.forEach((course, index) => {
+                        const courseItem = document.createElement('div');
+                        courseItem.className = 'list-group-item';
+                        courseItem.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>${course.name}</h5>
+                                    <p class="mb-1"><strong>Course Number:</strong> ${course.number}</p>
+                                    <p class="mb-1"><strong>Section:</strong> ${course.section}</p>
+                                    <p class="mb-1"><strong>Term:</strong> ${course.term}</p>
+                                    <p class="mb-0">
+                                        <strong>Duration:</strong> 
+                                        ${new Date(course.startDate).toLocaleDateString()} - 
+                                        ${new Date(course.endDate).toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-primary" onclick="editCourse(${index})">Edit</button>
+                                    <button class="btn btn-danger" onclick="deleteCourse(${index})">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                        coursesListContainer.appendChild(courseItem);
+                    });
+                }
+            }
+
+            // Show the manage courses modal
+            const manageCoursesModal = document.getElementById('manageCoursesModal');
+            if (manageCoursesModal) {
+                const myModal = new bootstrap.Modal(manageCoursesModal);
+                myModal.show();
+            }
+        }
+
+        if (btnManageCoursesNav) {
+            btnManageCoursesNav.addEventListener('click', loadCourses);
+        }
+
+        if (btnManageCoursesCard) {
+            btnManageCoursesCard.addEventListener('click', loadCourses);
+        }
+
+        if (btnAddNewCourse) {
+            btnAddNewCourse.addEventListener('click', function() {
+                const modal = document.getElementById('addCourseModal');
+                const manageCoursesModal = document.getElementById('manageCoursesModal');
+                if (modal) {
+                    // Add blur class to manage courses modal
+                    if (manageCoursesModal) {
+                        manageCoursesModal.classList.add('blur-background');
+                    }
+                    var myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+            });
+        }
+
+        // Add event listener for Save Course button
+        const btnSaveCourse = document.getElementById('btnSaveCourse');
+        if (btnSaveCourse) {
+            btnSaveCourse.addEventListener('click', function() {
+                const courseName = document.getElementById('courseName').value.trim();
+                const courseNumber = document.getElementById('courseNumber').value.trim();
+                const courseSection = document.getElementById('courseSection').value.trim();
+                const courseTerm = document.getElementById('courseTerm').value;
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+
+                // Validate all fields
+                if (!courseName || !courseNumber || !courseSection || !courseTerm || !startDate || !endDate) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please fill in all required fields',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Validate dates
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                if (start > end) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'End date must be after start date',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Create course object
+                const course = {
+                    name: courseName,
+                    number: courseNumber,
+                    section: courseSection,
+                    term: courseTerm,
+                    startDate: startDate,
+                    endDate: endDate,
+                    createdAt: new Date().toISOString()
+                };
+
+                // Save course to localStorage
+                let courses = JSON.parse(localStorage.getItem('courses')) || [];
+                courses.push(course);
+                localStorage.setItem('courses', JSON.stringify(courses));
+
+                // Show success message
+                Swal.fire({
+                    title: 'Success',
+                    text: 'Course saved successfully!',
+                    icon: 'success'
+                });
+
+                // Reset the form and close the modal
+                document.getElementById('courseForm').reset();
+                const modal = document.getElementById('addCourseModal');
+                if (modal) {
+                    const myModal = bootstrap.Modal.getInstance(modal);
+                    myModal.hide();
+                }
+
+                // Remove blur from manage courses modal
+                const manageCoursesModal = document.getElementById('manageCoursesModal');
+                if (manageCoursesModal) {
+                    manageCoursesModal.classList.remove('blur-background');
+                }
+
+                // Refresh the courses list
+                loadCourses();
+            });
+        }
+
+        // Add delete course function
+        function deleteCourse(index) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Get current courses
+                    let courses = JSON.parse(localStorage.getItem('courses')) || [];
+                    
+                    // Remove the course at the specified index
+                    courses.splice(index, 1);
+                    
+                    // Save updated courses
+                    localStorage.setItem('courses', JSON.stringify(courses));
+                    
+                    // Show success message
+                    Swal.fire(
+                        'Deleted!',
+                        'Your course has been deleted.',
+                        'success'
+                    );
+                    
+                    // Refresh the courses list
+                    loadCourses();
+                }
+            });
+        }
+
+        // Add edit course function
+        function editCourse(index) {
+            const courses = JSON.parse(localStorage.getItem('courses')) || [];
+            const course = courses[index];
+
+            if (course) {
+                // Populate the form
+                document.getElementById('courseName').value = course.name;
+                document.getElementById('courseNumber').value = course.number;
+                document.getElementById('courseSection').value = course.section;
+                document.getElementById('courseTerm').value = course.term;
+                document.getElementById('startDate').value = course.startDate;
+                document.getElementById('endDate').value = course.endDate;
+
+                // Show the modal
+                const modal = document.getElementById('addCourseModal');
+                if (modal) {
+                    const myModal = new bootstrap.Modal(modal);
+                    myModal.show();
+                }
+
+                // Update the save button to handle editing
+                const btnSaveCourse = document.getElementById('btnSaveCourse');
+                if (btnSaveCourse) {
+                    btnSaveCourse.onclick = function() {
+                        const courseName = document.getElementById('courseName').value.trim();
+                        const courseNumber = document.getElementById('courseNumber').value.trim();
+                        const courseSection = document.getElementById('courseSection').value.trim();
+                        const courseTerm = document.getElementById('courseTerm').value;
+                        const startDate = document.getElementById('startDate').value;
+                        const endDate = document.getElementById('endDate').value;
+
+                        // Validate all fields
+                        if (!courseName || !courseNumber || !courseSection || !courseTerm || !startDate || !endDate) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Please fill in all required fields',
+                                icon: 'error'
+                            });
+                            return;
+                        }
+
+                        // Validate dates
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        if (start > end) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'End date must be after start date',
+                                icon: 'error'
+                            });
+                            return;
+                        }
+
+                        // Update course object
+                        courses[index] = {
+                            ...course,
+                            name: courseName,
+                            number: courseNumber,
+                            section: courseSection,
+                            term: courseTerm,
+                            startDate: startDate,
+                            endDate: endDate
+                        };
+
+                        // Save updated courses
+                        localStorage.setItem('courses', JSON.stringify(courses));
+
+                        // Show success message
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Course updated successfully!',
+                            icon: 'success'
+                        });
+
+                        // Reset the form and close the modal
+                        document.getElementById('courseForm').reset();
+                        const modal = document.getElementById('addCourseModal');
+                        if (modal) {
+                            const myModal = bootstrap.Modal.getInstance(modal);
+                            myModal.hide();
+                        }
+
+                        // Refresh the courses list
+                        loadCourses();
+                    };
+                }
+            }
         }
     });
 

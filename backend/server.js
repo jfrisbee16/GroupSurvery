@@ -172,6 +172,60 @@ app.get('/student-groups', (req, res) => {
     });
 });
 
+app.post('/create-course', (req, res) => {
+    let strCourseId = uuid();
+    let strCourseName = req.body.courseName.trim();
+    let strCourseNumber = req.body.courseNumber;
+    let strCourseSection = req.body.courseSection;
+    let strCourseTerm = req.body.courseTerm.trim();
+    let strCoursStartDate = req.body.courseStartDate.trim();
+    let strCourseEndDate = req.body.courseEndDate.trim();
+
+
+    let strCommand = `INSERT INTO tblCourses VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    let arrParams = [strCourseId, strCourseName, strCourseNumber, strCourseSection, strCourseTerm, strCoursStartDate, strCourseEndDate];
+    console.log(strCommand)
+
+    db.run(strCommand, arrParams, function (err) {
+        if(err){
+            console.log(err)
+            res.status(400).json({
+                status:"error",
+                message:err.message
+            })
+        } else {
+            res.status(200).json({
+                status:"success",
+                message:console.log("Course created successfully")
+            })
+        }
+    })
+})
+
+// fetch('http://localhost:8000/create-course', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//         courseName: 'Assembly',
+//         courseNumber: '3410',
+//         courseSection: '1',
+//         courseTerm: 'Summer',
+//         courseStartDate: '12/12/2023',
+//         courseEndDate: '12/12/2024'
+//     })
+// })
+// .then(response => response.json())
+// .then(data => {
+//     console.log('Success:', data);
+// })
+// .catch((error) => {
+//     console.error('Error:', error);
+// });
+
+
+
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
 })
