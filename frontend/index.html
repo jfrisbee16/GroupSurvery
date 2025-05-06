@@ -1960,9 +1960,9 @@
                     // Store user data in localStorage
                     const userData = {
                         email: strEmail,
-                        firstName: data.user.firstName,
-                        lastName: data.user.lastName,
-                        role: data.user.role,
+                        firstName: data.user.FirstName,
+                        lastName: data.user.LastName,
+                        role: data.user.UserRole,
                         createdAt: new Date().toISOString()
                     };
                     
@@ -1970,7 +1970,7 @@
                     
                     Swal.fire({
                         title: "Success!",
-                        text: `Login successful! Redirecting to ${data.user.role.toLowerCase()} dashboard...`,
+                        text: `Login successful! Redirecting to ${data.user.UserRole.toLowerCase()} dashboard...`,
                         icon: "success",
                         timer: 1500,
                         showConfirmButton: false
@@ -1978,12 +1978,16 @@
                         const bgImage = document.getElementById("bgImage");
                         if (bgImage) bgImage.style.display = "none";
                         
-                        if (data.user.role === 'Student') {
+                        if (data.user.UserRole === 'Student') {
                             const studentDash = document.getElementById("frmStudentDash");
+                            const loginForm = document.getElementById("frmLogin");
                             if (studentDash) studentDash.style.display = "block";
+                            if (loginForm) loginForm.style.display = "none";
                         } else {
                             const facultyDash = document.getElementById("frmFacultyDash");
+                            const loginForm = document.getElementById("frmLogin");
                             if (facultyDash) facultyDash.style.display = "block";
+                            if (loginForm) loginForm.style.display = "none";
                         }
                     });
                 } else {
@@ -2039,6 +2043,7 @@
         if (password !== confirmPassword) {
             errors += "<p class='mb-1 mt-1'>Passwords do not match</p>";
         }
+        console.log(role)
 
         if (errors) {
             Swal.fire({
@@ -2078,6 +2083,7 @@
                         createdAt: new Date().toISOString()
                     };
                     
+                    console.log(userData)
                     localStorage.setItem('currentUser', JSON.stringify(userData));
                     
                     if(role === 'Student'){
