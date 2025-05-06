@@ -80,14 +80,13 @@ app.post('/register', (req, res, next) => {
         return res.status(400).json({ error: "Role must be either 'Student' or 'Faculty'" });
     }
   
-    //strPassword = bcrypt.hashSync(strPassword, intSalt);
-  
     // If validations pass
     if(blnError == true){
         return res.status(400).json({ error: "Validation failed" });
     } else {
+    
     req.body.userId = strUserId;
-    //let strCommand = `INSERT INTO tblUsers VALUES ('${strUserId}', '${strFirstName}', '${strMiddleName}', '${strLastName}', '${strEmail}', '${strRole}', '${strPassword}')`;
+    strPassword = bcrypt.hashSync(strPassword, intSalt);
   
     let strCommand = `INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, ?, ?)`;
     let arrParams = [strUserId, strFirstName, strMiddleName, strLastName, strEmail, strRole, strPassword];
@@ -114,33 +113,31 @@ app.post('/login', (req, res) => {
     let strEmail = req.body.email.trim().toLowerCase();
     let strPassword = req.body.password;
 
-    let strCommand = `SELECT EmailPassword, FirstName, LastName FROM tblUsers WHERE UserId = ?`;
+    let strCommand = `SELECT UserPassword, FirstName, MiddleName, LastName, UserRole, UserID FROM tblUsers WHERE UserEmail = ?`;
 
     db.get(strCommand, [strEmail], (err, row) => {
         if (err) {
-            return res.status(500).json({ status: "error", message: "Database error" });
+            return res.status(500).json({ status: "error", message:err.message });
         }
 
         //Will check if the email exists
         if (!row) {
-            return res.status(401).json({ status: "fail", message: "Invalid email or password" });
+            return res.status(401).json({ status: "fail", message: "Invalid email" });
         }
 
         //Returns a boolean value of whether the password matches
-        const passwordMatch = bcrypt.compareSync(strPassword, row.EmailPassword);
+        const passwordMatch = bcrypt.compareSync(strPassword, row.UserPassword);
+        
         if (!passwordMatch) {
             return res.status(401).json({ status: "fail", message: "Invalid email or password" });
         }
-
-        return res.status(200).json({ 
-            status: "success", 
-            message: "Login successful",
-            user: {
-                email: strEmail,
-                firstName: row.FirstName,
-                lastName: row.LastName
-            }
-        });
+        else{
+            return res.status(200).json({ 
+                status: "success", 
+                message: "Login successful",
+                user: row
+            });
+        }
     });
 });
 
