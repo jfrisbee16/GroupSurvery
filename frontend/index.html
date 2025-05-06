@@ -2194,6 +2194,23 @@
                 modals.forEach(modal => {
                     modal.classList.remove('blur-background');
                 });
+                
+                // Remove all modal backdrops
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(backdrop => {
+                    backdrop.remove();
+                });
+                
+                // Clean up body classes and styles
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+                
+                // Force remove any remaining backdrop
+                const remainingBackdrop = document.querySelector('.modal-backdrop');
+                if (remainingBackdrop) {
+                    remainingBackdrop.remove();
+                }
             });
         }
 
@@ -2205,6 +2222,12 @@
                 const manageCoursesModal = document.getElementById('manageCoursesModal');
                 if (manageCoursesModal) {
                     manageCoursesModal.classList.remove('blur-background');
+                }
+                
+                // Remove any remaining backdrop
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.remove();
                 }
             });
         }
