@@ -202,6 +202,28 @@ app.post('/create-course', (req, res) => {
     })
 })
 
+// View all courses route
+app.get('/view-courses', (req, res) => {
+    let strCommand = `SELECT * FROM tblCourses`;
+
+    db.all(strCommand, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: "Database error" });
+        }
+        else{
+            console.log(rows)
+            //res.json({ courses: rows });
+            res.status(200).json({
+                status:"success",
+                message:rows,
+                courses:rows
+            })
+        }
+
+        
+    });
+});
+
 // fetch('http://localhost:8000/create-course', {
 //     method: 'POST',
 //     headers: {

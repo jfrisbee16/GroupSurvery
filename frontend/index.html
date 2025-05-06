@@ -1956,37 +1956,57 @@
             if (coursesListContainer) {
                 coursesListContainer.innerHTML = ''; // Clear existing content
 
-                // Retrieve courses from localStorage
-                const courses = JSON.parse(localStorage.getItem('courses')) || [];
-
-                if (courses.length === 0) {
-                    coursesListContainer.innerHTML = '<p class="text-center">No courses available.</p>';
-                } else {
-                    courses.forEach((course, index) => {
-                        const courseItem = document.createElement('div');
-                        courseItem.className = 'list-group-item';
-                        courseItem.innerHTML = `
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5>${course.name}</h5>
-                                    <p class="mb-1"><strong>Course Number:</strong> ${course.number}</p>
-                                    <p class="mb-1"><strong>Section:</strong> ${course.section}</p>
-                                    <p class="mb-1"><strong>Term:</strong> ${course.term}</p>
-                                    <p class="mb-0">
-                                        <strong>Duration:</strong> 
-                                        ${new Date(course.startDate).toLocaleDateString()} - 
-                                        ${new Date(course.endDate).toLocaleDateString()}
-                                    </p>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-primary" onclick="editCourse(${index})">Edit</button>
-                                    <button class="btn btn-danger" onclick="deleteCourse(${index})">Delete</button>
-                                </div>
-                            </div>
-                        `;
-                        coursesListContainer.appendChild(courseItem);
+                // Fetch courses from backend
+                fetch('http://localhost:8000/view-courses')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Raw response data:', data);
+                        
+                        // Check if data is an array or has a courses property
+                        let courses = Array.isArray(data) ? data : (data.courses || []);
+                        console.log('Processed courses array:', courses);
+                        
+                        if (courses.length === 0) {
+                            coursesListContainer.innerHTML = '<p class="text-center">No courses available.</p>';
+                        } else {
+                            courses.forEach((course, index) => {
+                                console.log('Processing course:', course);
+                                const courseItem = document.createElement('div');
+                                courseItem.className = 'list-group-item bg-light text-dark';
+                                
+                                // Format dates
+                                const startDate = new Date(course.StartDate).toLocaleDateString();
+                                const endDate = new Date(course.EndDate).toLocaleDateString();
+                                
+                                courseItem.innerHTML = `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="w-100">
+                                            <h5 class="mb-3 text-dark">${course.CourseName}</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="mb-2 text-dark"><strong>Course Number:</strong> ${course.CourseNumber}</p>
+                                                    <p class="mb-2 text-dark"><strong>Section:</strong> ${course.CourseSection}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="mb-2 text-dark"><strong>Term:</strong> ${course.CourseTerm}</p>
+                                                    <p class="mb-2 text-dark"><strong>Duration:</strong> ${course.StartDate} - ${course.EndDate}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2 ms-3">
+                                            <button class="btn btn-primary" onclick="editCourse(${index})">Edit</button>
+                                            <button class="btn btn-danger" onclick="deleteCourse(${index})">Delete</button>
+                                        </div>
+                                    </div>
+                                `;
+                                coursesListContainer.appendChild(courseItem);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching courses:', error);
+                        coursesListContainer.innerHTML = '<p class="text-center text-danger">Error loading courses. Please try again.</p>';
                     });
-                }
             }
 
             // Show the manage courses modal
@@ -2053,45 +2073,57 @@
                     return;
                 }
 
-                // Create course object
-                const course = {
-                    name: courseName,
-                    number: courseNumber,
-                    section: courseSection,
-                    term: courseTerm,
-                    startDate: startDate,
-                    endDate: endDate,
-                    createdAt: new Date().toISOString()
-                };
+                // Send course data to backend
+                fetch('http://localhost:8000/create-course', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        courseName: courseName,
+                        courseNumber: courseNumber,
+                        courseSection: courseSection,
+                        courseTerm: courseTerm,
+                        courseStartDate: startDate,
+                        courseEndDate: endDate
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Course added successfully:', data);
+                    
+                    // Show success message
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Course saved successfully!',
+                        icon: 'success'
+                    });
 
-                // Save course to localStorage
-                let courses = JSON.parse(localStorage.getItem('courses')) || [];
-                courses.push(course);
-                localStorage.setItem('courses', JSON.stringify(courses));
+                    // Reset the form and close the modal
+                    document.getElementById('courseForm').reset();
+                    const modal = document.getElementById('addCourseModal');
+                    if (modal) {
+                        const myModal = bootstrap.Modal.getInstance(modal);
+                        myModal.hide();
+                    }
 
-                // Show success message
-                Swal.fire({
-                    title: 'Success',
-                    text: 'Course saved successfully!',
-                    icon: 'success'
+                    // Remove blur from manage courses modal
+                    const manageCoursesModal = document.getElementById('manageCoursesModal');
+                    if (manageCoursesModal) {
+                        manageCoursesModal.classList.remove('blur-background');
+                    }
+
+                    // Refresh the courses list
+                    loadCourses();
+                })
+                .catch((error) => {
+                    console.error('Error adding course:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to save course. Please try again.',
+                        icon: 'error'
+                    });
                 });
-
-                // Reset the form and close the modal
-                document.getElementById('courseForm').reset();
-                const modal = document.getElementById('addCourseModal');
-                if (modal) {
-                    const myModal = bootstrap.Modal.getInstance(modal);
-                    myModal.hide();
-                }
-
-                // Remove blur from manage courses modal
-                const manageCoursesModal = document.getElementById('manageCoursesModal');
-                if (manageCoursesModal) {
-                    manageCoursesModal.classList.remove('blur-background');
-                }
-
-                // Refresh the courses list
-                loadCourses();
             });
         }
 
@@ -2217,6 +2249,30 @@
                     };
                 }
             }
+        }
+
+        // Add event listener for when the Manage Courses modal is hidden
+        const manageCoursesModal = document.getElementById('manageCoursesModal');
+        if (manageCoursesModal) {
+            manageCoursesModal.addEventListener('hidden.bs.modal', function () {
+                // Remove blur from any modals that might have it
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    modal.classList.remove('blur-background');
+                });
+            });
+        }
+
+        // Add event listener for when the Add Course modal is hidden
+        const addCourseModal = document.getElementById('addCourseModal');
+        if (addCourseModal) {
+            addCourseModal.addEventListener('hidden.bs.modal', function () {
+                // Remove blur from manage courses modal
+                const manageCoursesModal = document.getElementById('manageCoursesModal');
+                if (manageCoursesModal) {
+                    manageCoursesModal.classList.remove('blur-background');
+                }
+            });
         }
     });
 
