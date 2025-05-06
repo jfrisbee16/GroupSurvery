@@ -164,10 +164,10 @@
                                     Account
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item profile-link" href="#">Profile</a></li>
                                     <li><a class="dropdown-item" href="#">Settings</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="#" id="btnLogout">Logout</a></li>
+                                    <li><a class="dropdown-item logout-link" href="#">Logout</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -1038,10 +1038,10 @@
                             surveyItem.className = 'list-group-item';
                             surveyItem.innerHTML = `
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h4 class="mb-2">${survey.title}</h4>
-                                        <p class="mb-1">${survey.description}</p>
-                                        <p class="mb-0"><strong>Groups:</strong> ${survey.groups.join(', ') || 'None'}</p>
+                                    <div class="text-dark">
+                                        <h4 class="mb-2 text-dark">${survey.title}</h4>
+                                        <p class="mb-1 text-dark">${survey.description}</p>
+                                        <p class="mb-0 text-dark"><strong>Groups:</strong> ${survey.groups.join(', ') || 'None'}</p>
                                     </div>
                                     <div class="d-flex gap-2">
                                         <button class="btn btn-primary" onclick="viewSurveyDetails(${index})">View Survey</button>
@@ -1099,12 +1099,12 @@
         }
 
         // Logout button
-        const btnLogout = document.querySelectorAll('#btnLogout');
+        const btnLogout = document.querySelectorAll('#btnLogout, .logout-link');
         if (btnLogout) {
             btnLogout.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
-                    logout();
+                    handleLogout();
                 });
             });
         }
@@ -1450,10 +1450,10 @@
                                 surveyItem.className = 'list-group-item';
                                 surveyItem.innerHTML = `
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h4 class="mb-2">${survey.title}</h4>
-                                            <p class="mb-1">${survey.description}</p>
-                                            <p class="mb-0"><strong>Groups:</strong> ${survey.groups.join(', ') || 'None'}</p>
+                                        <div class="text-dark">
+                                            <h4 class="mb-2 text-dark">${survey.title}</h4>
+                                            <p class="mb-1 text-dark">${survey.description}</p>
+                                            <p class="mb-0 text-dark"><strong>Groups:</strong> ${survey.groups.join(', ') || 'None'}</p>
                                         </div>
                                         <div class="d-flex gap-2">
                                             <button class="btn btn-primary" onclick="viewSurveyDetails(${newIndex})">View Survey</button>
@@ -2234,8 +2234,8 @@
         
     
 
-        // Profile Button Click Handler
-        const profileLinks = document.querySelectorAll('.dropdown-item[href="#"]');
+        // Profile Button Click Handler - Updated to only target profile links
+        const profileLinks = document.querySelectorAll('.profile-link');
         profileLinks.forEach(profileLink => {
             profileLink.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -2263,69 +2263,6 @@
                             document.getElementById('profileDepartment').textContent = data.profile.department || 'Not specified';
                             document.getElementById('profileClasses').textContent = data.profile.classesTeaching || '0';
 
-                            // Update teaching schedule
-                            const teachingSchedule = document.getElementById('teachingSchedule');
-                            if (data.profile.teachingSchedule && data.profile.teachingSchedule.length > 0) {
-                                teachingSchedule.innerHTML = data.profile.teachingSchedule.map(course => `
-                                    <div class="teaching-schedule-item">
-                                        <h6>${course.name}</h6>
-                                        <p class="mb-1"><strong>Time:</strong> ${course.time}</p>
-                                        <p class="mb-1"><strong>Days:</strong> ${course.days.join(', ')}</p>
-                                        <p class="mb-0"><strong>Location:</strong> ${course.location}</p>
-                                    </div>
-                                `).join('');
-                            } else {
-                                teachingSchedule.innerHTML = '<p class="text-muted">No teaching schedule available.</p>';
-                            }
-
-                            // Generate schedule table
-                            const scheduleTable = document.getElementById('scheduleTable');
-                            scheduleTable.innerHTML = ''; // Clear existing content
-
-                            // Create time slots (8 AM to 5 PM)
-                            for (let hour = 8; hour <= 17; hour++) {
-                                const row = document.createElement('tr');
-                                const timeCell = document.createElement('td');
-                                timeCell.textContent = `${hour}:00`;
-                                row.appendChild(timeCell);
-
-                                // Add cells for each day
-                                for (let day = 0; day < 5; day++) {
-                                    const cell = document.createElement('td');
-                                    cell.className = 'schedule-cell';
-                                    
-                                    // Check if this time slot has a class
-                                    const hasClass = data.profile.teachingSchedule?.some(course => {
-                                        const courseTime = parseInt(course.time.split(':')[0]);
-                                        const courseDays = course.days;
-                                        const currentDay = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day];
-                                        return courseTime === hour && courseDays.includes(currentDay);
-                                    });
-
-                                    // Check if this is office hours (example: 2-4 PM on Monday and Wednesday)
-                                    const isOfficeHour = (hour >= 14 && hour < 16) && (day === 0 || day === 2);
-
-                                    if (hasClass) {
-                                        cell.className += ' teaching-hour';
-                                        const course = data.profile.teachingSchedule.find(c => 
-                                            parseInt(c.time.split(':')[0]) === hour && 
-                                            c.days.includes(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'][day])
-                                        );
-                                        cell.innerHTML = `<strong>${course.name}</strong><br>${course.location}`;
-                                    } else if (isOfficeHour) {
-                                        cell.className += ' office-hour';
-                                        cell.innerHTML = '<strong>Office Hours</strong>';
-                                    } else {
-                                        cell.className += ' available-hour';
-                                        cell.innerHTML = 'Available';
-                                    }
-
-                                    row.appendChild(cell);
-                                }
-
-                                scheduleTable.appendChild(row);
-                            }
-
                             // Show the modal
                             const profileModal = document.getElementById('profileModal');
                             if (profileModal) {
@@ -2351,23 +2288,64 @@
             });
         });
 
-        // Logout functionality
-        document.querySelectorAll('.logout-link').forEach(link => {
-            link.addEventListener('click', function(e) {
+        // Logout Button Click Handler - Simplified selector
+        const logoutButtons = document.querySelectorAll('.logout-link');
+        logoutButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
                 e.preventDefault();
-                // Clear localStorage
-                localStorage.removeItem('currentUser');
-                // Show login form
-                document.getElementById('loginForm').style.display = 'block';
-                // Hide all other forms
-                document.getElementById('registerForm').style.display = 'none';
-                document.getElementById('frmFacultyDash').style.display = 'none';
-                document.getElementById('frmStudentDash').style.display = 'none';
-                // Scroll to login form
-                document.getElementById('loginForm').scrollIntoView({ behavior: 'smooth' });
+                handleLogout();
             });
         });
     });
+
+    // Consolidated logout handler
+    function handleLogout() {
+        Swal.fire({
+            title: 'Are you sure you want to logout?',
+            text: "You will now be redirected to login page",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Logout Please!',
+            cancelButtonText: "No, Don't leave",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                try {
+                    // Clear localStorage
+                    localStorage.removeItem('currentUser');
+                    
+                    // Hide all dashboards
+                    const studentDash = document.getElementById("frmStudentDash");
+                    const facultyDash = document.getElementById("frmFacultyDash");
+                    const registerForm = document.getElementById("frmRegister");
+                    const loginForm = document.getElementById("frmLogin");
+                    
+                    if (studentDash) studentDash.style.display = "none";
+                    if (facultyDash) facultyDash.style.display = "none";
+                    if (registerForm) registerForm.style.display = "none";
+                    if (loginForm) loginForm.style.display = "block";
+                    
+                    // Scroll to the top of the page
+                    window.scrollTo(0, 0);
+                    
+                    // Show success message
+                    Swal.fire({
+                        title: "Logged Out",
+                        text: "You have been successfully logged out",
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } catch (error) {
+                    console.error("Error during logout:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to logout. Please try again.",
+                        icon: "error"
+                    });
+                }
+            }
+        });
+    }
 
     // Login handler
     function handleLogin(e) {
@@ -2614,48 +2592,6 @@
                 });
             });
         }
-    }
-
-    // Logout function
-    function logout() {
-        Swal.fire({
-            title: 'Are you sure you want to logout?',
-            text: "You will now be redirected to login page",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Logout Please!',
-            cancelButtonText: "No, Don't leave",
-        }).then((result)=> {
-            if (result.isConfirmed){
-                try {
-                    localStorage.removeItem('currentUser');
-                    
-                    const studentDash = document.getElementById("frmStudentDash");
-                    const loginForm = document.getElementById("frmLogin");
-                    const facultyDash = document.getElementById("frmFacultyDash");
-                    
-                    if (studentDash) studentDash.style.display = "none";
-                    if (loginForm) loginForm.style.display = "block";
-                    if (facultyDash) facultyDash.style.display = "none";
-                    // Scroll to the top of the page
-                    window.scrollTo(0, 0);
-                } catch (error) {
-                    console.error("Error during logout:", error);
-                    Swal.fire({
-                        title: "Error",
-                        text: "Failed to logout. Please try again.",
-                        icon: "error"
-                    });
-                }
-            } else {
-                Swal.fire({
-                    title: 'Logout Cancelled',
-                    text: 'You are still logged in',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
     }
 </script>
 </html>
