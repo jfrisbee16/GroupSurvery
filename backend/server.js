@@ -221,6 +221,59 @@ app.get('/view-courses', (req, res) => {
     });
 });
 
+//Delete off course name
+app.delete('/delete-course', (req, res) => {
+    let strCourseName = req.params.courseName.trim();
+
+    let strCommand = `DELETE FROM tblCourses WHERE CourseName = ?`;
+    let arrParams = [strCourseName];
+    console.log(strCommand)
+    db.run(strCommand, arrParams, function (err) {
+        if(err){
+            console.log(err)
+            res.status(400).json({
+                status:"error",
+                message:err.message
+            })
+        } else {
+            res.status(200).json({
+                status:"success",
+                message:console.log("Course deleted successfully")
+            })
+        }
+    })
+})
+
+//Update course data
+app.put('/update-course', (req, res) => {
+    let strCourseName = req.params.courseName.trim();
+    let strCourseNumber = req.params.courseNumber;
+    let strCourseSection = req.params.courseSection;
+    let strCourseTerm = req.params.courseTerm.trim();
+    let strCoursStartDate = req.params.courseStartDate.trim();
+    let strCourseEndDate = req.params.courseEndDate.trim();
+
+    let strCommand = `UPDATE tblCourses SET CourseNumber = ?, CourseSection = ?, CourseTerm = ?, CourseStartDate = ?, CourseEndDate = ? WHERE CourseName = ?`;
+    let arrParams = [strCourseNumber, strCourseSection, strCourseTerm, strCoursStartDate, strCourseEndDate, strCourseName];
+    console.log(strCommand)
+    db.run(strCommand, arrParams, function (err) {
+        if(err){
+            console.log(err)
+            res.status(400).json({
+                status:"error",
+                message:err.message
+            })
+        } else {
+            res.status(200).json({
+                status:"success",
+                message:console.log("Course updated successfully")
+            })
+        }
+    })
+})
+
+
+
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
 })
