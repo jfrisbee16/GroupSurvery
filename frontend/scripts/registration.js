@@ -1,4 +1,4 @@
-import { authAPI } from '../js/api.js';
+import { authAPI } from './api.js';
 
 // Validation for Registration Form
 document.querySelector("#btnRegister").addEventListener("click", async (e) => {
@@ -21,7 +21,6 @@ document.querySelector("#btnRegister").addEventListener("click", async (e) => {
 
     // Required Field Validation
     if (!firstName) errors += "<p class='mb-1 mt-1'>First Name is required</p>";
-    if (!middleName) errors += "<p class='mb-1 mt-1'>Middle Name is required</p>";
     if (!lastName) errors += "<p class='mb-1 mt-1'>Last Name is required</p>";    
 
     // Email Validation
@@ -48,9 +47,9 @@ document.querySelector("#btnRegister").addEventListener("click", async (e) => {
         try {
             const response = await authAPI.register({
                 email,
-                password,
+                UserPassword: password,
                 firstName,
-                middleName,
+                middleName: middleName || '',
                 lastName,
                 role
             });

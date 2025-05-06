@@ -1,4 +1,15 @@
-import { authAPI } from '../js/api.js';
+import { authAPI } from './api.js';
+
+// Form swapping functionality
+document.querySelector("#btnSwap").addEventListener("click", () => {
+    document.querySelector("#frmLogin").style.display = "none";
+    document.querySelector("#frmRegister").style.display = "block";
+});
+
+document.querySelector("#btnBack").addEventListener("click", () => {
+    document.querySelector("#frmRegister").style.display = "none";
+    document.querySelector("#frmLogin").style.display = "block";
+});
 
 // Validation for Login Form
 document.querySelector("#btnLogin").addEventListener("click", async (e) => {

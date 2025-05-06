@@ -10,7 +10,8 @@ export const authAPI = {
             },
             body: JSON.stringify(userData)
         });
-        return response.json();
+        const data = await response.json();
+        return data;
     },
 
     async login(credentials) {
@@ -21,7 +22,8 @@ export const authAPI = {
             },
             body: JSON.stringify(credentials)
         });
-        return response.json();
+        const data = await response.json();
+        return data;
     }
 };
 
@@ -48,17 +50,6 @@ export const surveyAPI = {
             }
         });
         return response.json();
-    },
-
-    async deleteSurvey(surveyId) {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/survey/${surveyId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        return response.json();
     }
 };
 
@@ -80,17 +71,6 @@ export const groupAPI = {
     async getGroups() {
         const token = localStorage.getItem('token');
         const response = await fetch(`${API_BASE_URL}/groups`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        return response.json();
-    },
-
-    async deleteGroup(groupId) {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/group/${groupId}`, {
-            method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
             }

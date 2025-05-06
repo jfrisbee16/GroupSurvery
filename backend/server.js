@@ -17,20 +17,27 @@ var app = express()
 app.use(cors())
 app.use(express.json())
 
-//Need a role and change user id to email in the database
+// Serve static files from the frontend directory with proper MIME types
+app.use(express.static(path.join(__dirname, '../frontend'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) {
+            res.set('Content-Type', 'application/javascript; charset=UTF-8');
+        }
+    },
+    extensions: ['js', 'html', 'css']
+}));
 
-// Serve static files from the frontend directory
-app.use(express.static(path.join(__dirname, '../frontend')));
+//Need a role and change user id to email in the database
 
 //Registration route
 app.post('/register', (req, res, next) => {
     let strUserId = uuid();
     let strFirstName = req.body.firstName.trim();
-    let strMiddleName = req.body.middleName.trim();
+    let strMiddleName = req.body.middleName ? req.body.middleName.trim() : ''; // Make middle name optional
     let strLastName = req.body.lastName.trim();
     let strEmail = req.body.email.trim().toLowerCase();
     let strRole = req.body.role.trim();
-    let strPassword = req.body.password;
+    let strPassword = req.body.UserPassword; // Changed from password to UserPassword
   
     //Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -68,12 +75,6 @@ app.post('/register', (req, res, next) => {
         return res.status(400).json({ error: "First name must be at least 3 characters long" });
     }
   
-    //Middle Name validation
-    if (strMiddleName.length < 3) {
-        blnError = true;  
-        return res.status(400).json({ error: "Middle name must be at least 3 characters long" });
-    }
-
     //Last Name validation
     if (strLastName.length < 3) {
         blnError = true;  
@@ -87,29 +88,25 @@ app.post('/register', (req, res, next) => {
         return res.status(400).json({ error: "Role must be either 'Student' or 'Faculty'" });
     }
   
-    //strPassword = bcrypt.hashSync(strPassword, intSalt);
-  
     // If validations pass
     if(blnError == true){
         return res.status(400).json({ error: "Validation failed" });
     } else {
-    req.body.userId = strUserId;
-    //let strCommand = `INSERT INTO tblUsers VALUES ('${strUserId}', '${strFirstName}', '${strMiddleName}', '${strLastName}', '${strEmail}', '${strRole}', '${strPassword}')`;
-  
-    let strCommand = `INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    let arrParams = [strUserId, strFirstName, strMiddleName, strLastName, strEmail, strRole, strPassword];
-    console.log(strCommand)
-    db.run(strCommand, arrParams, function (err) {
-        if(err){
-            return res.status(400).json({ status: 'error', message: err.message });
-        } else {
-            // Issue JWT
-            const token = jwt.sign({ email: strEmail }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
-            return res.status(200).json({ status: 'success', token });
-        }
-    })
+        req.body.userId = strUserId;
+        let strCommand = `INSERT INTO tblUsers VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        let arrParams = [strUserId, strFirstName, strMiddleName, strLastName, strEmail, strRole, strPassword];
+        console.log(strCommand)
+        db.run(strCommand, arrParams, function (err) {
+            if(err){
+                return res.status(400).json({ status: 'error', message: err.message });
+            } else {
+                // Issue JWT
+                const token = jwt.sign({ email: strEmail }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+                return res.status(200).json({ status: 'success', token });
+            }
+        })
     }
-  })
+})
   
 
 //Login route
