@@ -169,6 +169,58 @@ app.get('/student-groups', (req, res) => {
     });
 });
 
+app.post('/create-course', (req, res) => {
+    let strCourseId = uuid();
+    let strCourseName = req.body.courseName.trim();
+    let strCourseNumber = req.body.courseNumber;
+    let strCourseSection = req.body.courseSection;
+    let strCourseTerm = req.body.courseTerm.trim();
+    let strCoursStartDate = req.body.courseStartDate.trim();
+    let strCourseEndDate = req.body.courseEndDate.trim();
+
+
+    let strCommand = `INSERT INTO tblCourses VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    let arrParams = [strCourseId, strCourseName, strCourseNumber, strCourseSection, strCourseTerm, strCoursStartDate, strCourseEndDate];
+    console.log(strCommand)
+
+    db.run(strCommand, arrParams, function (err) {
+        if(err){
+            console.log(err)
+            res.status(400).json({
+                status:"error",
+                message:err.message
+            })
+        } else {
+            res.status(200).json({
+                status:"success",
+                message:console.log("Course created successfully")
+            })
+        }
+    })
+})
+
+// View all courses route
+app.get('/view-courses', (req, res) => {
+    let strCommand = `SELECT * FROM tblCourses`;
+
+    db.all(strCommand, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: "Database error" });
+        }
+        else{
+            console.log(rows)
+            //res.json({ courses: rows });
+            res.status(200).json({
+                status:"success",
+                message:rows,
+                courses:rows
+            })
+        }
+
+        
+    });
+});
+
 app.listen(HTTP_PORT,() => {
     console.log('App listening on',HTTP_PORT)
 })
