@@ -169,7 +169,7 @@ app.get('/student-groups', (req, res) => {
     });
 });
 
-pp.post('/create-course', (req, res) => {
+app.post('/create-course', (req, res) => {
     let strCourseId = uuid();
     let strCourseName = req.body.courseName.trim();
     let strCourseNumber = req.body.courseNumber;
